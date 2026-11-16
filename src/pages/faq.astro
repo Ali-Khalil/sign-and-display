@@ -37,7 +37,7 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
   schema={[breadcrumbList(crumbs, Astro.site!), faqPage(all)]}
   {waMessage}
 >
-  <section class="bg-ink text-white">
+  <section class="bg-hero text-white">
     <div class="wrap py-10 md:py-14">
       <Breadcrumbs items={crumbs} dark />
       <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Frequently asked questions</h1>

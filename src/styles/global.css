@@ -2,7 +2,7 @@
 
 /*
  * Brand tokens, taken from the Sign & Display logo: white and amber letters,
- * a royal blue wordmark, on a near-black wall. Change them here and the
+ * a royal blue wordmark. Blue leads, amber is the accent. Change them here and the
  * whole site follows.
  */
 @theme inline {
@@ -10,12 +10,13 @@
   --color-brand-ink: #1a1200; /* text on amber */
   --color-blue: #003783; /* the "DISPLAY" blue */
   --color-blue-soft: #e8eef8;
-  --color-ink: #0b0d11; /* the dark wall behind the logo */
-  --color-ink-soft: #151920;
-  --color-ink-line: #262b35;
+  --color-ink: #071d42; /* deep navy: text and dark sections */
+  --color-ink-soft: #0e2a5c;
+  --color-ink-line: #1d3d78;
+  --color-navy: #041530; /* footer */
   --color-paper: #ffffff;
-  --color-paper-soft: #f3f5f8;
-  --color-line: #dde1e8;
+  --color-paper-soft: #f1f5fb;
+  --color-line: #d9e0ec;
   --color-muted: #535b69; /* secondary text on light */
   --color-muted-dark: #a9b0bc; /* secondary text on dark */
   --color-whatsapp: #25d366;
@@ -70,6 +71,12 @@
 }
 
 @layer components {
+  /* Page headers and call-to-action bands: the logo blue, deepening to navy, with a hint of amber light. */
+  .bg-hero {
+    background:
+      radial-gradient(60rem 26rem at 88% -10%, rgb(252 161 3 / 0.16), transparent 60%),
+      linear-gradient(135deg, #0a4aa8 0%, #003783 42%, #071d42 100%);
+  }
   .wrap {
     margin-inline: auto;
     width: 100%;

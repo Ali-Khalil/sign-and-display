@@ -14,7 +14,7 @@ const path = Astro.url.pathname;
 const isCurrent = (href: string) => path.startsWith(href);
 ---
 
-<header class="relative z-30 bg-ink text-white">
+<header class="relative z-30 bg-blue text-white">
   <div class="wrap flex min-h-16 items-center justify-between gap-4">
     <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
 
@@ -47,11 +47,11 @@ const isCurrent = (href: string) => path.startsWith(href);
         >
           <Icon name="menu" class="size-6" />
         </summary>
-        <nav aria-label="Mobile" class="absolute inset-x-0 top-full border-t border-ink-line bg-ink pb-4 shadow-xl">
+        <nav aria-label="Mobile" class="absolute inset-x-0 top-full border-t border-white/15 bg-blue pb-4 shadow-xl">
           <ul class="wrap">
             {
               NAV.map((item) => (
-                <li class="border-b border-ink-line">
+                <li class="border-b border-white/15">
                   <a
                     href={item.href}
                     aria-current={isCurrent(item.href) ? 'page' : undefined}

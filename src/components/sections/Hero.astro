@@ -11,7 +11,7 @@ interface Props {
 const { waMessage } = Astro.props;
 ---
 
-<section class="bg-ink text-white">
+<section class="bg-hero text-white">
   <div class="wrap grid items-center gap-8 py-10 md:py-16 lg:grid-cols-[1.05fr_1fr]">
     <div>
       {
@@ -42,7 +42,7 @@ const { waMessage } = Astro.props;
       sizes="(min-width: 1024px) 46vw, 100vw"
       loading="eager"
       fetchpriority="high"
-      class="w-full rounded-2xl"
+      class="w-full rounded-2xl shadow-2xl ring-1 shadow-black/40 ring-white/15"
     />
   </div>
 </section>
