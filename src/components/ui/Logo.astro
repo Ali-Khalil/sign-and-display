@@ -17,7 +17,7 @@ const big = size === 'lg';
   <span aria-hidden="true" class:list={['logo-sign font-display font-black tracking-tight text-white', big ? 'text-3xl' : 'text-[1.4rem]']}>
     SIGN<span class="logo-amp ms-1.5 text-brand">&amp;</span>
   </span>
-  <span aria-hidden="true" class:list={['rounded-[3px] bg-white font-logo text-blue shadow-sm shadow-black/30', big ? 'px-2 py-1.5 text-base' : 'px-1.5 py-1 text-[0.78rem]']}>
+  <span aria-hidden="true" class:list={['logo-display rounded-[3px] bg-white font-logo text-blue shadow-sm shadow-black/30', big ? 'px-2 py-1.5 text-base' : 'px-1.5 py-1 text-[0.78rem]']}>
     DISPLAY
   </span>
 </span>
@@ -29,6 +29,11 @@ const big = size === 'lg';
       -1px 1px 0 #a9b9ca,
       -2px 2px 0 #7388a2,
       -3px 4px 5px rgb(0 0 0 / 0.35);
+  }
+  /* The wordmark font has one weight, so the letters are thickened with a stroke in their own colour. */
+  .logo-display {
+    -webkit-text-stroke: 0.065em currentColor;
+    letter-spacing: 0.02em;
   }
   .logo-amp {
     text-shadow:

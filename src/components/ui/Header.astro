@@ -7,14 +7,16 @@ import { site } from '../../config/site';
 
 interface Props {
   waMessage: string;
+  /** Keep the header at the top of the screen while the page scrolls. */
+  sticky?: boolean;
 }
-const { waMessage } = Astro.props;
+const { waMessage, sticky = true } = Astro.props;
 
 const path = Astro.url.pathname;
 const isCurrent = (href: string) => path.startsWith(href);
 ---
 
-<header class="relative z-30 bg-blue text-white">
+<header class:list={['z-30 border-b border-white/10 bg-navy text-white shadow-md shadow-black/25', sticky ? 'sticky top-0' : 'relative']}>
   <div class="wrap flex min-h-16 items-center justify-between gap-4">
     <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
 
@@ -47,7 +49,7 @@ const isCurrent = (href: string) => path.startsWith(href);
         >
           <Icon name="menu" class="size-6" />
         </summary>
-        <nav aria-label="Mobile" class="absolute inset-x-0 top-full border-t border-white/15 bg-blue pb-4 shadow-xl">
+        <nav aria-label="Mobile" class="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-white/15 bg-navy pb-4 shadow-xl">
           <ul class="wrap">
             {
               NAV.map((item) => (

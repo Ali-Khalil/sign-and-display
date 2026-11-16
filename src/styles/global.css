@@ -40,6 +40,8 @@
   html {
     font-family: var(--font-body);
     scroll-behavior: smooth;
+    /* Room for the header that stays at the top, so linked sections are not hidden under it. */
+    scroll-padding-top: 5rem;
     -webkit-text-size-adjust: 100%;
   }
   @media (prefers-reduced-motion: reduce) {
