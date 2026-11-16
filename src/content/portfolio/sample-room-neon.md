@@ -13,6 +13,6 @@ featured: true
 summary: Sample project for a small decorative neon sign.
 images:
   - src: ../../assets/samples/project-neon-bedroom.jpg
-    alt: Sample illustration of an ice blue neon sign reading Good vibes
+    alt: Sample design of an ice blue neon sign reading Good vibes
 
 ---

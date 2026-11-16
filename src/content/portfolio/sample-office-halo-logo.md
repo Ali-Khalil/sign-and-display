@@ -13,7 +13,7 @@ featured: true
 summary: Sample project for halo-lit letters, with a second photo of a reception wall sign.
 images:
   - src: ../../assets/samples/project-office-halo.jpg
-    alt: Sample illustration of dark letters with a white halo glow
+    alt: Sample design of dark letters with a white halo glow
   - src: ../../assets/samples/project-office-reception.jpg
-    alt: Sample illustration of a logo sign on an office wall
+    alt: Sample design of raised blue letters on an office wall
 ---

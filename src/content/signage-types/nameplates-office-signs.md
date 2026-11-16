@@ -7,7 +7,7 @@ order: 6
 shortDescription: Nameplates for houses, doors and desks, plus room and direction signs for offices and clinics.
 summary: Nameplates and office signs are small signs that identify a house, a person, a room or a department. They are made in acrylic, metal or wood finishes with engraved, printed or raised lettering, and suit homes, clinics, schools and offices that need clear, tidy labelling at doors and desks.
 heroImage: ../../assets/samples/type-nameplate.jpg
-heroAlt: Sample illustration of a brushed metal nameplate on a wooden door
+heroAlt: Sample design of a silver nameplate on a wall
 bestFor:
   - House nameplates
   - Doctor and lawyer door plates

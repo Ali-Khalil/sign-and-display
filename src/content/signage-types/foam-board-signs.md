@@ -7,7 +7,7 @@ order: 8
 shortDescription: Lightweight, low-cost printed and cut boards for indoor signs, displays and events.
 summary: Foam board signs are lightweight boards with a printed or vinyl face, used for indoor signs, displays, menus and event backdrops. They cost less than acrylic or ACP and are quick to make, which suits shops, schools, exhibitions and offices that need indoor signage on a small budget.
 heroImage: ../../assets/samples/type-foam-board.jpg
-heroAlt: Sample illustration of an orange foam board welcome sign on an indoor wall
+heroAlt: Sample design of an orange foam board welcome sign on an indoor wall
 bestFor:
   - Indoor shop displays
   - Events and exhibitions

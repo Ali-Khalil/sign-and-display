@@ -13,6 +13,6 @@ featured: true
 summary: Sample project for an illuminated light box outside a clinic.
 images:
   - src: ../../assets/samples/project-clinic-lightbox.jpg
-    alt: Sample illustration of a glowing clinic light box at night
+    alt: Sample design of a glowing clinic light box at night
 
 ---

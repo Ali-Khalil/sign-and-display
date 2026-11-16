@@ -1,117 +1,101 @@
-// Generates the clearly-labelled SAMPLE images used by the draft content. They are illustrations,
-// not photos of real work: replace them with real project photos.
-//   node scripts/make-sample-images.mjs
+// Renders the SAMPLE images used by the draft content with the site's own
+// sign designer, on the real wall photos. They show what each kind of sign
+// looks like; they are not photos of real work, and each carries a label.
+//   pnpm build:preview && node scripts/make-sample-images.mjs
 import { mkdirSync } from 'node:fs';
+import { chromium } from 'playwright';
 import sharp from 'sharp';
+import { startPreview } from './lib/preview.mjs';
 
-const W = 2000;
-const H = 1250;
 const OUT = 'src/assets/samples';
 mkdirSync(OUT, { recursive: true });
 
-const WALLS = {
-  night: ['#0a0c11', '#1a1e29'],
-  day: ['#d8d2c4', '#bfb8a8'],
-  office: ['#eef0f3', '#d5d9df'],
-  brick: ['#3a2622', '#22161a'],
-  door: ['#5b3d2a', '#3b2619'],
-  cafe: ['#141018', '#261a2c'],
-};
+const NARROW = ['Anton', 'Bebas Neue', 'Oswald', 'Sacramento', 'Neonderthaw'];
+let counter = 0;
 
-const defs = (wall) => `
-  <defs>
-    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0" stop-color="${WALLS[wall][0]}"/><stop offset="1" stop-color="${WALLS[wall][1]}"/>
-    </linearGradient>
-    <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#f4f5f7"/><stop offset=".5" stop-color="#8d939c"/><stop offset="1" stop-color="#e6e8eb"/>
-    </linearGradient>
-    <filter id="glowL" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="60"/></filter>
-    <filter id="glowM" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="22"/></filter>
-    <filter id="glowS" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
-    <filter id="soft" x="-20%" y="-20%" width="140%" height="160%"><feGaussianBlur stdDeviation="14"/></filter>
-    <pattern id="bricks" width="160" height="80" patternUnits="userSpaceOnUse">
-      <path d="M0 0H160M0 40H160M0 80H160M80 0V40M0 40V80M160 40V80" stroke="#00000055" stroke-width="5" fill="none"/>
-    </pattern>
-  </defs>
-  <rect width="${W}" height="${H}" fill="url(#wall)"/>
-  ${wall === 'brick' ? `<rect width="${W}" height="${H}" fill="url(#bricks)"/>` : ''}`;
+const board = (o = {}) => ({ widthIn: 96, heightIn: 36, style: 'none', shape: 'rect', color: '#12305c', border: false, finish: 'gloss', backlit: false, ...o });
 
-const t = (text, { x = W / 2, y = 640, size = 230, weight = 900, fill = '#fff', extra = '', family = 'Inter' } = {}) =>
-  `<text x="${x}" y="${y}" font-family="${family}" font-weight="${weight}" font-size="${size}" text-anchor="middle" fill="${fill}" ${extra}>${text}</text>`;
+/** A line of text placed at a share of the sign area's height (same maths as the designer's templates). */
+function line(b, text, at, share, o = {}) {
+  const k = Math.min(1000 / b.widthIn, 600 / b.heightIn);
+  const w = b.widthIn * k;
+  const h = b.heightIn * k;
+  const font = o.fontFamily ?? 'Montserrat Black';
+  const fontSize = Math.round(Math.min(h * share, (w * 0.82) / (text.length * (NARROW.includes(font) ? 0.5 : 0.7))));
+  return { id: `s${counter++}`, type: 'text', text, fontFamily: font, fontSize, x: 600, y: 420 - h / 2 + h * at, ...o };
+}
 
-const extrude = (text, o, side, depth = 16) =>
-  Array.from({ length: depth }, (_, i) => t(text, { ...o, x: (o.x ?? W / 2) + (depth - i) * 1.1, y: (o.y ?? 640) + (depth - i) * 1.4, fill: side })).join('');
+function design(mode, wall, night, b, layers, extra = {}) {
+  return { app: 'sign-designer', version: 1, mode, lighting: 'front-lit', view: 'right', lit: true, flicker: false, night, board: b, background: { kind: 'preset', id: wall }, layers, ...extra };
+}
 
-const VARIANTS = {
-  letters: ({ text, color = '#f5b301', side = '#7a5900' }) =>
-    `${t(text, { fill: '#000', extra: 'filter="url(#soft)" opacity=".45"', y: 668 })}${extrude(text, {}, side)}${t(text, { fill: color })}`,
-  frontlit: ({ text, color = '#fff6d6', glow = '#ffcf5a' }) =>
-    `${t(text, { fill: glow, extra: 'filter="url(#glowL)" opacity=".8"' })}${extrude(text, {}, '#3b3320', 10)}${t(text, { fill: glow, extra: 'filter="url(#glowS)"' })}${t(text, { fill: color })}`,
-  halo: ({ text, color = '#1c1f26', glow = '#59c8ff' }) =>
-    `${t(text, { fill: glow, extra: 'filter="url(#glowL)"' })}${t(text, { fill: glow, extra: 'filter="url(#glowM)"' })}${t(text, { fill: color })}`,
-  neon: ({ text, glow = '#ff2d95', size = 250 }) => {
-    const o = { size, weight: 300, fill: 'none', family: 'Inter Display' };
-    const s = (w, c, f = '') => t(text, { ...o, extra: `stroke="${c}" stroke-width="${w}" stroke-linejoin="round" font-style="italic" ${f}` });
-    return `<rect x="330" y="330" width="1340" height="520" rx="36" fill="#ffffff" opacity=".04" stroke="#ffffff22" stroke-width="3"/>
-      ${s(22, glow, 'filter="url(#glowL)" opacity=".7"')}${s(16, glow, 'filter="url(#glowM)"')}${s(12, glow, 'filter="url(#glowS)"')}${s(5, '#ffffff')}`;
-  },
-  board: ({ text, color = '#12305c', ink = '#ffffff' }) =>
-    `<rect x="250" y="250" width="1500" height="500" fill="#000" opacity=".35" filter="url(#soft)" transform="translate(0 22)"/>
-     <rect x="250" y="250" width="1500" height="500" fill="${color}" stroke="url(#metal)" stroke-width="28"/>
-     ${t(text, { fill: ink, y: 575, size: 210 })}
-     <rect x="330" y="830" width="1340" height="420" fill="#00000030"/><path d="M330 900H1670M330 970H1670M330 1040H1670M330 1110H1670M330 1180H1670" stroke="#00000030" stroke-width="6"/>`,
-  lightbox: ({ text, ink = '#b3141b' }) =>
-    `<rect x="300" y="300" width="1400" height="480" rx="10" fill="#fff" filter="url(#glowL)" opacity=".75"/>
-     <rect x="300" y="300" width="1400" height="480" rx="10" fill="#fdfdf8" stroke="#2a2d34" stroke-width="18"/>
-     ${t(text, { fill: ink, y: 615, size: 210 })}`,
-  nameplate: ({ text, sub = 'Designation' }) =>
-    `<rect x="560" y="400" width="880" height="330" rx="14" fill="#000" opacity=".4" filter="url(#soft)" transform="translate(0 14)"/>
-     <rect x="560" y="400" width="880" height="330" rx="14" fill="url(#metal)"/>
-     <circle cx="600" cy="440" r="10" fill="#555"/><circle cx="1400" cy="440" r="10" fill="#555"/><circle cx="600" cy="690" r="10" fill="#555"/><circle cx="1400" cy="690" r="10" fill="#555"/>
-     ${t(text, { fill: '#16181d', y: 575, size: 100, weight: 800 })}${t(sub, { fill: '#30343c', y: 655, size: 52, weight: 500 })}`,
-  reception: ({ text, color = '#22252c' }) =>
-    `<rect x="0" y="1010" width="${W}" height="240" fill="#00000018"/>
-     <circle cx="560" cy="560" r="120" fill="#000" opacity=".25" filter="url(#soft)" transform="translate(8 12)"/><circle cx="560" cy="560" r="120" fill="#f5b301"/>
-     ${t(text, { fill: '#000', x: 1160, y: 640, size: 190, extra: 'filter="url(#soft)" opacity=".3"' })}${extrude(text, { x: 1150, y: 630, size: 190 }, '#6c7079', 8)}${t(text, { fill: color, x: 1150, y: 630, size: 190 })}`,
-  foam: ({ text, color = '#e8472b' }) =>
-    `<rect x="420" y="300" width="1160" height="560" rx="6" fill="#000" opacity=".3" filter="url(#soft)" transform="translate(6 14)"/>
-     <rect x="420" y="300" width="1160" height="560" rx="6" fill="${color}"/><rect x="420" y="300" width="1160" height="560" rx="6" fill="none" stroke="#ffffff55" stroke-width="6"/>
-     ${t(text, { fill: '#fff', y: 640, size: 180 })}`,
-};
+function build() {
+  const wide = board({ widthIn: 120, heightIn: 30 });
+  const shop = board({ widthIn: 120, heightIn: 36, style: 'solid', border: true });
+  const box = board({ widthIn: 72, heightIn: 26, style: 'solid', color: '#f7f7f4', shape: 'rounded', finish: 'matte', backlit: true });
+  const plate = board({ widthIn: 14, heightIn: 5, style: 'solid', color: '#b9bec6', shape: 'rounded', finish: 'gloss' });
+  const neon = board({ widthIn: 36, heightIn: 16, style: 'clear', shape: 'rounded', finish: 'matte' });
+  const foam = board({ widthIn: 48, heightIn: 24, style: 'solid', color: '#f26b1d', finish: 'matte' });
 
-const label = `
-  <g font-family="Inter" font-weight="700">
-    <rect x="40" y="${H - 110}" width="830" height="70" rx="35" fill="#000" opacity=".7"/>
-    <text x="80" y="${H - 63}" font-size="34" fill="#fff" letter-spacing="2">SAMPLE IMAGE · NOT A REAL PROJECT</text>
-  </g>`;
+  return {
+    // Signage type pages
+    'type-3d-acrylic-letters': design('3d-letters', 'plaster', false, wide, [line(wide, 'YOUR SHOP', 0.5, 0.7, { color: '#f5b301', depth: 0.2 })]),
+    'type-led-backlit': design('led', 'dark-wall', true, wide, [line(wide, 'YOUR BRAND', 0.5, 0.7, { color: '#1c1f26', glow: '#7df9ff' })], { lighting: 'halo' }),
+    'type-neon': design('neon', 'dark-wall', true, neon, [line(neon, 'Open late', 0.5, 0.5, { fontFamily: 'Pacifico', glow: '#ff2d95' })]),
+    'type-acp-board': design('flat-board', 'plaster', false, shop, [
+      line(shop, 'SHOP NAME', 0.42, 0.44, { color: '#ffffff' }),
+      line(shop, 'Mobile: 0300-1234567', 0.8, 0.15, { fontFamily: 'Oswald', color: '#f5b301' }),
+    ]),
+    'type-light-box': design('flat-board', 'dark-wall', true, box, [line(box, 'PHARMACY', 0.5, 0.5, { color: '#b3141b' })]),
+    'type-nameplate': design('flat-board', 'office', false, plate, [
+      line(plate, 'Your Name', 0.4, 0.36, { fontFamily: 'Oswald', color: '#16181d' }),
+      line(plate, 'Designation', 0.78, 0.18, { fontFamily: 'Oswald', color: '#16181d' }),
+    ]),
+    'type-reception': design('3d-letters', 'office', false, wide, [line(wide, 'BRAND', 0.5, 0.75, { color: '#16181d', depth: 0.12 })]),
+    'type-foam-board': design('flat-board', 'office', false, foam, [line(foam, 'WELCOME', 0.5, 0.36, { color: '#ffffff' })]),
 
-const svg = ({ wall, variant, ...opts }, withLabel = true) =>
-  `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${defs(wall)}${VARIANTS[variant](opts)}${withLabel ? label : ''}</svg>`;
+    // Sample portfolio projects
+    'project-shopfront-day': design('3d-letters', 'plaster', false, wide, [line(wide, 'STORE', 0.5, 0.8, { color: '#d0202a', depth: 0.2 })]),
+    'project-shopfront-night': design('led', 'shopfront-night', true, wide, [line(wide, 'STORE', 0.5, 0.8, { color: '#d0202a', glow: '#ff2a2a', depth: 0.2 })]),
+    'project-cafe-neon': design('neon', 'old-brick', true, neon, [line(neon, 'Coffee', 0.5, 0.56, { fontFamily: 'Pacifico', glow: '#ff8a1f' })]),
+    'project-clinic-lightbox': design('flat-board', 'dark-wall', true, box, [line(box, 'CLINIC', 0.5, 0.56, { color: '#0f7a4d' })]),
+    'project-office-halo': design('led', 'dark-wall', true, wide, [line(wide, 'OFFICE', 0.5, 0.8, { color: '#16181d', glow: '#eaf4ff' })], { lighting: 'halo' }),
+    'project-office-reception': design('3d-letters', 'office', false, wide, [line(wide, 'LOGO', 0.5, 0.8, { color: '#1f4fbf', depth: 0.14 })]),
+    'project-acp-board': design('flat-board', 'plaster', false, { ...shop, color: '#0f4d3a', finish: 'glitter' }, [line(shop, 'TRADERS', 0.5, 0.5, { color: '#ffffff' })]),
+    'project-nameplate': design('flat-board', 'plaster', false, plate, [
+      line(plate, 'House Name', 0.4, 0.36, { fontFamily: 'Oswald', color: '#16181d' }),
+      line(plate, 'House No. · Street', 0.78, 0.18, { fontFamily: 'Oswald', color: '#16181d' }),
+    ]),
+    'project-neon-bedroom': design('neon', 'dark-wall', true, neon, [line(neon, 'Good vibes', 0.5, 0.5, { fontFamily: 'Tilt Neon', glow: '#7df9ff' })]),
+  };
+}
 
-const IMAGES = {
-  // Signage type heroes
-  'type-3d-acrylic-letters': { wall: 'day', variant: 'letters', text: 'YOUR SHOP' },
-  'type-led-backlit': { wall: 'night', variant: 'halo', text: 'YOUR BRAND' },
-  'type-neon': { wall: 'cafe', variant: 'neon', text: 'Open late' },
-  'type-acp-board': { wall: 'day', variant: 'board', text: 'SHOP NAME' },
-  'type-light-box': { wall: 'night', variant: 'lightbox', text: 'PHARMACY' },
-  'type-nameplate': { wall: 'door', variant: 'nameplate', text: 'Your Name' },
-  'type-reception': { wall: 'office', variant: 'reception', text: 'BRAND' },
-  'type-foam-board': { wall: 'office', variant: 'foam', text: 'WELCOME' },
-  // Portfolio samples
-  'project-shopfront-day': { wall: 'day', variant: 'letters', text: 'STORE', color: '#c8102e', side: '#5e0715' },
-  'project-shopfront-night': { wall: 'night', variant: 'frontlit', text: 'STORE' },
-  'project-cafe-neon': { wall: 'brick', variant: 'neon', text: 'Coffee', glow: '#ffb347' },
-  'project-clinic-lightbox': { wall: 'night', variant: 'lightbox', text: 'CLINIC', ink: '#0b6b4f' },
-  'project-office-halo': { wall: 'night', variant: 'halo', text: 'OFFICE', glow: '#ffffff', color: '#101216' },
-  'project-office-reception': { wall: 'office', variant: 'reception', text: 'LOGO' },
-  'project-acp-board': { wall: 'day', variant: 'board', text: 'TRADERS', color: '#0f4d3a' },
-  'project-nameplate': { wall: 'door', variant: 'nameplate', text: 'House Name', sub: 'House No. · Street' },
-  'project-neon-bedroom': { wall: 'cafe', variant: 'neon', text: 'Good vibes', glow: '#7df9ff' },
-};
+const LABEL = Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1250">
+  <rect x="40" y="1140" width="800" height="70" rx="35" fill="#000" opacity=".72"/>
+  <text x="80" y="1187" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="34" fill="#fff" letter-spacing="2">SAMPLE DESIGN · NOT A REAL PROJECT</text>
+</svg>`);
 
-for (const [name, spec] of Object.entries(IMAGES)) {
-  await sharp(Buffer.from(svg(spec))).jpeg({ quality: 80, mozjpeg: true }).toFile(`${OUT}/${name}.jpg`);
-  console.log('wrote', name);
+const server = await startPreview(4397);
+const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined });
+try {
+  const page = await browser.newPage({ viewport: { width: 1280, height: 900 } });
+  await page.goto(`${server.url}/design-your-sign/`);
+  for (const [name, d] of Object.entries(build())) {
+    await page.evaluate((json) => localStorage.setItem('signDesigner.v1', json), JSON.stringify(d));
+    await page.goto(`${server.url}/design-your-sign/`);
+    await page.locator('[data-sign-designer]').waitFor();
+    // Wait for the wall photo and the fonts before taking the picture.
+    await page.waitForFunction(() => window.__signDesigner?.scene.canvas.backgroundImage);
+    await page.waitForTimeout(1300);
+    const url = await page.evaluate(() => window.__signDesigner.scene.toPNG(2000));
+    await sharp(Buffer.from(url.split(',')[1], 'base64'))
+      .extract({ left: 0, top: 75, width: 2000, height: 1250 })
+      .composite([{ input: LABEL }])
+      .jpeg({ quality: 82, mozjpeg: true })
+      .toFile(`${OUT}/${name}.jpg`);
+    console.log('wrote', name);
+  }
+} finally {
+  await browser.close();
+  server.stop();
 }

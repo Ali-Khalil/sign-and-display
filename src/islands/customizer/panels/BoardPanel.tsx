@@ -74,6 +74,12 @@ export default function BoardPanel({ design, onBoard, onResize }: Props) {
               ]}
               onChange={(finish) => onBoard({ finish })}
             />
+            {mode === 'flat-board' && (
+              <label class="flex min-h-11 items-center gap-3 text-[0.95rem] font-semibold">
+                <input type="checkbox" class="size-5 accent-ink" checked={board.backlit} onChange={(e) => onBoard({ backlit: e.currentTarget.checked })} />
+                Light box (lit from inside at night)
+              </label>
+            )}
             {mode !== 'neon' && (
               <label class="flex min-h-11 items-center gap-3 text-[0.95rem] font-semibold">
                 <input type="checkbox" class="size-5 accent-ink" checked={board.border} onChange={(e) => onBoard({ border: e.currentTarget.checked })} />

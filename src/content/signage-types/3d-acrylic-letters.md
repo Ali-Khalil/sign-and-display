@@ -7,7 +7,7 @@ order: 1
 shortDescription: Raised acrylic letters and logos for shopfronts and offices, with or without LED lighting.
 summary: 3D acrylic letter signs are individual raised letters and logos cut from acrylic sheet and mounted on a wall or backing board. They suit shops, offices, clinics and showrooms that want a clean, solid-looking name sign, and they can be left non-lit or fitted with LEDs for front-lit or halo-lit glow at night.
 heroImage: ../../assets/samples/type-3d-acrylic-letters.jpg
-heroAlt: Sample illustration of raised yellow 3D acrylic letters on a shopfront wall
+heroAlt: Sample design of raised yellow 3D acrylic letters on a shopfront wall
 bestFor:
   - Shopfront name signs
   - Office and showroom walls

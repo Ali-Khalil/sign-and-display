@@ -192,7 +192,8 @@ export class Scene {
     if (this.disposed) return;
     this.design = design;
     const rect = boardRect(design.board);
-    const lightsOn = (design.mode === 'led' || design.mode === 'neon') && design.lit;
+    const lightBox = design.board.backlit && design.board.style === 'solid';
+    const lightsOn = ((design.mode === 'led' || design.mode === 'neon') && design.lit) || lightBox;
 
     this.updateBackground(design);
     this.nightBack.set({ visible: design.night });
@@ -336,7 +337,13 @@ export class Scene {
               })
             : '',
       strokeWidth: board.style === 'clear' ? 2 : borderWidth,
-      shadow: board.style === 'solid' ? new Shadow({ color: 'rgba(0,0,0,0.45)', blur: 18, offsetX: 0, offsetY: 10 }) : null,
+      // A light box throws its own light at night; any other board casts a shadow.
+      shadow:
+        board.style !== 'solid'
+          ? null
+          : board.backlit && design.night
+            ? new Shadow({ color: 'rgba(255,255,255,0.85)', blur: 90, offsetX: 0, offsetY: 0 })
+            : new Shadow({ color: 'rgba(0,0,0,0.45)', blur: 18, offsetX: 0, offsetY: 10 }),
     });
     this.board.setCoords();
 
@@ -380,7 +387,7 @@ export class Scene {
     const key = bg.kind === 'preset' ? `preset:${bg.id}` : `upload:${bg.src.length}:${bg.src.slice(-32)}`;
     if (key === this.backgroundKey) return;
     this.backgroundKey = key;
-    const src = bg.kind === 'preset' ? `/customizer/backgrounds/${bg.id}.jpg` : bg.src;
+    const src = bg.kind === 'preset' ? `/customizer/backgrounds/${bg.id}.webp` : bg.src;
     void loadImage(src)
       .then((el) => {
         if (this.disposed || this.backgroundKey !== key) return;

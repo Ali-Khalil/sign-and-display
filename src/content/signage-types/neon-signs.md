@@ -7,7 +7,7 @@ order: 3
 shortDescription: Custom neon-style text and logos made from LED neon flex on an acrylic backing.
 summary: LED neon signs are custom words and logos shaped from flexible LED neon strip and fixed to a clear or coloured acrylic backing. They give the look of glass neon without the fragile tubes, and suit cafés, salons, shops, wedding décor and rooms where a bright, decorative sign is wanted.
 heroImage: ../../assets/samples/type-neon.jpg
-heroAlt: Sample illustration of a pink neon sign reading Open late on a dark wall
+heroAlt: Sample design of a pink neon sign reading Open late on a dark wall
 bestFor:
   - Cafés, salons and boutiques
   - Wedding and event décor

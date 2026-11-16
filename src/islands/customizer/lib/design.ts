@@ -72,6 +72,8 @@ export interface Board {
   border: boolean;
   /** Surface of a solid board. */
   finish: 'matte' | 'gloss' | 'glitter';
+  /** Light box: the board is lit from inside and glows at night. */
+  backlit: boolean;
 }
 
 /** Which way the sides of 3D letters run on screen. */
@@ -97,10 +99,12 @@ export interface Design {
 
 export const BACKGROUNDS = [
   { id: 'plaster', label: 'Plaster wall' },
+  { id: 'concrete', label: 'Concrete wall' },
   { id: 'dark-wall', label: 'Dark wall' },
   { id: 'brick', label: 'Brick wall' },
-  { id: 'shopfront-night', label: 'Shopfront at night' },
+  { id: 'old-brick', label: 'Old brick' },
   { id: 'office', label: 'Office wall' },
+  { id: 'shopfront-night', label: 'Shopfront at night' },
 ];
 
 export const NEON_COLOURS = [
@@ -160,7 +164,7 @@ export const MODE_DEFAULTS: Record<Mode, ModeDefaults> = {
   'flat-board': { color: '#ffffff', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'solid', night: false, background: 'plaster' },
   '3d-letters': { color: '#ffffff', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'none', night: false, background: 'dark-wall' },
   led: { color: '#ffffff', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'none', night: true, background: 'shopfront-night' },
-  neon: { color: '#ffffff', glow: '#ff2d95', font: DEFAULT_NEON_FONT, boardStyle: 'clear', night: true, background: 'brick' },
+  neon: { color: '#ffffff', glow: '#ff2d95', font: DEFAULT_NEON_FONT, boardStyle: 'clear', night: true, background: 'old-brick' },
 };
 
 let counter = 0;
@@ -223,8 +227,8 @@ export function defaultDesign(mode: Mode): Design {
   const defaults = MODE_DEFAULTS[mode];
   const board: Board =
     mode === 'neon'
-      ? { widthIn: 36, heightIn: 18, style: 'clear', shape: 'rounded', color: '#16181d', border: false, finish: 'matte' }
-      : { widthIn: 96, heightIn: 36, style: defaults.boardStyle, shape: 'rect', color: '#12305c', border: mode === 'flat-board', finish: 'gloss' };
+      ? { widthIn: 36, heightIn: 18, style: 'clear', shape: 'rounded', color: '#16181d', border: false, finish: 'matte', backlit: false }
+      : { widthIn: 96, heightIn: 36, style: defaults.boardStyle, shape: 'rect', color: '#12305c', border: mode === 'flat-board', finish: 'gloss', backlit: false };
   const base = { mode, board };
   return {
     app: 'sign-designer',

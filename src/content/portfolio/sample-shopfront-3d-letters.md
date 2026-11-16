@@ -13,7 +13,7 @@ featured: true
 summary: Sample project showing how a shopfront job is presented, with a day photo and a night photo of the same sign.
 images:
   - src: ../../assets/samples/project-shopfront-day.jpg
-    alt: Sample illustration of red 3D letters on a shopfront by day
+    alt: Sample design of red 3D letters on a shopfront by day
   - src: ../../assets/samples/project-shopfront-night.jpg
-    alt: Sample illustration of the same letters lit at night
+    alt: Sample design of the same letters lit at night
 ---

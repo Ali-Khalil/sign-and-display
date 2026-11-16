@@ -7,7 +7,7 @@ order: 7
 shortDescription: Indoor logo and name signs for reception areas, showrooms and office walls.
 summary: Reception and logo wall signs are indoor signs that put a company name and logo on the wall behind a reception desk or in a showroom. They are built from raised acrylic or metal-finish letters, often with halo lighting, and suit offices, clinics, salons and showrooms that want a professional first impression.
 heroImage: ../../assets/samples/type-reception.jpg
-heroAlt: Sample illustration of a raised logo and brand name on an office wall
+heroAlt: Sample design of raised dark letters on an office wall
 bestFor:
   - Office reception walls
   - Clinics and salons

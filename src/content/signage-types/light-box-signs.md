@@ -7,7 +7,7 @@ order: 5
 shortDescription: Illuminated boxes with a printed or acrylic face, lit evenly from inside.
 summary: A light box sign is a shallow box with lights inside and a translucent printed or acrylic face, so the whole panel glows evenly at night. Light boxes suit pharmacies, clinics, restaurants, banks and any business that wants a bright sign that shows a full-colour design after dark.
 heroImage: ../../assets/samples/type-light-box.jpg
-heroAlt: Sample illustration of a glowing white light box sign on a dark wall
+heroAlt: Sample design of a glowing white light box sign on a dark wall
 bestFor:
   - Pharmacies and clinics
   - Restaurants and bakeries

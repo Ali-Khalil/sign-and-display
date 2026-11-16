@@ -7,7 +7,7 @@ order: 4
 shortDescription: Flat shopfront boards in ACP sheet with an aluminium border, with printed or raised lettering.
 summary: ACP and aluminium frame boards are flat shopfront signs made from aluminium composite panel, usually finished with an aluminium border. They cover the full width above a shop and carry the name in vinyl, print or raised letters. They suit shops and businesses that want a large, durable outdoor board.
 heroImage: ../../assets/samples/type-acp-board.jpg
-heroAlt: Sample illustration of a blue ACP shopfront board with an aluminium border
+heroAlt: Sample design of a blue ACP shopfront board with an aluminium border
 bestFor:
   - Full-width shopfront boards
   - Markets and plazas

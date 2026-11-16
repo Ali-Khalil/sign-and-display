@@ -13,6 +13,6 @@ featured: true
 summary: Sample project for a full-width ACP board with an aluminium border.
 images:
   - src: ../../assets/samples/project-acp-board.jpg
-    alt: Sample illustration of a green ACP board above a shop shutter
+    alt: Sample design of a green glitter ACP board on a plaster wall
 
 ---

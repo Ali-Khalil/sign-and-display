@@ -7,7 +7,7 @@ order: 2
 shortDescription: Letters and logos lit with LEDs, either glowing through the face or as a halo on the wall behind.
 summary: LED backlit and halo-lit signs are 3D letters or logos with LED modules inside. Front-lit letters glow through the face, while halo-lit letters stay dark and throw a soft ring of light onto the wall behind. They suit shops, restaurants and offices that need their name to be read clearly after dark.
 heroImage: ../../assets/samples/type-led-backlit.jpg
-heroAlt: Sample illustration of dark letters with a blue halo glow on a wall at night
+heroAlt: Sample design of dark letters with a blue halo glow on a wall at night
 bestFor:
   - Shops open in the evening
   - Restaurants and hotels

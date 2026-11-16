@@ -104,7 +104,7 @@ test('project lightbox opens and closes', async ({ page }) => {
   await page.locator('a[data-lightbox]').first().click();
   const dialog = page.locator('dialog#lightbox');
   await expect(dialog).toBeVisible();
-  await expect(dialog.locator('img')).toHaveAttribute('alt', /Sample illustration/);
+  await expect(dialog.locator('img')).toHaveAttribute('alt', /Sample design/);
   await page.keyboard.press('Escape');
   await expect(dialog).toBeHidden();
 });

@@ -35,7 +35,7 @@ export default function BackgroundPanel({ design, onBackground, onUpload, onNigh
               onClick={() => onBackground({ kind: 'preset', id: scene.id })}
               class="overflow-hidden rounded-lg border border-line bg-white text-xs font-medium aria-checked:border-ink aria-checked:ring-2 aria-checked:ring-ink"
             >
-              <img src={`/customizer/backgrounds/${scene.id}-thumb.jpg`} alt="" width={240} height={180} loading="lazy" class="aspect-[4/3] w-full object-cover" />
+              <img src={`/customizer/backgrounds/${scene.id}-thumb.webp`} alt="" width={240} height={180} loading="lazy" class="aspect-[4/3] w-full object-cover" />
               <span class="block px-1 py-1.5">{scene.label}</span>
             </button>
           ))}

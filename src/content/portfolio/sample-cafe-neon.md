@@ -13,6 +13,6 @@ featured: true
 summary: Sample project for a neon sign on a brick wall inside a café.
 images:
   - src: ../../assets/samples/project-cafe-neon.jpg
-    alt: Sample illustration of an orange neon sign on a brick wall
+    alt: Sample design of an orange neon sign on a brick wall
 
 ---

@@ -13,6 +13,6 @@ featured: false
 summary: Sample project for a metal-finish house nameplate.
 images:
   - src: ../../assets/samples/project-nameplate.jpg
-    alt: Sample illustration of a metal house nameplate on a wooden door
+    alt: Sample design of a silver house nameplate on a wall
 
 ---

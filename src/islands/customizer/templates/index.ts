@@ -57,9 +57,9 @@ export const TEMPLATES: Template[] = [
   {
     id: 'clinic',
     name: 'Clinic',
-    description: 'White board with green lettering',
+    description: 'White light box with green lettering',
     build() {
-      const d = base('flat-board', { widthIn: 72, heightIn: 30, color: '#f7f7f4', shape: 'rounded', border: false });
+      const d = base('flat-board', { widthIn: 72, heightIn: 30, color: '#f7f7f4', shape: 'rounded', border: false, backlit: true }, { night: true, background: { kind: 'preset', id: 'dark-wall' } });
       d.layers = [
         line(d, 'YOUR CLINIC', 0.4, 0.36, { color: '#0f7a4d', fontFamily: 'Archivo Black' }),
         line(d, 'Dr. Name · Timings 5pm to 9pm', 0.78, 0.13, { color: '#16181d', fontFamily: 'Oswald' }),
