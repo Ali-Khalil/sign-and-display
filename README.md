@@ -37,7 +37,8 @@ once, or point `PLAYWRIGHT_CHROMIUM_PATH` and `CHROME_PATH` at an existing one.
 | Analytics tokens | `src/config/analytics.ts` |
 | Menu links | `src/config/nav.ts` |
 | Brand colours and site fonts | `src/styles/global.css` (`@theme`) and `fonts` in `astro.config.mjs` |
-| Logo image, hero picture | `src/assets/brand/` (the wordmark in the header is `src/components/ui/Logo.astro`) |
+| Logo image, hero picture | `src/assets/brand/` (the wordmark in the header is `src/components/ui/Logo.astro`). After replacing `logo-sign.webp`, run `node scripts/make-logo-cutout.mjs` to remake the transparent version used in the hero |
+| Hero slides | The logo, then up to six portfolio projects marked `featured: true` |
 | Sign designer fonts | `src/config/fonts.ts`, then `node scripts/sync-fonts.mjs` |
 | Sign designer templates | `src/islands/customizer/templates/index.ts` |
 | Sign designer colours, wall scenes, mode defaults | `src/islands/customizer/lib/design.ts` |

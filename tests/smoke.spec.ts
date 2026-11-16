@@ -152,3 +152,16 @@ test('robots.txt, llms.txt and sitemap are served', async ({ request }) => {
   expect(sitemap).not.toContain('/spike/');
   expect(sitemap).toContain('/design-your-sign/');
 });
+
+test('hero carousel steps through the logo and recent work', async ({ page }) => {
+  await page.goto('/');
+  const carousel = page.locator('[data-carousel]');
+  await expect(carousel.locator('[data-track] > div')).toHaveCount(7);
+  await page.getByRole('button', { name: 'Pause' }).click(); // stop auto-advance for a steady test
+  await expect(carousel.locator('[data-dot="0"]')).toHaveAttribute('aria-current', 'true');
+  await page.getByRole('button', { name: 'Next slide' }).click();
+  await expect(carousel.locator('[data-dot="1"]')).toHaveAttribute('aria-current', 'true');
+  await expect(carousel.locator('[data-track] > div').nth(1).locator('a')).toBeInViewport();
+  await page.getByRole('button', { name: 'Previous slide' }).click();
+  await expect(carousel.locator('[data-dot="0"]')).toHaveAttribute('aria-current', 'true');
+});

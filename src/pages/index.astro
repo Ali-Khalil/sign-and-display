@@ -27,7 +27,7 @@ const city = site.address.city;
   description={`${site.name} makes 3D letters, LED and neon signs, ACP boards and nameplates in ${city}, Punjab, for customers across Pakistan. Quotes on WhatsApp.`}
   schema={[faqPage(faqs)]}
 >
-  <Hero {waMessage} />
+  <Hero projects={featured} {waMessage} />
 
   {
     types.length > 0 && (

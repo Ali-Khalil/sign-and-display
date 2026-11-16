@@ -2,13 +2,19 @@
 import { Picture } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import WhatsAppButton from '../ui/WhatsAppButton.astro';
-import logoSign from '../../assets/brand/logo-sign-wide.webp';
+import logoSign from '../../assets/brand/logo-sign-cutout.webp';
 import { isPlaceholder, site } from '../../config/site';
+import type { Project } from '../../lib/content';
 
 interface Props {
+  /** Recent projects shown as slides after the logo. */
+  projects?: Project[];
   waMessage: string;
 }
-const { waMessage } = Astro.props;
+const { projects = [], waMessage } = Astro.props;
+const slides = projects.slice(0, 6);
+const total = slides.length + 1;
+const sizes = '(min-width: 1024px) 46vw, 100vw';
 ---
 
 <section class="bg-hero text-white">
@@ -34,15 +40,147 @@ const { waMessage } = Astro.props;
         <Button href="/design-your-sign/" variant="outline-dark" size="lg">Design Your Sign</Button>
       </div>
     </div>
-    <Picture
-      src={logoSign}
-      alt={`The ${site.name} logo as an illuminated 3D sign on a dark wall`}
-      formats={['avif', 'webp']}
-      widths={[360, 560, 760, 1134]}
-      sizes="(min-width: 1024px) 46vw, 100vw"
-      loading="eager"
-      fetchpriority="high"
-      class="w-full rounded-2xl shadow-2xl ring-1 shadow-black/40 ring-white/15"
-    />
+
+    <div
+      class="min-w-0"
+      data-carousel
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={total > 1 ? `${site.name} and recent work` : site.name}
+    >
+      <div
+        data-track
+        tabindex={total > 1 ? 0 : undefined}
+        class="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        <div class="w-full shrink-0 snap-center" role="group" aria-roledescription="slide" aria-label={`1 of ${total}`}>
+          <Picture
+            src={logoSign}
+            alt={`The ${site.name} logo as an illuminated 3D sign`}
+            formats={['avif', 'webp']}
+            widths={[360, 560, 760, 1094]}
+            sizes={sizes}
+            loading="eager"
+            fetchpriority="high"
+            class="aspect-[16/10] w-full object-contain"
+          />
+        </div>
+        {
+          slides.map((project, i) => {
+            const cover = project.data.images[0]!;
+            return (
+              <div class="w-full shrink-0 snap-center" role="group" aria-roledescription="slide" aria-label={`${i + 2} of ${total}`}>
+                <a href={`/portfolio/${project.id}/`} class="relative block overflow-hidden rounded-2xl">
+                  <Picture
+                    src={cover.src}
+                    alt={cover.alt}
+                    formats={['avif', 'webp']}
+                    widths={[360, 560, 760, 1134]}
+                    sizes={sizes}
+                    loading="lazy"
+                    class="aspect-[16/10] w-full object-cover"
+                  />
+                  <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-4 pt-10 pb-3 text-[0.95rem] font-semibold">
+                    {project.data.title} · {project.data.city}
+                  </span>
+                </a>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      {
+        total > 1 && (
+          <div class="mt-3 flex items-center justify-between gap-3" data-controls hidden>
+            <div class="hidden items-center gap-1 sm:flex">
+              {Array.from({ length: total }, (_, i) => (
+                <button type="button" data-dot={i} aria-label={`Show slide ${i + 1} of ${total}`} class="group flex size-8 items-center justify-center">
+                  <span class="block size-2.5 rounded-full bg-white/40 group-aria-[current=true]:w-6 group-aria-[current=true]:bg-brand" />
+                </button>
+              ))}
+            </div>
+            <p class="text-sm font-semibold text-white/85 sm:hidden" aria-hidden="true">
+              <span data-count>1</span> / {total}
+            </p>
+            <div class="flex items-center gap-2">
+              <button type="button" data-pause aria-pressed="false" class="min-h-11 rounded-full border border-white/40 px-4 text-sm font-semibold">
+                Pause
+              </button>
+              <button type="button" data-prev aria-label="Previous slide" class="flex size-11 items-center justify-center rounded-full border border-white/40 text-xl">
+                ‹
+              </button>
+              <button type="button" data-next aria-label="Next slide" class="flex size-11 items-center justify-center rounded-full border border-white/40 text-xl">
+                ›
+              </button>
+            </div>
+          </div>
+        )
+      }
+    </div>
   </div>
 </section>
+
+<script>
+  // Hero carousel. Without JavaScript the slides still swipe/scroll sideways.
+  const root = document.querySelector<HTMLElement>('[data-carousel]');
+  const track = root?.querySelector<HTMLElement>('[data-track]');
+  const controls = root?.querySelector<HTMLElement>('[data-controls]');
+  if (root && track && controls) {
+    const count = track.children.length;
+    const dots = [...controls.querySelectorAll<HTMLElement>('[data-dot]')];
+    const pauseButton = controls.querySelector<HTMLElement>('[data-pause]')!;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let index = 0;
+    let paused = reduced;
+    let hovering = false;
+    let visible = true;
+
+    const counter = controls.querySelector<HTMLElement>('[data-count]');
+    const mark = () => {
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
+      if (counter) counter.textContent = String(index + 1);
+    };
+    const go = (next: number) => {
+      index = (next + count) % count;
+      track.scrollTo({ left: index * track.clientWidth, behavior: reduced ? 'auto' : 'smooth' });
+      mark();
+    };
+
+    controls.hidden = false;
+    mark();
+    controls.querySelector('[data-prev]')!.addEventListener('click', () => go(index - 1));
+    controls.querySelector('[data-next]')!.addEventListener('click', () => go(index + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => go(i)));
+
+    // Keep the dots right when the visitor swipes.
+    track.addEventListener('scroll', () => {
+      const current = Math.round(track.scrollLeft / track.clientWidth);
+      if (current !== index) {
+        index = current;
+        mark();
+      }
+    });
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') go(index + 1);
+      if (event.key === 'ArrowLeft') go(index - 1);
+    });
+
+    // Slides advance on their own, but never while someone is using them.
+    const setPaused = (value: boolean) => {
+      paused = value;
+      pauseButton.setAttribute('aria-pressed', String(value));
+      pauseButton.textContent = value ? 'Play' : 'Pause';
+    };
+    setPaused(paused);
+    pauseButton.addEventListener('click', () => setPaused(!paused));
+    root.addEventListener('pointerenter', () => (hovering = true));
+    root.addEventListener('pointerleave', () => (hovering = false));
+    root.addEventListener('focusin', () => (hovering = true));
+    root.addEventListener('focusout', () => (hovering = false));
+    new IntersectionObserver(([entry]) => (visible = entry?.isIntersecting ?? true)).observe(root);
+    window.setInterval(() => {
+      if (!paused && !hovering && visible && !document.hidden) go(index + 1);
+    }, 5000);
+  }
+</script>
