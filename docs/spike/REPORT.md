@@ -51,7 +51,7 @@ phone string with number isolation. Raw numbers: `metrics.json`.
 
 ## Carried into Phase 2
 
-- `ShapedText` has no SVG export yet (`toSVG`); needed for "Download SVG".
+- Done in Phase 2: `ShapedText` now exports SVG (text as `<text>`, glows left out).
 - It is drawn uncached so glows are not clipped. Fine for a handful of text
   layers; revisit if the canvas feels slow on a mid-range phone.
 - Its box follows the ink, so the box height changes slightly as the text

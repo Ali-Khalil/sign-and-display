@@ -149,5 +149,5 @@ test('robots.txt, llms.txt and sitemap are served', async ({ request }) => {
   const sitemap = await (await request.get('/sitemap-0.xml')).text();
   expect(sitemap).toContain('/signage/3d-acrylic-letters/');
   expect(sitemap).not.toContain('/spike/');
-  expect(sitemap).not.toContain('/design-your-sign/');
+  expect(sitemap).toContain('/design-your-sign/');
 });

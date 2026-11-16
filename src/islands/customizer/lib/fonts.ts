@@ -1,38 +1,44 @@
-import { ARABIC_RANGE, LATIN_RANGE, signFonts, type SignFont } from '../../../config/fonts';
+import { ARABIC_RANGE, LATIN_RANGE, getFont, type SignFont } from '../../../config/fonts';
 
-const loaded = new Map<string, Promise<void>>();
+const registered = new Map<string, Promise<void>>();
+const ready = new Set<string>();
 
 /**
  * Lazy-loads a customizer font with the FontFace API and resolves once the
- * browser can render `sampleText` with it. Safe to call repeatedly.
+ * browser can render `sampleText` with it. Safe to call repeatedly; unknown
+ * families (system fallbacks) resolve at once.
  */
 export function loadSignFont(family: string, sampleText = 'Aa'): Promise<void> {
-  const font = signFonts.find((f) => f.family === family);
-  if (!font) return Promise.reject(new Error(`Unknown sign font: ${family}`));
+  const font = getFont(family);
+  if (!font) return Promise.resolve();
 
-  let registered = loaded.get(family);
-  if (!registered) {
-    registered = register(font);
-    loaded.set(family, registered);
+  let pending = registered.get(family);
+  if (!pending) {
+    pending = register(font);
+    registered.set(family, pending);
   }
   // fonts.load() with the actual text makes sure every needed subset is in.
-  return registered.then(() => document.fonts.load(`32px "${family}"`, sampleText)).then(() => {});
+  return pending
+    .then(() => document.fonts.load(`32px "${family}"`, sampleText || 'Aa'))
+    .then(() => {
+      ready.add(family);
+    });
+}
+
+export function isFontReady(family: string): boolean {
+  return ready.has(family) || !getFont(family);
 }
 
 async function register(font: SignFont): Promise<void> {
+  const url = (file: string) => `url(/fonts/${file}) format("woff2")`;
   const faces = font.latinFile
     ? [
-        new FontFace(font.family, `url(/fonts/${font.file}) format("woff2")`, {
-          unicodeRange: ARABIC_RANGE,
-          display: 'swap',
-        }),
-        new FontFace(font.family, `url(/fonts/${font.latinFile}) format("woff2")`, {
-          unicodeRange: LATIN_RANGE,
-          display: 'swap',
-        }),
+        new FontFace(font.family, url(font.file), { unicodeRange: ARABIC_RANGE, display: 'swap' }),
+        new FontFace(font.family, url(font.latinFile), { unicodeRange: LATIN_RANGE, display: 'swap' }),
       ]
-    : [new FontFace(font.family, `url(/fonts/${font.file}) format("woff2")`, { display: 'swap' })];
+    : [new FontFace(font.family, url(font.file), { display: 'swap' })];
 
   for (const face of faces) document.fonts.add(face);
-  await Promise.all(faces.map((face) => face.load()));
+  // Load the main file now; the Latin part of an Urdu font loads when text needs it.
+  await faces[0]!.load();
 }

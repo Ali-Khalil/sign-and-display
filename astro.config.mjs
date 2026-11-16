@@ -12,7 +12,7 @@ const siteUrl = site.url.includes('{{')
   : site.url;
 
 // Pages that must never be in the sitemap.
-const HIDDEN = ['/spike/', '/design-your-sign/', '/404'];
+const HIDDEN = ['/spike/', '/404'];
 if (!site.features.ledFrames) HIDDEN.push('/led-frames/');
 
 export default defineConfig({

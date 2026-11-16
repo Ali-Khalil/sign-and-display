@@ -1,26 +1,96 @@
 ---
-// Stand-in until the sign customizer is built in Phase 2. Not indexed and
-// not in the sitemap.
 import BaseLayout from '../layouts/BaseLayout.astro';
-import WhatsAppButton from '../components/ui/WhatsAppButton.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import FAQ from '../components/ui/FAQ.astro';
+import Customizer from '../islands/customizer/Customizer.tsx';
+import { site } from '../config/site';
+import { breadcrumbList, faqPage } from '../lib/schema';
 import { waMessageGeneral } from '../lib/whatsapp';
 
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Design Your Sign', href: '/design-your-sign/' },
+];
 const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+
+// Facts about the tool itself (not about the business).
+const faqs = [
+  {
+    q: 'Can I type my shop name in Urdu?',
+    a: 'Yes. Type Urdu in the text box with your Urdu keyboard. The designer switches to an Urdu font and keeps the letters joined correctly, including when Urdu is mixed with English or a phone number.',
+  },
+  {
+    q: 'Is my shopfront photo or logo uploaded anywhere?',
+    a: 'No. Photos and logos you add are used only inside your browser to draw the preview. They are shared only if you send the finished design on WhatsApp yourself.',
+  },
+  {
+    q: 'How do I send my design for a quote?',
+    a: 'Press Send on WhatsApp. A picture of your design is downloaded and WhatsApp opens with the sign type, text, size and colours filled in. Attach the downloaded picture and send.',
+  },
+  {
+    q: 'Is the preview exactly how the finished sign will look?',
+    a: 'It is a close guide to layout, colours and lighting style, not a photograph. The workshop sends a final design to approve before anything is made.',
+  },
+];
 ---
 
 <BaseLayout
-  title="Design Your Sign"
-  description="An online sign designer for trying your shop name in English or Urdu is being built. Until then, send your idea on WhatsApp."
-  noindex
+  title={`Design Your Sign Online: English & Urdu Sign Maker`}
+  description={`Free online sign designer: try your shop name in English or Urdu as a flat board, 3D letters, LED or neon sign, then send it on WhatsApp.`}
+  schema={[breadcrumbList(crumbs, Astro.site!), faqPage(faqs)]}
   {waMessage}
+  hideFab
 >
-  <section class="wrap section">
-    <p class="eyebrow text-muted">Coming soon</p>
-    <h1 class="mt-2 text-4xl font-extrabold">Design your sign</h1>
-    <p class="mt-4 max-w-xl leading-relaxed text-muted">
-      The online sign designer is being built. Until it is ready, send your shop name and idea on WhatsApp and you will
-      get a design to approve.
+  <div class="wrap pt-6 pb-4">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="mt-3 text-3xl leading-tight font-extrabold md:text-4xl">Design your sign</h1>
+    <p class="mt-2 max-w-2xl leading-relaxed text-muted">
+      Type your name in English or Urdu, choose a flat board, 3D letters, LED or neon, and see it on a wall by day or
+      night. When you are happy, send it to the workshop in {site.address.city} on WhatsApp for a quote.
     </p>
-    <WhatsAppButton message={waMessage} location="design-your-sign" class="mt-8" />
+  </div>
+
+  <div class="wrap pb-12">
+    <Customizer client:only="preact">
+      <div slot="fallback" class="grid gap-3">
+        <div class="min-h-11"></div>
+        <div class="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]">
+          <div class="flex aspect-[4/3] w-full items-center justify-center rounded-xl bg-ink-soft text-white">
+            Loading the sign designer…
+          </div>
+          <div class="min-h-80 rounded-xl border border-line"></div>
+        </div>
+      </div>
+    </Customizer>
+    <noscript><p class="mt-4 font-semibold">The sign designer needs JavaScript. You can still send your idea on WhatsApp.</p></noscript>
+  </div>
+
+  <section class="bg-paper-soft">
+    <div class="wrap section">
+      <h2 class="h2">How to use the sign designer</h2>
+      <ol class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          [
+            ['Pick a sign type', 'Flat board, 3D letters, LED or neon. Or start from a template.'],
+            ['Type your text', 'English, Urdu or both. Add more lines or your logo.'],
+            ['Set the real size', 'Enter the width and height in feet and inches to see the letter height.'],
+            ['Send it on WhatsApp', 'The design picture and details go to the workshop for a quote.'],
+          ].map(([title, text], i) => (
+            <li class="rounded-xl border border-line bg-white p-5">
+              <span class="flex size-9 items-center justify-center rounded-full bg-brand font-display font-extrabold text-brand-ink">{i + 1}</span>
+              <h3 class="mt-4 text-lg leading-snug font-bold">{title}</h3>
+              <p class="mt-2 text-[0.95rem] leading-relaxed text-muted">{text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <h2 class="h2">Questions about the sign designer</h2>
+    <div class="mt-6">
+      <FAQ items={faqs} />
+    </div>
   </section>
 </BaseLayout>
