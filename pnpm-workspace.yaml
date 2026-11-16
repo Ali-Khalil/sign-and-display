@@ -8,3 +8,7 @@ minimumReleaseAge: 1440
 # previous release is pinned until the new one has aged. Safe to remove later.
 overrides:
   '@tybys/wasm-util': 0.10.4
+  # Fabric lists the native "canvas" package as optional, for use in Node.
+  # The designer runs only in the browser, so it is left out entirely. That
+  # also avoids its install script, which newer pnpm versions refuse to run.
+  canvas: '-'
