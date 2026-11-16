@@ -1,0 +1,72 @@
+---
+import Icon from './Icon.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+import { NAV } from '../../config/nav';
+import { site } from '../../config/site';
+
+interface Props {
+  waMessage: string;
+}
+const { waMessage } = Astro.props;
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path.startsWith(href);
+---
+
+<header class="relative z-30 bg-ink text-white">
+  <div class="wrap flex min-h-16 items-center justify-between gap-4">
+    <a href="/" class="font-display text-lg font-extrabold tracking-tight">{site.name}</a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="flex items-center gap-6 text-[0.95rem]">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                class="py-2 text-white/85 hover:text-white aria-[current=page]:text-brand"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden sm:block">
+        <WhatsAppButton message={waMessage} location="header" label="WhatsApp" size="md" />
+      </div>
+      <details class="group lg:hidden">
+        <summary
+          class="flex size-11 list-none items-center justify-center rounded-full border border-white/25 [&::-webkit-details-marker]:hidden"
+          aria-label="Menu"
+        >
+          <Icon name="menu" class="size-6" />
+        </summary>
+        <nav aria-label="Mobile" class="absolute inset-x-0 top-full border-t border-ink-line bg-ink pb-4 shadow-xl">
+          <ul class="wrap">
+            {
+              NAV.map((item) => (
+                <li class="border-b border-ink-line">
+                  <a
+                    href={item.href}
+                    aria-current={isCurrent(item.href) ? 'page' : undefined}
+                    class="flex min-h-12 items-center text-base aria-[current=page]:text-brand"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="wrap mt-4">
+            <WhatsAppButton message={waMessage} location="mobile-menu" class="w-full" />
+          </div>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

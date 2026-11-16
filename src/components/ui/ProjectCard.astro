@@ -1,0 +1,38 @@
+---
+import { Picture } from 'astro:assets';
+import type { Project } from '../../lib/content';
+
+interface Props {
+  project: Project;
+  headingLevel?: 'h2' | 'h3';
+  dark?: boolean;
+}
+const { project, headingLevel: H = 'h3', dark = false } = Astro.props;
+const cover = project.data.images[0]!;
+---
+
+<article
+  data-project
+  data-types={project.data.types.join(' ')}
+  class:list={['group relative overflow-hidden rounded-xl', dark ? 'bg-ink-soft text-white' : 'border border-line bg-white']}
+>
+  <Picture
+    src={cover.src}
+    alt={cover.alt}
+    formats={['avif', 'webp']}
+    widths={[360, 540, 720]}
+    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+    loading="lazy"
+    class="aspect-[4/3] w-full object-cover"
+  />
+  <div class="p-4">
+    <H class="leading-snug font-bold">
+      <a href={`/portfolio/${project.id}/`} class="after:absolute after:inset-0 group-hover:underline">
+        {project.data.title}
+      </a>
+    </H>
+    <p class:list={['mt-1 text-sm', dark ? 'text-muted-dark' : 'text-muted']}>
+      {project.data.city}{project.data.lighting && project.data.lighting !== 'None' ? ` · ${project.data.lighting}` : ''}
+    </p>
+  </div>
+</article>

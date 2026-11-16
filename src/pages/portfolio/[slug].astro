@@ -1,0 +1,141 @@
+---
+import { getImage, Picture } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import WhatsAppButton from '../../components/ui/WhatsAppButton.astro';
+import { formatDate, getProjects, getTypes, type Project } from '../../lib/content';
+import { breadcrumbList, creativeWork } from '../../lib/schema';
+import { waMessageForProject } from '../../lib/whatsapp';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { slug: project.id }, props: { project } }));
+}
+
+interface Props {
+  project: Project;
+}
+const { project } = Astro.props;
+const d = project.data;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const waMessage = waMessageForProject(d.title, pageUrl);
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Portfolio', href: '/portfolio/' },
+  { name: d.title, href: `/portfolio/${project.id}/` },
+];
+const types = (await getTypes()).filter((t) => d.types.includes(t.id));
+// Large versions for the lightbox and for structured data.
+const large = await Promise.all(d.images.map((img) => getImage({ src: img.src, width: 1600, format: 'webp' })));
+
+const facts = [
+  { label: 'City', value: d.city },
+  { label: 'Client', value: d.client },
+  { label: 'Size', value: d.size },
+  { label: 'Materials', value: d.materials.join(', ') },
+  { label: 'Lighting', value: d.lighting },
+  { label: 'Completed', value: formatDate(d.date).replace(/^\d+ /, '') },
+].filter((f) => f.value);
+---
+
+<BaseLayout
+  title={d.title.length > 60 ? d.title.slice(0, 57) + '…' : d.title}
+  description={d.summary.length > 155 ? d.summary.slice(0, 152) + '…' : d.summary}
+  schema={[creativeWork(project, pageUrl, large.map((i) => i.src), Astro.site!), breadcrumbList(crumbs, Astro.site!)]}
+  {waMessage}
+  waType={d.types[0]}
+>
+  <div class="wrap py-8 md:py-12">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="mt-4 max-w-3xl text-3xl leading-tight font-extrabold md:text-4xl">{d.title}</h1>
+
+    <div class="mt-8 grid gap-10 lg:grid-cols-[1.7fr_1fr]">
+      <ul class="grid gap-4" data-gallery>
+        {
+          d.images.map((img, i) => (
+            <li>
+              <a href={large[i]!.src} data-lightbox aria-label={`Open larger image: ${img.alt}`} class="block">
+                <Picture
+                  src={img.src}
+                  alt={img.alt}
+                  formats={['avif', 'webp']}
+                  widths={[480, 768, 1080, 1440]}
+                  sizes="(min-width: 1024px) 60vw, 100vw"
+                  loading={i === 0 ? 'eager' : 'lazy'}
+                  fetchpriority={i === 0 ? 'high' : undefined}
+                  class="w-full rounded-xl"
+                />
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <aside>
+        <p class="text-lg leading-relaxed">{d.summary}</p>
+        <dl class="mt-6 divide-y divide-line border-y border-line">
+          {
+            facts.map((fact) => (
+              <div class="flex justify-between gap-4 py-3">
+                <dt class="text-muted">{fact.label}</dt>
+                <dd class="text-end font-semibold">{fact.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        {
+          types.length > 0 && (
+            <p class="mt-6 text-[0.95rem]">
+              Sign type:{' '}
+              {types.map((t, i) => (
+                <>
+                  {i > 0 && ', '}
+                  <a href={`/signage/${t.id}/`} class="font-semibold underline underline-offset-2">
+                    {t.data.title}
+                  </a>
+                </>
+              ))}
+            </p>
+          )
+        }
+        <div class="mt-8 rounded-xl bg-paper-soft p-5">
+          <h2 class="text-xl font-extrabold">Want something similar?</h2>
+          <p class="mt-2 text-[0.95rem] text-muted">Send a message that mentions this project and get a quote.</p>
+          <WhatsAppButton message={waMessage} location="project" type={d.types[0]} label="Ask on WhatsApp" class="mt-4 w-full" />
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <dialog id="lightbox" class="m-auto max-h-[95vh] max-w-[95vw] bg-transparent p-0 backdrop:bg-black/90" aria-label="Enlarged image">
+    <form method="dialog">
+      <button class="absolute end-2 top-2 flex size-11 items-center justify-center rounded-full bg-black/70 text-2xl text-white" aria-label="Close">
+        ×
+      </button>
+    </form>
+    <img alt="" class="max-h-[95vh] max-w-[95vw] rounded-lg" />
+  </dialog>
+
+  <CTABand heading="Want something similar?" message={waMessage} type={d.types[0]} />
+</BaseLayout>
+
+<script>
+  // Lightweight lightbox on a native <dialog>. Without JS the links open the image.
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement | null;
+  const target = dialog?.querySelector('img');
+  if (dialog && target && typeof dialog.showModal === 'function') {
+    document.querySelectorAll<HTMLAnchorElement>('a[data-lightbox]').forEach((link) => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        target.src = link.href;
+        target.alt = link.querySelector('img')?.alt ?? '';
+        dialog.showModal();
+      });
+    });
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+  }
+</script>

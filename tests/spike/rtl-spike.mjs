@@ -1,28 +1,19 @@
 // Runs the Urdu/RTL spike page in Chromium and saves screenshots + metrics
 // to docs/spike/. Usage: pnpm build && pnpm spike:rtl
-import { spawn } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { chromium } from 'playwright';
+import { startPreview } from '../../scripts/lib/preview.mjs';
 
-const PORT = 4399;
 const OUT = 'docs/spike';
 mkdirSync(OUT, { recursive: true });
 
-const server = spawn('pnpm', ['exec', 'astro', 'preview', '--port', String(PORT)], { stdio: 'ignore' });
+const server = await startPreview(4399);
 try {
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ executablePath: process.env.PLAYWRIGHT_CHROMIUM_PATH || undefined });
   const page = await browser.newPage({ viewport: { width: 2080, height: 1200 }, deviceScaleFactor: 1 });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
-  for (let i = 0; ; i++) {
-    try {
-      await page.goto(`http://localhost:${PORT}/spike/rtl/`);
-      break;
-    } catch (e) {
-      if (i > 40) throw e;
-      await new Promise((r) => setTimeout(r, 250));
-    }
-  }
+  await page.goto(`${server.url}/spike/rtl/`);
   await page.waitForFunction(() => window.__spike?.done, null, { timeout: 60_000 });
   const spike = await page.evaluate(() => window.__spike);
   if (spike.error) throw new Error(spike.error);
@@ -35,9 +26,9 @@ try {
   }
   await page.locator('#handles-wrap').screenshot({ path: `${OUT}/selection-handles.png` });
   writeFileSync(`${OUT}/metrics.json`, JSON.stringify(spike.results, null, 2) + '\n');
-  console.log(JSON.stringify(spike.results, null, 1));
+  console.log(`Saved screenshots and metrics for ${spike.results.length} fonts to ${OUT}/`);
   if (errors.length) console.error('Page errors:', errors);
   await browser.close();
 } finally {
-  server.kill();
+  server.stop();
 }

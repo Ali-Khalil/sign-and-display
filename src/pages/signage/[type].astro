@@ -1,0 +1,220 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import LightingExplainer from '../../components/sections/LightingExplainer.astro';
+import HowItWorks from '../../components/sections/HowItWorks.astro';
+import ProjectGrid from '../../components/sections/ProjectGrid.astro';
+import TypesGrid from '../../components/sections/TypesGrid.astro';
+import Button from '../../components/ui/Button.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import FAQ from '../../components/ui/FAQ.astro';
+import Icon from '../../components/ui/Icon.astro';
+import WhatsAppButton from '../../components/ui/WhatsAppButton.astro';
+import { getRate } from '../../config/pricing';
+import { site } from '../../config/site';
+import { formatDate, getProjects, getTypes, type SignageType } from '../../lib/content';
+import { breadcrumbList, faqPage, service } from '../../lib/schema';
+import { waMessageForType } from '../../lib/whatsapp';
+
+export async function getStaticPaths() {
+  const types = await getTypes();
+  return types.map((type) => ({ params: { type: type.id }, props: { type } }));
+}
+
+interface Props {
+  type: SignageType;
+}
+const { type } = Astro.props;
+const d = type.data;
+const city = site.address.city;
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const waMessage = waMessageForType(d.title, pageUrl);
+const designHref = d.customizerMode ? `/design-your-sign/?mode=${d.customizerMode}` : '/design-your-sign/';
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Signage', href: '/signage/' },
+  { name: d.title, href: `/signage/${type.id}/` },
+];
+
+const allTypes = await getTypes();
+const related = d.related.map((slug) => allTypes.find((t) => t.id === slug)).filter((t) => t !== undefined);
+const projects = (await getProjects()).filter((p) => p.data.types.includes(type.id)).slice(0, 6);
+const startingFrom = getRate(d.priceKey)?.startingFrom ?? null;
+const hasSizes = d.typicalSizes.length > 0 || startingFrom !== null;
+---
+
+<BaseLayout
+  title={d.seo.title ?? `${d.title} in ${city}`}
+  description={d.seo.description ?? d.shortDescription}
+  schema={[service(type, pageUrl, Astro.site!), breadcrumbList(crumbs, Astro.site!), faqPage(d.faqs)]}
+  {waMessage}
+  waType={type.id}
+>
+  <section class="bg-ink text-white">
+    <div class="wrap grid items-center gap-8 py-10 md:grid-cols-2 md:py-14">
+      <div>
+        <Breadcrumbs items={crumbs} dark />
+        <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">{d.title} in {city}</h1>
+        <p class="mt-4 text-lg leading-relaxed text-white/85">{d.summary}</p>
+        <div class="mt-6 flex flex-wrap gap-3">
+          <WhatsAppButton message={waMessage} location="type-hero" type={type.id} />
+          <Button href={designHref} variant="outline-dark" size="lg">
+            <Icon name="pencil" class="size-5" /> Design this sign
+          </Button>
+        </div>
+        <p class="mt-5 text-sm text-muted-dark">Last updated <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated)}</time></p>
+      </div>
+      <Picture
+        src={d.heroImage}
+        alt={d.heroAlt}
+        formats={['avif', 'webp']}
+        widths={[400, 640, 960, 1280]}
+        sizes="(min-width: 768px) 50vw, 100vw"
+        loading="eager"
+        fetchpriority="high"
+        class="aspect-[16/10] w-full rounded-xl object-cover"
+      />
+    </div>
+  </section>
+
+  <div class="wrap section grid gap-12 lg:grid-cols-[1fr_1.4fr]">
+    {
+      d.bestFor.length > 0 && (
+        <section>
+          <h2 class="h2">What is it best for?</h2>
+          <ul class="mt-5 space-y-3">
+            {d.bestFor.map((item) => (
+              <li class="flex gap-3">
+                <Icon name="check" class="mt-0.5 size-5 shrink-0" />
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )
+    }
+    {
+      (d.materials.length > 0 || d.options.length > 0) && (
+        <section>
+          <h2 class="h2">Materials & options</h2>
+          <div class="table-scroll mt-5 rounded-xl border border-line">
+            <table class="table">
+              <tbody>
+                {d.materials.length > 0 && (
+                  <tr>
+                    <th scope="row" class="w-2/5 font-semibold">Materials</th>
+                    <td>{d.materials.join(', ')}</td>
+                  </tr>
+                )}
+                {d.options.map((row) => (
+                  <tr>
+                    <th scope="row" class="w-2/5 font-semibold">{row.label}</th>
+                    <td>{row.value}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )
+    }
+  </div>
+
+  {
+    d.lightingOptions.length > 0 && (
+      <section class="bg-ink text-white">
+        <div class="wrap section">
+          <h2 class="h2">Lighting options</h2>
+          <div class="mt-6">
+            <LightingExplainer only={d.lightingOptions} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    hasSizes && (
+      <section class="wrap section">
+        <h2 class="h2">Sizes{startingFrom !== null && ' & price'}</h2>
+        {d.typicalSizes.length > 0 && (
+          <ul class="mt-5 list-disc space-y-1 ps-5">
+            {d.typicalSizes.map((size) => <li>{size}</li>)}
+          </ul>
+        )}
+        {startingFrom !== null && (
+          <p class="mt-5 text-lg">
+            <strong>Starting from Rs {startingFrom.toLocaleString('en-PK')}</strong>
+            <span class="text-muted"> · Final price is confirmed on WhatsApp.</span>
+          </p>
+        )}
+      </section>
+    )
+  }
+
+  <section class="bg-paper-soft">
+    <div class="wrap section">
+      <h2 class="h2">How does ordering work?</h2>
+      <dl class="mt-5 flex flex-wrap gap-x-10 gap-y-3">
+        {
+          d.turnaround && (
+            <div>
+              <dt class="text-sm text-muted">Turnaround</dt>
+              <dd class="font-semibold">{d.turnaround}</dd>
+            </div>
+          )
+        }
+        {
+          d.installationIncluded !== undefined && (
+            <div>
+              <dt class="text-sm text-muted">Installation</dt>
+              <dd class="font-semibold">{d.installationIncluded ? 'Available' : 'Supplied ready to fix'}</dd>
+            </div>
+          )
+        }
+      </dl>
+      <div class="mt-8">
+        <HowItWorks />
+      </div>
+    </div>
+  </section>
+
+  {
+    projects.length > 0 && (
+      <section class="wrap section">
+        <h2 class="h2">{d.title}: recent work</h2>
+        <div class="mt-8">
+          <ProjectGrid {projects} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    d.faqs.length > 0 && (
+      <section class="wrap section border-t border-line">
+        <h2 class="h2">Questions about {d.title}</h2>
+        <div class="mt-6">
+          <FAQ items={d.faqs} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <section class="bg-paper-soft">
+        <div class="wrap section">
+          <h2 class="h2">Related signage types</h2>
+          <div class="mt-8">
+            <TypesGrid types={related} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTABand heading={`Get a quote for ${d.title}`} message={waMessage} type={type.id} {designHref} />
+</BaseLayout>

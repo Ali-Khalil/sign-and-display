@@ -1,22 +1,165 @@
 @import 'tailwindcss';
 
 /*
- * Brand tokens. {{BRAND}} colours are placeholders until the owner supplies
- * the real palette and logo: change them here and the whole site follows.
+ * Brand tokens. {{BRAND}} colours and fonts are placeholders until the owner
+ * supplies the real palette and logo: change them here and the whole site
+ * follows.
  */
-@theme {
-  --color-brand: #f5b301; /* {{BRAND}} primary accent */
-  --color-brand-ink: #1a1400; /* text on brand */
-  --color-ink: #0e1014; /* dark sections, lit-sign photography */
+@theme inline {
+  --color-brand: #f5b301; /* {{BRAND}} accent, used on dark or as a fill */
+  --color-brand-ink: #171200; /* text on brand */
+  --color-ink: #0e1014; /* dark sections, suits lit-sign photography */
   --color-ink-soft: #1a1d24;
+  --color-ink-line: #2b2f39;
   --color-paper: #ffffff;
-  --color-muted: #9aa1ad;
+  --color-paper-soft: #f4f5f7;
+  --color-line: #dfe2e7;
+  --color-muted: #565d6b; /* secondary text on light */
+  --color-muted-dark: #a9b0bc; /* secondary text on dark */
   --color-whatsapp: #25d366;
+  --color-whatsapp-ink: #062b14;
 
-  --font-display: ui-sans-serif, system-ui, sans-serif; /* {{BRAND}} display font */
-  --font-body: ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-urdu: 'Noto Nastaliq Urdu', serif;
 }
 
-html {
-  font-family: var(--font-body);
+/* Urdu touches. The file is only downloaded when Urdu text is on the page. */
+@font-face {
+  font-family: 'Noto Nastaliq Urdu';
+  src: url('/fonts/noto-nastaliq-urdu-arabic-400-normal.woff2') format('woff2');
+  font-display: swap;
+  unicode-range: U+0600-06FF, U+0750-077F, U+FB50-FDFF, U+FE70-FEFC;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-body);
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-brand);
+    outline-offset: 2px;
+  }
+  [lang='ur'] {
+    font-family: var(--font-urdu);
+    line-height: 2.2;
+  }
+  summary {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .wrap {
+    margin-inline: auto;
+    width: 100%;
+    max-width: 72rem;
+    padding-inline: 1rem;
+  }
+  @media (min-width: 640px) {
+    .wrap {
+      padding-inline: 1.5rem;
+    }
+  }
+  .section {
+    padding-block: 3.5rem;
+  }
+  @media (min-width: 768px) {
+    .section {
+      padding-block: 5rem;
+    }
+  }
+  .h2 {
+    font-size: 1.75rem;
+    line-height: 1.15;
+    font-weight: 800;
+  }
+  @media (min-width: 768px) {
+    .h2 {
+      font-size: 2.25rem;
+    }
+  }
+  .eyebrow {
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  /* Long-form text: guides, about, tables. */
+  .prose {
+    max-width: 44rem;
+    line-height: 1.7;
+  }
+  .prose > * + * {
+    margin-block-start: 1.1em;
+  }
+  .prose h2 {
+    font-size: 1.5rem;
+    line-height: 1.2;
+    font-weight: 800;
+    margin-block-start: 2em;
+  }
+  .prose h3 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-block-start: 1.6em;
+  }
+  .prose ul {
+    list-style: disc;
+    padding-inline-start: 1.25rem;
+  }
+  .prose ol {
+    list-style: decimal;
+    padding-inline-start: 1.25rem;
+  }
+  .prose a {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .prose table,
+  .table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .prose th,
+  .prose td,
+  .table th,
+  .table td {
+    border-block-end: 1px solid var(--color-line);
+    padding: 0.7rem 0.75rem;
+    text-align: start;
+    vertical-align: top;
+  }
+  .prose thead th,
+  .table thead th {
+    font-weight: 700;
+    background: var(--color-paper-soft);
+  }
+  .table-scroll {
+    overflow-x: auto;
+  }
+  /* Markdown tables scroll sideways on narrow screens instead of the page. */
+  .prose table {
+    display: block;
+    overflow-x: auto;
+  }
 }

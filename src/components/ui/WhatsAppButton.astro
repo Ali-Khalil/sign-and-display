@@ -1,0 +1,36 @@
+---
+/**
+ * WhatsApp call to action. `location` and `type` feed the `whatsapp_click`
+ * analytics event (see the click handler in BaseLayout).
+ */
+import Icon from './Icon.astro';
+import { waLink } from '../../lib/whatsapp';
+
+interface Props {
+  message: string;
+  location: string;
+  type?: string;
+  label?: string;
+  size?: 'md' | 'lg';
+  class?: string;
+}
+
+const { message, location, type = '', label = 'Get a Quote on WhatsApp', size = 'lg', class: className } = Astro.props;
+const sizes = { md: 'px-5 py-2.5 text-[0.95rem]', lg: 'px-6 py-3 text-base' };
+---
+
+<a
+  href={waLink(message)}
+  target="_blank"
+  rel="noopener"
+  data-wa-location={location}
+  data-wa-type={type}
+  class:list={[
+    'inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-whatsapp font-semibold text-whatsapp-ink transition-colors hover:bg-[#3ee27c]',
+    sizes[size],
+    className,
+  ]}
+>
+  <Icon name="whatsapp" class="size-5 shrink-0" />
+  <span>{label}</span>
+</a>

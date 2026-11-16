@@ -1,0 +1,30 @@
+---
+import { Picture } from 'astro:assets';
+import type { SignageType } from '../../lib/content';
+
+interface Props {
+  type: SignageType;
+  headingLevel?: 'h2' | 'h3';
+}
+const { type, headingLevel: H = 'h3' } = Astro.props;
+---
+
+<article class="group relative flex flex-col overflow-hidden rounded-xl border border-line bg-white">
+  <Picture
+    src={type.data.heroImage}
+    alt={type.data.heroAlt}
+    formats={['avif', 'webp']}
+    widths={[360, 540, 720]}
+    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+    loading="lazy"
+    class="aspect-[16/10] w-full object-cover"
+  />
+  <div class="flex flex-1 flex-col gap-2 p-4">
+    <H class="text-lg leading-snug font-bold">
+      <a href={`/signage/${type.id}/`} class="after:absolute after:inset-0 group-hover:underline">
+        {type.data.title}
+      </a>
+    </H>
+    <p class="text-[0.95rem] leading-relaxed text-muted">{type.data.shortDescription}</p>
+  </div>
+</article>

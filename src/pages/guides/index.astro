@@ -1,0 +1,56 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import { formatDate, getGuides } from '../../lib/content';
+import { breadcrumbList } from '../../lib/schema';
+import { waMessageGeneral } from '../../lib/whatsapp';
+
+const guides = await getGuides();
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+];
+const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+---
+
+<BaseLayout
+  title="Signboard Buying Guides: Materials, Lighting & Cost"
+  description="Plain-language guides to choosing a signboard: materials, lighting styles, sizes and what affects the price in Pakistan."
+  schema={[breadcrumbList(crumbs, Astro.site!)]}
+  {waMessage}
+>
+  <section class="bg-ink text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Signboard buying guides</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        Short, practical guides to help you choose the right material, lighting and size before you order.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    {
+      guides.length === 0 ? (
+        <p class="max-w-xl text-muted">Guides are being written. Until then, ask any question on WhatsApp.</p>
+      ) : (
+        <ul class="grid gap-5 md:grid-cols-2">
+          {guides.map((guide) => (
+            <li class="relative rounded-xl border border-line p-5">
+              <h2 class="text-xl leading-snug font-bold">
+                <a href={`/guides/${guide.id}/`} class="after:absolute after:inset-0 hover:underline">
+                  {guide.data.title}
+                </a>
+              </h2>
+              <p class="mt-2 leading-relaxed text-muted">{guide.data.description}</p>
+              <p class="mt-3 text-sm text-muted">Updated {formatDate(guide.data.updated)}</p>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </section>
+
+  <CTABand message={waMessage} />
+</BaseLayout>

@@ -1,0 +1,27 @@
+---
+interface Props {
+  dark?: boolean;
+}
+const { dark = false } = Astro.props;
+
+const STEPS = [
+  { title: 'Share your idea on WhatsApp', text: 'Send the name or logo, the approximate size and your city.' },
+  { title: 'Design & quote', text: 'You receive a design and a price to approve before any work starts.' },
+  { title: 'Fabrication', text: 'Your sign is made to the approved design.' },
+  { title: 'Installation', text: 'The finished sign is fitted, or handed over ready to fix.' },
+];
+---
+
+<ol class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+  {
+    STEPS.map((step, i) => (
+      <li class:list={['rounded-xl p-5', dark ? 'bg-ink-soft' : 'border border-line bg-white']}>
+        <span class="flex size-9 items-center justify-center rounded-full bg-brand font-display font-extrabold text-brand-ink">
+          {i + 1}
+        </span>
+        <h3 class="mt-4 text-lg leading-snug font-bold">{step.title}</h3>
+        <p class:list={['mt-2 text-[0.95rem] leading-relaxed', dark ? 'text-muted-dark' : 'text-muted']}>{step.text}</p>
+      </li>
+    ))
+  }
+</ol>

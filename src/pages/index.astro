@@ -1,18 +1,147 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import TypesGrid from '../components/sections/TypesGrid.astro';
+import LightingExplainer from '../components/sections/LightingExplainer.astro';
+import ProjectGrid from '../components/sections/ProjectGrid.astro';
+import CustomizerTeaser from '../components/sections/CustomizerTeaser.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import FAQ from '../components/ui/FAQ.astro';
+import CTABand from '../components/ui/CTABand.astro';
+import Icon from '../components/ui/Icon.astro';
 import { site } from '../config/site';
+import { getFaqs, getProjects, getTypes } from '../lib/content';
+import { faqPage } from '../lib/schema';
+import { waMessageGeneral } from '../lib/whatsapp';
+
+const types = await getTypes();
+const projects = await getProjects();
+const featured = projects.filter((p) => p.data.featured).slice(0, 9);
+const faqs = (await getFaqs()).filter((f) => f.data.home).slice(0, 6).map((f) => f.data);
+const waMessage = waMessageGeneral(new URL('/', Astro.site).href);
+const city = site.address.city;
 ---
 
-<!-- Phase 0 holding page. Replaced by the real home page in Phase 1. -->
-<BaseLayout title="Signboards in Jhang — site under construction" noindex>
-  <section class="mx-auto flex min-h-screen max-w-2xl flex-col justify-center gap-4 px-4 py-16">
-    <p class="text-sm tracking-widest text-brand uppercase">Phase 0 preview</p>
-    <h1 class="font-display text-4xl font-bold">Signboards in {site.address.city}</h1>
-    <p class="text-muted">
-      The project scaffold is running. The content site is built in Phase 1.
-    </p>
-    <p>
-      <a class="text-brand underline" href="/spike/rtl/">Urdu / RTL rendering spike →</a>
-    </p>
+<BaseLayout
+  title={`Signboards, LED & Neon Signs in ${city}`}
+  description={`Signboard workshop in ${city}, Punjab: 3D acrylic letters, LED and neon signs, ACP boards and nameplates. Get a quote on WhatsApp.`}
+  schema={[faqPage(faqs)]}
+>
+  <Hero project={featured[0]} {waMessage} />
+
+  {
+    types.length > 0 && (
+      <section class="wrap section">
+        <p class="eyebrow text-muted">What we make</p>
+        <h2 class="h2 mt-2">Signage options</h2>
+        <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+          Every type of sign the workshop makes. Open one for materials, lighting choices and common questions.
+        </p>
+        <div class="mt-8">
+          <TypesGrid {types} />
+        </div>
+        <p class="mt-6">
+          <a href="/signage/" class="inline-flex min-h-11 items-center gap-2 font-semibold underline underline-offset-4">
+            Compare all signage types <Icon name="arrow" class="size-4 rtl:rotate-180" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  <section class="bg-ink text-white">
+    <div class="wrap section">
+      <p class="eyebrow text-brand">Lighting</p>
+      <h2 class="h2 mt-2">Non-lit, front-lit, backlit, halo-lit or neon?</h2>
+      <p class="mt-3 max-w-2xl leading-relaxed text-muted-dark">
+        The same letters look very different depending on where the light comes from.
+      </p>
+      <div class="mt-8">
+        <LightingExplainer />
+      </div>
+    </div>
   </section>
+
+  {
+    featured.length > 0 && (
+      <section class="wrap section">
+        <p class="eyebrow text-muted">Portfolio</p>
+        <h2 class="h2 mt-2">Recent work</h2>
+        <div class="mt-8">
+          <ProjectGrid projects={featured} />
+        </div>
+        <p class="mt-6">
+          <a href="/portfolio/" class="inline-flex min-h-11 items-center gap-2 font-semibold underline underline-offset-4">
+            See the full portfolio <Icon name="arrow" class="size-4 rtl:rotate-180" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  <CustomizerTeaser />
+
+  <section class="wrap section">
+    <p class="eyebrow text-muted">Process</p>
+    <h2 class="h2 mt-2">How it works</h2>
+    <div class="mt-8">
+      <HowItWorks />
+    </div>
+  </section>
+
+  {
+    site.whyUs.length > 0 && (
+      <section class="bg-paper-soft">
+        <div class="wrap section">
+          <h2 class="h2">Why choose us</h2>
+          <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {site.whyUs.map((point) => (
+              <li class="rounded-xl border border-line bg-white p-5">
+                <Icon name="check" class="size-6 text-ink" />
+                <h3 class="mt-3 text-lg font-bold">{point.title}</h3>
+                <p class="mt-2 text-[0.95rem] leading-relaxed text-muted">{point.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="border-y border-line">
+    <div class="wrap section">
+      <h2 class="h2">Service areas</h2>
+      <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+        The workshop is in {city}, {site.address.region}, and takes orders from these cities:
+      </p>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {
+          site.serviceAreas.map((area) => (
+            <li class="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 font-medium">
+              <Icon name="pin" class="size-4 text-muted" />
+              {area}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {
+    faqs.length > 0 && (
+      <section class="wrap section">
+        <h2 class="h2">Common questions</h2>
+        <div class="mt-6">
+          <FAQ items={faqs} />
+        </div>
+        <p class="mt-6">
+          <a href="/faq/" class="inline-flex min-h-11 items-center gap-2 font-semibold underline underline-offset-4">
+            All questions and answers <Icon name="arrow" class="size-4 rtl:rotate-180" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  <CTABand message={waMessage} />
 </BaseLayout>

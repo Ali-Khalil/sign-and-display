@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import TypesGrid from '../../components/sections/TypesGrid.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import WhatsAppButton from '../../components/ui/WhatsAppButton.astro';
+import { site } from '../../config/site';
+import { getTypes, LIGHTING_LABELS } from '../../lib/content';
+import { breadcrumbList } from '../../lib/schema';
+import { waMessageGeneral } from '../../lib/whatsapp';
+
+const types = await getTypes();
+const city = site.address.city;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Signage', href: '/signage/' },
+];
+const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+const ENV = { indoor: 'Indoor', outdoor: 'Outdoor', both: 'Indoor & outdoor' };
+const COST = ['', 'Lower', 'Medium', 'Higher'];
+const showCost = types.some((t) => t.data.relativeCost);
+---
+
+<BaseLayout
+  title={`Signboard Types in ${city}: 3D, LED, Neon & More`}
+  description={`Compare the signboards made in ${city}: 3D acrylic letters, LED and neon signs, ACP boards, light boxes and nameplates.`}
+  schema={[breadcrumbList(crumbs, Astro.site!)]}
+  {waMessage}
+>
+  <section class="bg-ink text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 max-w-3xl text-3xl leading-tight font-extrabold md:text-5xl">Signboard types made in {city}</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        The workshop makes 2D and 3D signboards, LED-lit letters, neon signs and nameplates. Choose a type below to see
+        what it is, where it works best and the questions customers ask most, or compare them all in the table.
+      </p>
+      <WhatsAppButton message={waMessage} location="signage-index" class="mt-6" />
+    </div>
+  </section>
+
+  {
+    types.length === 0 ? (
+      <section class="wrap section">
+        <p class="max-w-xl text-muted">Signage types are being added. Message us on WhatsApp to ask about any sign.</p>
+      </section>
+    ) : (
+      <>
+        <section class="wrap section">
+          <h2 class="h2">All signage types</h2>
+          <div class="mt-8">
+            <TypesGrid {types} headingLevel="h3" />
+          </div>
+        </section>
+
+        <section class="bg-paper-soft">
+          <div class="wrap section">
+            <h2 class="h2">Which type of sign should I choose?</h2>
+            <p class="mt-3 max-w-2xl leading-relaxed text-muted">A side-by-side comparison of every type.</p>
+            <div class="table-scroll mt-6 rounded-xl border border-line bg-white">
+              <table class="table min-w-[44rem]">
+                <thead>
+                  <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Best for</th>
+                    <th scope="col">Lighting</th>
+                    <th scope="col">Indoor / outdoor</th>
+                    {showCost && <th scope="col">Relative cost</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {types.map((t) => (
+                    <tr>
+                      <th scope="row" class="font-semibold">
+                        <a href={`/signage/${t.id}/`} class="underline underline-offset-2">
+                          {t.data.title}
+                        </a>
+                      </th>
+                      <td>{t.data.bestFor.join(', ')}</td>
+                      <td>{t.data.lightingOptions.map((l) => LIGHTING_LABELS[l]).join(', ')}</td>
+                      <td>{ENV[t.data.environment]}</td>
+                      {showCost && <td>{COST[t.data.relativeCost ?? 0]}</td>}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </>
+    )
+  }
+
+  <CTABand message={waMessage} />
+</BaseLayout>

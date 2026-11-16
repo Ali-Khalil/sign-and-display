@@ -1,0 +1,68 @@
+---
+/** Small drawings of each lighting style: the same letter, lit five ways. */
+interface Props {
+  kind: 'none' | 'front-lit' | 'backlit' | 'halo-lit' | 'neon';
+  class?: string;
+}
+const { kind, class: className = 'w-full' } = Astro.props;
+const id = `li-${kind}-${Math.random().toString(36).slice(2, 7)}`;
+const A = 'M38 78 62 14h16l24 64H88l-5-14H57l-5 14Zm23-26h18l-9-26Z';
+const LABELS = {
+  none: 'Non-lit letter with a plain shadow',
+  'front-lit': 'Front-lit letter glowing through its face',
+  backlit: 'Backlit panel glowing behind a dark letter',
+  'halo-lit': 'Halo-lit letter: dark face with a glow on the wall behind',
+  neon: 'Neon letter drawn as a glowing outline',
+};
+---
+
+<svg class={className} viewBox="0 0 140 92" role="img" aria-label={LABELS[kind]}>
+  <defs>
+    <filter id={`${id}-b`} x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="6"></feGaussianBlur></filter>
+    <filter id={`${id}-s`} x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="2.2"></feGaussianBlur></filter>
+  </defs>
+  <rect width="140" height="92" rx="8" fill="#15181e"></rect>
+  {
+    kind === 'none' && (
+      <>
+        <path d={A} fill="#000" opacity=".55" transform="translate(3 4)" fill-rule="evenodd" />
+        <path d={A} fill="#d9dde3" fill-rule="evenodd" />
+      </>
+    )
+  }
+  {
+    kind === 'front-lit' && (
+      <>
+        <path d={A} fill="#ffd45e" filter={`url(#${id}-b)`} fill-rule="evenodd" />
+        <path d={A} fill="#fff7dc" fill-rule="evenodd" />
+      </>
+    )
+  }
+  {
+    kind === 'backlit' && (
+      <>
+        <rect x="22" y="8" width="96" height="76" rx="4" fill="#fff" filter={`url(#${id}-b)`} opacity=".7" />
+        <rect x="22" y="8" width="96" height="76" rx="4" fill="#fbfbf5" />
+        <path d={A} fill="#b3141b" fill-rule="evenodd" />
+      </>
+    )
+  }
+  {
+    kind === 'halo-lit' && (
+      <>
+        <path d={A} fill="#59c8ff" filter={`url(#${id}-b)`} fill-rule="evenodd" />
+        <path d={A} fill="#59c8ff" filter={`url(#${id}-s)`} fill-rule="evenodd" />
+        <path d={A} fill="#0d0f13" fill-rule="evenodd" />
+      </>
+    )
+  }
+  {
+    kind === 'neon' && (
+      <>
+        <path d={A} fill="none" stroke="#ff2d95" stroke-width="5" filter={`url(#${id}-b)`} stroke-linejoin="round" />
+        <path d={A} fill="none" stroke="#ff2d95" stroke-width="3.5" filter={`url(#${id}-s)`} stroke-linejoin="round" />
+        <path d={A} fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round" />
+      </>
+    )
+  }
+</svg>

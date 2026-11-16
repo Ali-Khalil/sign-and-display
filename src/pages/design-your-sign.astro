@@ -1,0 +1,26 @@
+---
+// Stand-in until the sign customizer is built in Phase 2. Not indexed and
+// not in the sitemap.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WhatsAppButton from '../components/ui/WhatsAppButton.astro';
+import { waMessageGeneral } from '../lib/whatsapp';
+
+const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+---
+
+<BaseLayout
+  title="Design Your Sign"
+  description="An online sign designer for trying your shop name in English or Urdu is being built. Until then, send your idea on WhatsApp."
+  noindex
+  {waMessage}
+>
+  <section class="wrap section">
+    <p class="eyebrow text-muted">Coming soon</p>
+    <h1 class="mt-2 text-4xl font-extrabold">Design your sign</h1>
+    <p class="mt-4 max-w-xl leading-relaxed text-muted">
+      The online sign designer is being built. Until it is ready, send your shop name and idea on WhatsApp and you will
+      get a design to approve.
+    </p>
+    <WhatsAppButton message={waMessage} location="design-your-sign" class="mt-8" />
+  </section>
+</BaseLayout>

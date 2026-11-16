@@ -1,0 +1,28 @@
+---
+import { Picture } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import preview from '../../assets/samples/customizer-teaser.jpg';
+---
+
+<section class="bg-paper-soft">
+  <div class="wrap section grid items-center gap-8 md:grid-cols-2">
+    <div>
+      <p class="eyebrow text-muted">Try it yourself</p>
+      <h2 class="h2 mt-2">Design your own sign</h2>
+      <p class="mt-3 max-w-md leading-relaxed text-muted">
+        Type your shop name in English or Urdu, pick a style and colour, and see how it looks on a wall by day and by
+        night. Then send the design on WhatsApp for a quote.
+      </p>
+      <Button href="/design-your-sign/" variant="outline-light" size="lg" class="mt-6">Open the sign designer</Button>
+    </div>
+    <Picture
+      src={preview}
+      alt="Illustration of a pink neon sign reading Your Name on a brick wall"
+      formats={['avif', 'webp']}
+      widths={[400, 640, 960]}
+      sizes="(min-width: 768px) 50vw, 100vw"
+      loading="lazy"
+      class="aspect-[16/10] w-full rounded-xl object-cover"
+    />
+  </div>
+</section>
