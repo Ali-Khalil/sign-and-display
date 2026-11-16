@@ -12,6 +12,7 @@ const PAGES = [
   '/faq/',
   '/about/',
   '/contact/',
+  '/signboards-in-jhang/',
   '/design-your-sign/',
 ];
 

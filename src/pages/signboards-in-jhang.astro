@@ -1,0 +1,139 @@
+---
+// The home-city page. It is built from facts the site already holds (the
+// workshop's address and hours, the signage types, projects done in the
+// city), so it stays unique without any filler text.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import ProjectGrid from '../components/sections/ProjectGrid.astro';
+import TypesGrid from '../components/sections/TypesGrid.astro';
+import CTABand from '../components/ui/CTABand.astro';
+import FAQ from '../components/ui/FAQ.astro';
+import Icon from '../components/ui/Icon.astro';
+import WhatsAppButton from '../components/ui/WhatsAppButton.astro';
+import { hasGeo, site } from '../config/site';
+import { getFaqs, getProjects, getTypes } from '../lib/content';
+import { hoursText } from '../lib/hours';
+import { breadcrumbList, faqPage } from '../lib/schema';
+import { telLink } from '../lib/whatsapp';
+
+const city = site.address.city;
+const { street, region, postalCode } = site.address;
+const types = await getTypes();
+const projects = (await getProjects()).filter((p) => p.data.city === city).slice(0, 6);
+const faqs = (await getFaqs()).filter((f) => f.data.topic === city).map((f) => f.data);
+const others = site.serviceAreas.filter((area) => area !== city);
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: `Signboards in ${city}`, href: '/signboards-in-jhang/' },
+];
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const waMessage = `Assalam o Alaikum, I need a signboard in ${city}.\nType of sign: \nText/Name: \nSize (approx): \nArea in ${city}: \n(From: ${pageUrl})`;
+const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.com/maps?q=${site.geo.lat},${site.geo.lng}` : '');
+---
+
+<BaseLayout
+  title={`Signboards in ${city}: 3D, LED & Neon Signs`}
+  description={`${site.name} is a signboard workshop in ${city}, ${region}: 3D letters, LED and neon signs, ACP boards and nameplates. Address, hours and WhatsApp.`}
+  schema={[breadcrumbList(crumbs, Astro.site!), faqPage(faqs)]}
+  {waMessage}
+>
+  <section class="bg-ink text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Signboards in {city}</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        {site.name} is a signboard workshop in {city}, {region}. It makes 3D letter signs, LED-lit and neon signs, ACP
+        shopfront boards, light boxes and nameplates for shops, offices, clinics and homes in {city}. Send the name for
+        your sign and its rough size on WhatsApp to get a design and a quote.
+      </p>
+      <WhatsAppButton message={waMessage} location="jhang-hero" class="mt-6" />
+    </div>
+  </section>
+
+  <section class="wrap section">
+    <h2 class="h2">Where is the workshop in {city}?</h2>
+    <ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <li class="flex gap-3">
+        <Icon name="pin" class="mt-1 size-5 shrink-0" />
+        <div>
+          <p class="text-sm text-muted">Address</p>
+          <address class="font-semibold not-italic">{street}, {city}, {region} {postalCode}</address>
+          {
+            mapLink && (
+              <a href={mapLink} target="_blank" rel="noopener" class="mt-1 inline-block underline underline-offset-2">
+                Open in Google Maps
+              </a>
+            )
+          }
+        </div>
+      </li>
+      <li class="flex gap-3">
+        <Icon name="clock" class="mt-1 size-5 shrink-0" />
+        <div>
+          <p class="text-sm text-muted">Opening hours</p>
+          {hoursText().map((line) => <p class="font-semibold">{line}</p>)}
+        </div>
+      </li>
+      <li class="flex gap-3">
+        <Icon name="phone" class="mt-1 size-5 shrink-0" />
+        <div>
+          <p class="text-sm text-muted">Call</p>
+          <a href={telLink} class="font-semibold underline underline-offset-2">{site.phoneDisplay}</a>
+        </div>
+      </li>
+      <li class="flex gap-3">
+        <Icon name="arrow" class="mt-1 size-5 shrink-0 rtl:rotate-180" />
+        <div>
+          <p class="text-sm text-muted">More</p>
+          <a href="/contact/" class="font-semibold underline underline-offset-2">Contact page</a>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  {
+    types.length > 0 && (
+      <section class="bg-paper-soft">
+        <div class="wrap section">
+          <h2 class="h2">Which signboards can I order in {city}?</h2>
+          <div class="mt-8">
+            <TypesGrid {types} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    projects.length > 0 && (
+      <section class="wrap section">
+        <h2 class="h2">Signs made for customers in {city}</h2>
+        <div class="mt-8">
+          <ProjectGrid {projects} />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    faqs.length > 0 && (
+      <section class="wrap section border-t border-line">
+        <h2 class="h2">Questions from customers in {city}</h2>
+        <div class="mt-6">
+          <FAQ items={faqs} />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="wrap section border-t border-line">
+    <h2 class="h2">Not in {city}?</h2>
+    <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+      {site.name} also works in {others.join(', ')}{site.nationwide ? ', and takes orders from all over Pakistan' : ''}. The
+      process is the same: send your details on WhatsApp and approve the design before anything is made.
+    </p>
+  </section>
+
+  <CTABand heading={`Get a signboard quote in ${city}`} message={waMessage} />
+</BaseLayout>

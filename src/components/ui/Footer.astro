@@ -65,7 +65,7 @@ const { street, city, region, postalCode } = site.address;
       <p class="eyebrow text-brand">Explore</p>
       <ul class="mt-3 grid grid-cols-2 gap-x-4 text-[0.95rem] text-muted-dark">
         {
-          [...NAV, { href: '/faq/', label: 'FAQ' }].map((item) => (
+          [...NAV, { href: '/faq/', label: 'FAQ' }, { href: '/signboards-in-jhang/', label: `Signboards in ${city}` }].map((item) => (
             <li>
               <a href={item.href} class="flex min-h-10 items-center hover:text-white">
                 {item.label}

@@ -21,13 +21,13 @@ const { waMessage } = Astro.props;
           </p>
         )
       }
-      <p class="eyebrow text-brand">Signboard workshop · {site.address.city}</p>
+      <p class="eyebrow text-brand">Signboard workshop{site.nationwide && ' · Orders from all over Pakistan'}</p>
       <h1 class="mt-3 text-4xl leading-[1.05] font-black tracking-tight md:text-6xl">
-        Signboards, LED <span class="text-brand">&amp;</span> Neon Signs in {site.address.city}
+        3D Signboards, LED <span class="text-brand">&amp;</span> Neon Signs
       </h1>
       <p class="mt-4 max-w-xl text-lg text-white/85">
-        Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes.
-        {site.nationwide && ' Orders taken from all over Pakistan.'}
+        Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes. Made in
+        our workshop in <a href="/signboards-in-jhang/" class="underline underline-offset-2">{site.address.city}</a>.
       </p>
       <div class="mt-7 flex flex-wrap gap-3">
         <WhatsAppButton message={waMessage} location="hero" />
