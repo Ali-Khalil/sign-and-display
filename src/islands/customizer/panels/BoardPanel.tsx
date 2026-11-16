@@ -6,7 +6,8 @@ import { NumberInput, Section, Segmented, Swatches } from './ui';
 interface Props {
   design: Design;
   onBoard(patch: Partial<Board>): void;
-  onResize(widthIn: number, heightIn: number): void;
+  /** Only the side that changed is passed, so the other always comes from the latest design. */
+  onResize(size: { widthIn?: number; heightIn?: number }): void;
 }
 
 const clamp = (inches: number) => Math.min(600, Math.max(4, inches));
@@ -46,8 +47,8 @@ export default function BoardPanel({ design, onBoard, onResize }: Props) {
   return (
     <div class="grid gap-5">
       <Section title="Real size">
-        {dimension('Width', w, (inches) => onResize(inches, board.heightIn))}
-        {dimension('Height', h, (inches) => onResize(board.widthIn, inches))}
+        {dimension('Width', w, (widthIn) => onResize({ widthIn }))}
+        {dimension('Height', h, (heightIn) => onResize({ heightIn }))}
         <p class="text-sm text-muted" aria-live="polite">
           Sign area: <strong class="text-ink">{formatSize(board.widthIn, board.heightIn)}</strong>
           {board.style === 'none' && ' (the dashed outline on the preview)'}

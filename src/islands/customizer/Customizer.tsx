@@ -521,7 +521,7 @@ export default function Customizer() {
               <BoardPanel
                 design={design}
                 onBoard={(patch) => update((d) => ({ ...d, board: { ...d.board, ...patch } }))}
-                onResize={(w, h) => update((d) => resizeBoard(d, w, h))}
+                onResize={(size) => update((d) => resizeBoard(d, size.widthIn ?? d.board.widthIn, size.heightIn ?? d.board.heightIn))}
               />
             )}
             {tab === 'background' && (

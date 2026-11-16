@@ -1,5 +1,5 @@
 import type { ComponentChildren } from 'preact';
-import { useEffect, useState } from 'preact/hooks';
+import { useState } from 'preact/hooks';
 
 export const inputClass = 'min-h-11 w-full min-w-0 rounded-lg border border-line bg-white px-3 text-base';
 export const buttonClass =
@@ -132,17 +132,18 @@ interface NumberInputProps {
 }
 /**
  * Number box that keeps what is being typed in its own state and commits on
- * blur or Enter, so a re-render of the designer never wipes a half-typed value.
+ * blur or Enter, so a re-render of the designer never wipes a half-typed
+ * value. While nothing is being typed it simply shows the committed value.
  */
 export function NumberInput({ label, unit, value, min, max, step = 1, onCommit }: NumberInputProps) {
-  const [draft, setDraft] = useState(String(value));
-  useEffect(() => setDraft(String(value)), [value]);
+  const [draft, setDraft] = useState<string | null>(null);
 
   const commit = () => {
+    if (draft === null) return;
     const parsed = Number(draft);
-    if (draft.trim() === '' || !Number.isFinite(parsed)) return setDraft(String(value));
+    setDraft(null);
+    if (draft.trim() === '' || !Number.isFinite(parsed)) return;
     const next = Math.min(max, Math.max(min, parsed));
-    setDraft(String(next));
     if (next !== value) onCommit(next);
   };
 
@@ -155,7 +156,7 @@ export function NumberInput({ label, unit, value, min, max, step = 1, onCommit }
         min={min}
         max={max}
         step={step}
-        value={draft}
+        value={draft ?? String(value)}
         class={inputClass}
         onInput={(e) => setDraft(e.currentTarget.value)}
         onBlur={commit}
