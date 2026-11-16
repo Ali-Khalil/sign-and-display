@@ -26,15 +26,23 @@ export default defineConfig({
   },
   fonts: [
     {
-      // {{BRAND}} display font. Body text uses the system font stack.
+      // Display font, chosen to match the heavy letters of "SIGN" in the logo.
       provider: fontProviders.local(),
-      name: 'Archivo',
-      cssVariable: '--font-archivo',
+      name: 'Montserrat',
+      cssVariable: '--font-montserrat',
       fallbacks: ['Arial', 'sans-serif'],
       options: {
-        variants: [
-          { src: ['./src/assets/fonts/archivo-latin-wght-normal.woff2'], weight: '100 900', style: 'normal' },
-        ],
+        variants: [{ src: ['./src/assets/fonts/montserrat-latin-wght-normal.woff2'], weight: '100 900', style: 'normal' }],
+      },
+    },
+    {
+      // Wide technical face, close to "DISPLAY" in the logo. Used for the wordmark and small labels.
+      provider: fontProviders.local(),
+      name: 'Michroma',
+      cssVariable: '--font-michroma',
+      fallbacks: ['Arial', 'sans-serif'],
+      options: {
+        variants: [{ src: ['./src/assets/fonts/michroma-latin-400-normal.woff2'], weight: 400, style: 'normal' }],
       },
     },
   ],

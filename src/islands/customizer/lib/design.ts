@@ -37,6 +37,10 @@ export interface TextLayer {
   outlineColor: string;
   /** Outline width in canvas units; 0 = none. */
   outlineWidth: number;
+  /** 3D letter depth as a fraction of the letter size. */
+  depth: number;
+  /** Colour of the letter sides. Empty = picked from the face colour. */
+  side: string;
   x: number;
   y: number;
   angle: number;
@@ -66,7 +70,13 @@ export interface Board {
   color: string;
   /** Aluminium border. */
   border: boolean;
+  /** Surface of a solid board. */
+  finish: 'matte' | 'gloss' | 'glitter';
 }
+
+/** Which way the sides of 3D letters run on screen. */
+export type View = 'left' | 'down' | 'right';
+export const VIEW_ANGLE: Record<View, number> = { left: 125, down: 90, right: 55 };
 
 export type Background = { kind: 'preset'; id: string } | { kind: 'upload'; src: string };
 
@@ -75,6 +85,7 @@ export interface Design {
   version: 1;
   mode: Mode;
   lighting: 'front-lit' | 'halo';
+  view: View;
   /** Lights on (LED and neon). */
   lit: boolean;
   flicker: boolean;
@@ -116,6 +127,15 @@ export const FACE_COLOURS = [
   { name: 'Orange', value: '#f26b1d' },
 ];
 
+export const SIDE_COLOURS = [
+  { name: 'Steel', value: '#93a1b1' },
+  { name: 'Black', value: '#22252b' },
+  { name: 'White', value: '#e9edf1' },
+  { name: 'Gold', value: '#c9a13b' },
+  { name: 'Blue', value: '#1f4fbf' },
+  { name: 'Red', value: '#b3141b' },
+];
+
 export const BOARD_COLOURS = [
   { name: 'Navy', value: '#12305c' },
   { name: 'Black', value: '#16181d' },
@@ -138,7 +158,7 @@ interface ModeDefaults {
 
 export const MODE_DEFAULTS: Record<Mode, ModeDefaults> = {
   'flat-board': { color: '#ffffff', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'solid', night: false, background: 'plaster' },
-  '3d-letters': { color: '#d0202a', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'none', night: false, background: 'plaster' },
+  '3d-letters': { color: '#ffffff', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'none', night: false, background: 'dark-wall' },
   led: { color: '#ffffff', glow: '#ffd76a', font: DEFAULT_FONT, boardStyle: 'none', night: true, background: 'shopfront-night' },
   neon: { color: '#ffffff', glow: '#ff2d95', font: DEFAULT_NEON_FONT, boardStyle: 'clear', night: true, background: 'brick' },
 };
@@ -149,11 +169,17 @@ export function newId(): string {
   return `l${Date.now().toString(36)}${counter.toString(36)}`;
 }
 
+/** Rough average letter width, as a share of the font size. Condensed faces are narrower. */
+const NARROW_FONTS = ['Anton', 'Bebas Neue', 'Oswald', 'Sacramento', 'Neonderthaw'];
+export function letterWidth(fontFamily: string): number {
+  return NARROW_FONTS.includes(fontFamily) ? 0.5 : 0.7;
+}
+
 /** A font size that roughly fits `text` on the board (no canvas needed). */
-export function fitFontSize(text: string, board: Board, maxHeightShare = 0.4, widthShare = 0.8): number {
+export function fitFontSize(text: string, board: Board, fontFamily: string, maxHeightShare = 0.4, widthShare = 0.8): number {
   const rect = boardRect(board);
   const longest = Math.max(1, ...text.split('\n').map((line) => line.length));
-  return Math.round(Math.min(rect.height * maxHeightShare, (rect.width * widthShare) / (longest * 0.5)));
+  return Math.round(Math.min(rect.height * maxHeightShare, (rect.width * widthShare) / (longest * letterWidth(fontFamily))));
 }
 
 /** Settings a text layer must have once it contains Urdu. */
@@ -176,7 +202,7 @@ export function makeText(design: Pick<Design, 'mode' | 'board'>, text: string, p
     type: 'text',
     text,
     fontFamily: defaults.font,
-    fontSize: fitFontSize(text, design.board),
+    fontSize: fitFontSize(text, design.board, patch.fontFamily ?? defaults.font),
     color: defaults.color,
     glow: defaults.glow,
     align: 'center',
@@ -184,6 +210,8 @@ export function makeText(design: Pick<Design, 'mode' | 'board'>, text: string, p
     lineHeight: 1.15,
     outlineColor: '#000000',
     outlineWidth: 0,
+    depth: 0.16,
+    side: '',
     x: rect.cx,
     y: rect.cy,
     angle: 0,
@@ -195,14 +223,15 @@ export function defaultDesign(mode: Mode): Design {
   const defaults = MODE_DEFAULTS[mode];
   const board: Board =
     mode === 'neon'
-      ? { widthIn: 36, heightIn: 18, style: 'clear', shape: 'rounded', color: '#16181d', border: false }
-      : { widthIn: 96, heightIn: 36, style: defaults.boardStyle, shape: 'rect', color: '#12305c', border: mode === 'flat-board' };
+      ? { widthIn: 36, heightIn: 18, style: 'clear', shape: 'rounded', color: '#16181d', border: false, finish: 'matte' }
+      : { widthIn: 96, heightIn: 36, style: defaults.boardStyle, shape: 'rect', color: '#12305c', border: mode === 'flat-board', finish: 'gloss' };
   const base = { mode, board };
   return {
     app: 'sign-designer',
     version: 1,
     mode,
     lighting: 'front-lit',
+    view: 'right',
     lit: true,
     flicker: false,
     night: defaults.night,
@@ -283,6 +312,7 @@ export function parseDesign(value: unknown): Design | null {
   return {
     ...fallback,
     lighting: d.lighting === 'halo' ? 'halo' : 'front-lit',
+    view: d.view === 'left' || d.view === 'down' ? d.view : 'right',
     lit: d.lit !== false,
     flicker: d.flicker === true,
     night: d.night === true,

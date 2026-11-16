@@ -23,7 +23,7 @@ export const GET: APIRoute = async ({ site: base }) => {
     '',
     `> Signboard workshop in ${city}, ${region}, Pakistan. Makes 2D and 3D signboards, LED-illuminated signs, neon signs and nameplates. Orders and quotes are handled on WhatsApp; there is no online checkout.`,
     '',
-    `Service areas: ${site.serviceAreas.join(', ')}.`,
+    `Main service areas: ${site.serviceAreas.join(', ')}.${site.nationwide ? ' Orders are also taken from anywhere in Pakistan.' : ''}`,
     '',
     '## Contact',
     ...contact,

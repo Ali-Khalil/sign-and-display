@@ -40,12 +40,12 @@ const urdu = (family: string, slug: string): SignFont => ({
 
 export const signFonts: SignFont[] = [
   // Bold / display
+  latin('Montserrat Black', 'montserrat', 'bold', 900), // close to "SIGN" in the logo
   latin('Anton', 'anton', 'bold'),
   latin('Archivo Black', 'archivo-black', 'bold'),
   latin('Bebas Neue', 'bebas-neue', 'bold'),
   latin('Oswald', 'oswald', 'bold', 700),
   latin('Alfa Slab One', 'alfa-slab-one', 'bold'),
-  latin('Bungee', 'bungee', 'bold'),
   // Neon
   latin('Tilt Neon', 'tilt-neon', 'neon'),
   latin('Neonderthaw', 'neonderthaw', 'neon'),
@@ -60,7 +60,7 @@ export const signFonts: SignFont[] = [
 ];
 
 export const DEFAULT_URDU_FONT = 'Noto Nastaliq Urdu';
-export const DEFAULT_FONT = 'Anton';
+export const DEFAULT_FONT = 'Montserrat Black';
 export const DEFAULT_NEON_FONT = 'Tilt Neon';
 
 export function getFont(family: string): SignFont | undefined {

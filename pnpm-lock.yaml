@@ -37,7 +37,7 @@ importers:
         specifier: ^4.3.5
         version: 4.3.5
     devDependencies:
-      '@fontsource-variable/archivo':
+      '@fontsource-variable/montserrat':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/alfa-slab-one':
@@ -52,16 +52,19 @@ importers:
       '@fontsource/bebas-neue':
         specifier: ^5.3.0
         version: 5.3.0
-      '@fontsource/bungee':
-        specifier: ^5.3.0
-        version: 5.3.0
       '@fontsource/gulzar':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/lalezar':
         specifier: ^5.3.0
         version: 5.3.0
+      '@fontsource/michroma':
+        specifier: ^5.3.0
+        version: 5.3.0
       '@fontsource/monoton':
+        specifier: ^5.3.0
+        version: 5.3.0
+      '@fontsource/montserrat':
         specifier: ^5.3.0
         version: 5.3.0
       '@fontsource/neonderthaw':
@@ -481,8 +484,8 @@ packages:
   '@emnapi/wasi-threads@2.2.0':
     resolution: {integrity: sha512-JP7OYH38Q7+pyTAe14raZHLQIK7BDKbdwji+Xi3pcd/6QkJYQH3SX4wu6EplGrGJWRepoNzedfm0G3B9Z4e9Rw==}
 
-  '@fontsource-variable/archivo@5.3.0':
-    resolution: {integrity: sha512-HogK8FJelrD1o7TlZlkIVtHgc20bO5PZRWE7mUeUTdMN055alznQV6/00J00IBeu8FQAH4s3zW9UJNvKExXf+g==}
+  '@fontsource-variable/montserrat@5.3.0':
+    resolution: {integrity: sha512-7PaZoxaxrWLAyrhO46v65An9LhUhfkTExWLhfbywYZCnZEgg/W1rEHnlNmZKjNZ3nJTVYyicqxlJt10z/26yTA==}
 
   '@fontsource/alfa-slab-one@5.3.0':
     resolution: {integrity: sha512-J/ANFZ7S9CbZClr/QhMjmBtpFmmKipVkEXHj20aurR5uqJPCBChVPJn1/kx6vtrwnfnDY0kQaYSTYasSt4GruA==}
@@ -496,17 +499,20 @@ packages:
   '@fontsource/bebas-neue@5.3.0':
     resolution: {integrity: sha512-nCxMEb9Bg9sjNWm9TIOsvHKDMLRUfEZPWpLgYu6m9KavZZVSA/WoHzI5wROwqA+eNwEi/PNBAcB5Co7HA3S0Cw==}
 
-  '@fontsource/bungee@5.3.0':
-    resolution: {integrity: sha512-vKwbDE7yMrqfGxgFan+diPLwgWp9j4FGYaLm+OhUoqYO6Pr02QIi/p0KiTW0E/7uiXqfTd6cMj+/E4h2sc3Ocg==}
-
   '@fontsource/gulzar@5.3.0':
     resolution: {integrity: sha512-a/zgnxvfByGB+PfXMNXrPgffIzhYj8yCA+YTxRWM/z4NeC00JJaXgvVa8A7QdtCAqEtBGNwFgSSLdxAE/ooc2A==}
 
   '@fontsource/lalezar@5.3.0':
     resolution: {integrity: sha512-ptwEfWP7OlucVaRHpuMo6tfvw9xDcBEoaiIvzSDUb7z5pih+DZIRKLarulkJunVR+DnQ5VaJVjuVVOwrqiq7Cw==}
 
+  '@fontsource/michroma@5.3.0':
+    resolution: {integrity: sha512-9sbGD7ek1hGvq0TmgNPFbuI3k7qwXVdZ+zCDsTHDGRIQqfYrpYWwEYcwH2fzOtvn8uiGqzAoJ72vuFE3v/hDdg==}
+
   '@fontsource/monoton@5.3.0':
     resolution: {integrity: sha512-pXZyTe7Gr6Ow5NhDbmCSMWfpp+qwoQB/615gNSdlU5jEQ9CTUKxbkEjm2CY0dEGbW4gFA204MxdiPKEBQ61tOA==}
+
+  '@fontsource/montserrat@5.3.0':
+    resolution: {integrity: sha512-iQPDtZOnmM5ih4JBGaMSXisRap0ixb9bAUw2hDtY7EjVfaqiiNlKtVuJl9XclxUwtwMMHNcWXfQR6zI9x05+Tg==}
 
   '@fontsource/neonderthaw@5.3.0':
     resolution: {integrity: sha512-DvjrViA3SXmUPXSquDFj17ktkxADWLh4FGPxeh8DV7idIaCbvMviRDfx+g4xXS2zzBqCXUlBHl+syx8AkkJyzg==}
@@ -3218,7 +3224,7 @@ snapshots:
       tslib: 2.9.1
     optional: true
 
-  '@fontsource-variable/archivo@5.3.0': {}
+  '@fontsource-variable/montserrat@5.3.0': {}
 
   '@fontsource/alfa-slab-one@5.3.0': {}
 
@@ -3228,13 +3234,15 @@ snapshots:
 
   '@fontsource/bebas-neue@5.3.0': {}
 
-  '@fontsource/bungee@5.3.0': {}
-
   '@fontsource/gulzar@5.3.0': {}
 
   '@fontsource/lalezar@5.3.0': {}
 
+  '@fontsource/michroma@5.3.0': {}
+
   '@fontsource/monoton@5.3.0': {}
+
+  '@fontsource/montserrat@5.3.0': {}
 
   '@fontsource/neonderthaw@5.3.0': {}
 

@@ -2,7 +2,8 @@
  * Starter templates. The names and numbers in them are sample text for the
  * customer to replace, not real businesses.
  */
-import { defaultDesign, makeText, type Board, type Design, type Mode } from '../lib/design';
+import { defaultDesign, fitFontSize, makeText, type Board, type Design, type Mode } from '../lib/design';
+import { DEFAULT_FONT, DEFAULT_NEON_FONT } from '../../../config/fonts';
 import { boardRect } from '../lib/units';
 
 export interface Template {
@@ -20,8 +21,8 @@ function base(mode: Mode, board: Partial<Board>, patch: Partial<Design> = {}): D
 /** Place a line of text at a vertical position given as a share of the board height. */
 function line(design: Design, text: string, at: number, heightShare: number, patch: Parameters<typeof makeText>[2] = {}) {
   const rect = boardRect(design.board);
-  const longest = Math.max(1, ...text.split('\n').map((l) => l.length));
-  const fontSize = Math.round(Math.min(rect.height * heightShare, (rect.width * 0.82) / (longest * 0.5)));
+  const font = patch.fontFamily ?? (design.mode === 'neon' ? DEFAULT_NEON_FONT : DEFAULT_FONT);
+  const fontSize = fitFontSize(text, design.board, font, heightShare, 0.82);
   return makeText(design, text, { y: rect.top + rect.height * at, fontSize, ...patch });
 }
 
@@ -31,7 +32,7 @@ export const TEMPLATES: Template[] = [
     name: 'Shop name + phone',
     description: 'Flat board with an aluminium border',
     build() {
-      const d = base('flat-board', { widthIn: 120, heightIn: 36, color: '#12305c', border: true });
+      const d = base('flat-board', { widthIn: 120, heightIn: 36, color: '#12305c', border: true, finish: 'gloss' });
       d.layers = [
         line(d, 'YOUR SHOP NAME', 0.4, 0.4),
         line(d, 'Mobile: 0300-1234567', 0.78, 0.16, { fontFamily: 'Oswald', color: '#f5b301' }),
@@ -44,7 +45,7 @@ export const TEMPLATES: Template[] = [
     name: 'Urdu + English shop board',
     description: 'Urdu name on top, English and phone below',
     build() {
-      const d = base('flat-board', { widthIn: 120, heightIn: 48, color: '#0f4d3a', border: true });
+      const d = base('flat-board', { widthIn: 120, heightIn: 48, color: '#0f4d3a', border: true, finish: 'glitter' });
       d.layers = [
         line(d, 'مدینہ ٹریڈرز', 0.3, 0.24, { color: '#ffffff' }),
         line(d, 'MADINA TRADERS', 0.66, 0.17, { color: '#f5b301' }),
@@ -85,7 +86,7 @@ export const TEMPLATES: Template[] = [
     description: 'Front-lit 3D letters on a shopfront at night',
     build() {
       const d = base('led', { widthIn: 120, heightIn: 30 });
-      d.layers = [line(d, 'YOUR BRAND', 0.5, 0.62, { fontFamily: 'Archivo Black', color: '#ffffff', glow: '#ffd76a' })];
+      d.layers = [line(d, 'YOUR BRAND', 0.5, 0.62, { color: '#ffffff', glow: '#ffd76a' })];
       return d;
     },
   },

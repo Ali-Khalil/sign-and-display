@@ -18,7 +18,10 @@ export interface SiteConfig {
   geo: { lat: number; lng: number };
   /** schema.org format, e.g. 'Mo-Sa 10:00-20:00'. */
   openingHours: string[];
+  /** Cities where most work is done. */
   serviceAreas: string[];
+  /** Orders are also taken from anywhere in the country. */
+  nationwide: boolean;
   social: { facebook: string; instagram: string; tiktok: string; youtube: string };
   googleBusinessProfileUrl: string;
   /** "Why us" points. Only add points that are true; the section is hidden while empty. */
@@ -30,7 +33,7 @@ export interface SiteConfig {
 }
 
 export const site: SiteConfig = {
-  name: '{{BUSINESS_NAME}}',
+  name: 'Sign & Display',
   nameUrdu: '{{BUSINESS_NAME_URDU}}',
   tagline: '{{TAGLINE}}',
   url: 'https://{{DOMAIN}}',
@@ -47,6 +50,7 @@ export const site: SiteConfig = {
   geo: { lat: 0, lng: 0 }, // owner to supply
   openingHours: ['Mo-Sa 10:00-20:00'], // owner to confirm
   serviceAreas: ['Jhang', 'Faisalabad', 'Chiniot', 'Sargodha', 'Toba Tek Singh'],
+  nationwide: true,
   social: { facebook: '', instagram: '', tiktok: '', youtube: '' },
   googleBusinessProfileUrl: '',
   whyUs: [],

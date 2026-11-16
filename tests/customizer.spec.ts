@@ -213,7 +213,7 @@ test('SVG export and design file save/load', async ({ page }) => {
   const [svgDownload] = await Promise.all([page.waitForEvent('download'), page.getByRole('button', { name: /Download SVG/ }).click()]);
   const svg = readFileSync((await svgDownload.path())!, 'utf8');
   expect(svg).toContain('<svg');
-  expect(svg).toContain('font-family="Anton"');
+  expect(svg).toContain('font-family="Montserrat Black"');
   expect(svg).toContain('>Sign &amp; Co</text>');
   expect(svg).not.toContain('<image'); // no wall photo in the designer file
 

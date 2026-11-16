@@ -1,5 +1,4 @@
-// Generates the clearly-labelled SAMPLE images used by the draft content, the
-// customizer teaser and the default social image. They are illustrations,
+// Generates the clearly-labelled SAMPLE images used by the draft content. They are illustrations,
 // not photos of real work: replace them with real project photos.
 //   node scripts/make-sample-images.mjs
 import { mkdirSync } from 'node:fs';
@@ -110,24 +109,9 @@ const IMAGES = {
   'project-acp-board': { wall: 'day', variant: 'board', text: 'TRADERS', color: '#0f4d3a' },
   'project-nameplate': { wall: 'door', variant: 'nameplate', text: 'House Name', sub: 'House No. · Street' },
   'project-neon-bedroom': { wall: 'cafe', variant: 'neon', text: 'Good vibes', glow: '#7df9ff' },
-  // Home page
-  'customizer-teaser': { wall: 'brick', variant: 'neon', text: 'Your Name', glow: '#ff2d95' },
 };
 
 for (const [name, spec] of Object.entries(IMAGES)) {
-  // The teaser illustrates the sign designer, not a project, so it carries no label.
-  await sharp(Buffer.from(svg(spec, name !== 'customizer-teaser'))).jpeg({ quality: 80, mozjpeg: true }).toFile(`${OUT}/${name}.jpg`);
+  await sharp(Buffer.from(svg(spec))).jpeg({ quality: 80, mozjpeg: true }).toFile(`${OUT}/${name}.jpg`);
   console.log('wrote', name);
 }
-
-// Default social image (1200×630). No business name on it until the owner supplies one.
-const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <defs><filter id="g" x="-50%" y="-100%" width="200%" height="300%"><feGaussianBlur stdDeviation="26"/></filter></defs>
-  <rect width="1200" height="630" fill="#0e1014"/>
-  <rect x="60" y="60" width="1080" height="510" rx="28" fill="none" stroke="#f5b301" stroke-width="6" filter="url(#g)"/>
-  <rect x="60" y="60" width="1080" height="510" rx="28" fill="none" stroke="#f5b301" stroke-width="6"/>
-  <text x="600" y="300" font-family="Inter" font-weight="900" font-size="92" fill="#fff" text-anchor="middle">Signboards in Jhang</text>
-  <text x="600" y="390" font-family="Inter" font-weight="500" font-size="44" fill="#c9ced8" text-anchor="middle">3D letters · LED signs · Neon · Nameplates</text>
-</svg>`;
-await sharp(Buffer.from(og)).png({ compressionLevel: 9, palette: true }).toFile('public/og-default.png');
-console.log('wrote og-default.png');

@@ -15,12 +15,12 @@ const fonts = {
   monoton: ['latin-400'],
   pacifico: ['latin-400'],
   sacramento: ['latin-400'],
+  montserrat: ['latin-900'],
   anton: ['latin-400'],
   'archivo-black': ['latin-400'],
   'bebas-neue': ['latin-400'],
   oswald: ['latin-700'],
   'alfa-slab-one': ['latin-400'],
-  bungee: ['latin-400'],
 };
 
 mkdirSync(join(out, 'licenses'), { recursive: true });

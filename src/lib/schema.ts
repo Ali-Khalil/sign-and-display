@@ -51,6 +51,12 @@ export function absolute(path: string, base: URL | string): string {
 
 const businessId = (base: URL | string) => absolute('/#business', base);
 
+/** The main cities, plus the whole country when orders are taken nationwide. */
+function areaServed(): Node[] {
+  const cities: Node[] = site.serviceAreas.map((name) => ({ '@type': 'City', name }));
+  return site.nationwide ? [...cities, { '@type': 'Country', name: 'Pakistan' }] : cities;
+}
+
 export function localBusiness(base: URL | string): Node {
   const sameAs = [...Object.values(site.social), site.googleBusinessProfileUrl].filter((u) => u !== '');
   const hours = site.openingHours.map(parseOpeningHours).filter((h) => h !== null);
@@ -68,9 +74,10 @@ export function localBusiness(base: URL | string): Node {
     '@id': businessId(base),
     name: site.name,
     url: absolute('/', base),
-    image: absolute('/og-default.png', base),
+    logo: absolute('/logo.png', base),
+    image: absolute('/og-default.jpg', base),
     address,
-    areaServed: site.serviceAreas.map((name) => ({ '@type': 'City', name })),
+    areaServed: areaServed(),
   };
   if (!isPlaceholder(site.nameUrdu)) node.alternateName = site.nameUrdu;
   if (!isPlaceholder(site.whatsapp)) node.telephone = `+${site.whatsapp}`;
@@ -124,7 +131,7 @@ export function service(type: SignageType, pageUrl: string, base: URL | string):
     description: type.data.shortDescription,
     url: pageUrl,
     provider: { '@id': businessId(base) },
-    areaServed: site.serviceAreas.map((name) => ({ '@type': 'City', name })),
+    areaServed: areaServed(),
   };
   const from = getRate(type.data.priceKey)?.startingFrom;
   if (typeof from === 'number') {
@@ -165,7 +172,7 @@ export function article(guide: Guide, pageUrl: string, base: URL | string): Node
     dateModified: guide.data.updated.toISOString().slice(0, 10),
     author,
     publisher: { '@id': businessId(base) },
-    image: absolute('/og-default.png', base),
+    image: absolute('/og-default.jpg', base),
   };
 }
 

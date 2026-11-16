@@ -2,51 +2,47 @@
 import { Picture } from 'astro:assets';
 import Button from '../ui/Button.astro';
 import WhatsAppButton from '../ui/WhatsAppButton.astro';
+import logoSign from '../../assets/brand/logo-sign-wide.webp';
 import { isPlaceholder, site } from '../../config/site';
-import type { Project } from '../../lib/content';
 
 interface Props {
-  /** A featured project supplies the background photo. */
-  project?: Project;
   waMessage: string;
 }
-const { project, waMessage } = Astro.props;
-const cover = project?.data.images.at(-1);
+const { waMessage } = Astro.props;
 ---
 
-<section class="relative isolate overflow-hidden bg-ink text-white">
-  {
-    cover && (
-      <Picture
-        src={cover.src}
-        alt={cover.alt}
-        formats={['avif', 'webp']}
-        widths={[480, 768, 1080, 1440, 1920]}
-        sizes="100vw"
-        loading="eager"
-        fetchpriority="high"
-        class="absolute inset-0 -z-20 size-full object-cover"
-      />
-    )
-  }
-  <div class="absolute inset-0 -z-10 bg-gradient-to-t from-ink via-ink/75 to-ink/40"></div>
-  <div class="wrap flex min-h-[30rem] flex-col justify-end py-14 md:min-h-[36rem] md:py-20">
-    {
-      !isPlaceholder(site.nameUrdu) && (
-        <p lang="ur" dir="rtl" class="text-start text-2xl text-brand">
-          {site.nameUrdu}
-        </p>
-      )
-    }
-    <h1 class="max-w-3xl text-4xl leading-[1.05] font-extrabold tracking-tight md:text-6xl">
-      Signboards, LED & Neon Signs in {site.address.city}
-    </h1>
-    <p class="mt-4 max-w-xl text-lg text-white/85">
-      Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes.
-    </p>
-    <div class="mt-7 flex flex-wrap gap-3">
-      <WhatsAppButton message={waMessage} location="hero" />
-      <Button href="/design-your-sign/" variant="outline-dark" size="lg">Design Your Sign</Button>
+<section class="bg-ink text-white">
+  <div class="wrap grid items-center gap-8 py-10 md:py-16 lg:grid-cols-[1.05fr_1fr]">
+    <div>
+      {
+        !isPlaceholder(site.nameUrdu) && (
+          <p lang="ur" dir="rtl" class="text-start text-2xl text-brand">
+            {site.nameUrdu}
+          </p>
+        )
+      }
+      <p class="eyebrow text-brand">Signboard workshop · {site.address.city}</p>
+      <h1 class="mt-3 text-4xl leading-[1.05] font-black tracking-tight md:text-6xl">
+        Signboards, LED <span class="text-brand">&amp;</span> Neon Signs in {site.address.city}
+      </h1>
+      <p class="mt-4 max-w-xl text-lg text-white/85">
+        Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes.
+        {site.nationwide && ' Orders taken from all over Pakistan.'}
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <WhatsAppButton message={waMessage} location="hero" />
+        <Button href="/design-your-sign/" variant="outline-dark" size="lg">Design Your Sign</Button>
+      </div>
     </div>
+    <Picture
+      src={logoSign}
+      alt={`The ${site.name} logo as an illuminated 3D sign on a dark wall`}
+      formats={['avif', 'webp']}
+      widths={[360, 560, 760, 1134]}
+      sizes="(min-width: 1024px) 46vw, 100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="w-full rounded-2xl"
+    />
   </div>
 </section>

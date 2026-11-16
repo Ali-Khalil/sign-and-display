@@ -1,0 +1,23 @@
+---
+/**
+ * The Sign & Display wordmark, drawn in text so it stays sharp at any size:
+ * heavy white "SIGN", amber "&", and "DISPLAY" in blue on a white plate, as
+ * in the logo.
+ */
+import { site } from '../../config/site';
+
+interface Props {
+  size?: 'md' | 'lg';
+}
+const { size = 'md' } = Astro.props;
+const big = size === 'lg';
+---
+
+<span class="inline-flex items-center gap-1.5 leading-none" role="img" aria-label={site.name}>
+  <span aria-hidden="true" class:list={['font-display font-black tracking-tight text-white', big ? 'text-3xl' : 'text-[1.4rem]']}>
+    SIGN<span class="text-brand">&amp;</span>
+  </span>
+  <span aria-hidden="true" class:list={['rounded-[3px] bg-white font-logo text-blue', big ? 'px-2 py-1.5 text-base' : 'px-1.5 py-1 text-[0.78rem]']}>
+    DISPLAY
+  </span>
+</span>

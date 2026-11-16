@@ -1,5 +1,5 @@
-import type { Design, ImageLayer, Layer, TextLayer } from '../lib/design';
-import { FACE_COLOURS, NEON_COLOURS } from '../lib/design';
+import type { Design, ImageLayer, Layer, TextLayer, View } from '../lib/design';
+import { FACE_COLOURS, NEON_COLOURS, SIDE_COLOURS } from '../lib/design';
 import { hasArabicScript } from '../lib/rtl';
 import FontPicker from './FontPicker';
 import { buttonClass, Range, Section, Segmented, Swatches } from './ui';
@@ -137,6 +137,35 @@ export default function StylePanel({ design, layer, onChange, onDesign, onOrder,
         />
         <Range label="Line height" value={layer.lineHeight} min={0.8} max={3} step={0.05} format={(v) => v.toFixed(2)} onChange={(lineHeight) => set({ lineHeight })} />
       </Section>
+
+      {(mode === '3d-letters' || mode === 'led') && (
+        <Section title="3D letters">
+          <Range
+            label="Letter depth"
+            value={Math.round(layer.depth * 100)}
+            min={0}
+            max={40}
+            format={(v) => (v === 0 ? 'Flat' : `${v}%`)}
+            onChange={(v) => set({ depth: v / 100 })}
+          />
+          <Segmented<View>
+            label="Sides show towards"
+            value={design.view}
+            options={[
+              { value: 'left', label: 'Left' },
+              { value: 'down', label: 'Below' },
+              { value: 'right', label: 'Right' },
+            ]}
+            onChange={(view) => onDesign({ view })}
+          />
+          <div class="grid gap-1.5">
+            <Swatches label="Side colour" value={layer.side} colours={SIDE_COLOURS} onChange={(side) => set({ side })} />
+            <button type="button" aria-pressed={layer.side === ''} onClick={() => set({ side: '' })} class={`${buttonClass} aria-pressed:border-ink aria-pressed:bg-ink aria-pressed:text-white`}>
+              Match the face colour automatically
+            </button>
+          </div>
+        </Section>
+      )}
 
       {mode !== 'neon' && (
         <Section title="Outline">

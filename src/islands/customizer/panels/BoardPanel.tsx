@@ -64,6 +64,16 @@ export default function BoardPanel({ design, onBoard, onResize }: Props) {
         {board.style === 'solid' && (
           <>
             <Swatches label={mode === 'neon' ? 'Backing colour' : 'Board colour'} value={board.color} colours={BOARD_COLOURS} onChange={(color) => onBoard({ color })} />
+            <Segmented
+              label="Finish"
+              value={board.finish}
+              options={[
+                { value: 'matte', label: 'Matte' },
+                { value: 'gloss', label: 'Gloss' },
+                { value: 'glitter', label: 'Glitter' },
+              ]}
+              onChange={(finish) => onBoard({ finish })}
+            />
             {mode !== 'neon' && (
               <label class="flex min-h-11 items-center gap-3 text-[0.95rem] font-semibold">
                 <input type="checkbox" class="size-5 accent-ink" checked={board.border} onChange={(e) => onBoard({ border: e.currentTarget.checked })} />

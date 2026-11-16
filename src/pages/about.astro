@@ -32,7 +32,7 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
       <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">About the workshop in {city}</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
         A signboard workshop in {city}, {site.address.region}, making 2D and 3D signboards, LED-illuminated signs, neon
-        signs and nameplates for customers in {site.serviceAreas.join(', ')}.
+        signs and nameplates, mainly for customers in {site.serviceAreas.join(', ')}{site.nationwide ? ', with orders taken from all over Pakistan' : ''}.
       </p>
     </div>
   </section>

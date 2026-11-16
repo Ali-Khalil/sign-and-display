@@ -3,9 +3,9 @@
  * of truth: `render(design)` makes the canvas match it, and user gestures on
  * the canvas are reported back through the handlers.
  */
-import { Canvas, FabricImage, Gradient, Rect, Shadow, type FabricObject } from 'fabric';
+import { Canvas, Circle, FabricImage, Gradient, Pattern, Rect, Shadow, type FabricObject } from 'fabric';
 import { ShapedText, type SignEffect } from './ShapedText';
-import { CANVAS_H, CANVAS_W, type Design, type Layer, type TextLayer } from '../lib/design';
+import { CANVAS_H, CANVAS_W, VIEW_ANGLE, type Design, type Layer, type TextLayer } from '../lib/design';
 import { loadSignFont } from '../lib/fonts';
 import { boardRect, type BoardRect } from '../lib/units';
 
@@ -34,6 +34,45 @@ function effectFor(design: Design): SignEffect {
   }
 }
 
+/** Sparkle texture for "glitter" boards. Seeded, so every render and export matches. */
+let glitter: Pattern | null = null;
+function glitterPattern(): Pattern {
+  if (glitter) return glitter;
+  const size = 220;
+  const el = document.createElement('canvas');
+  el.width = el.height = size;
+  const ctx = el.getContext('2d')!;
+  let seed = 20240917;
+  const rand = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+  for (let i = 0; i < 2600; i++) {
+    const bright = rand();
+    ctx.fillStyle = bright > 0.93 ? `rgba(255,255,255,${0.7 + rand() * 0.3})` : `rgba(255,255,255,${0.08 + rand() * 0.3})`;
+    const r = bright > 0.93 ? 0.9 + rand() * 1.1 : 0.5 + rand() * 0.8;
+    ctx.beginPath();
+    ctx.arc(rand() * size, rand() * size, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  for (let i = 0; i < 500; i++) {
+    ctx.fillStyle = `rgba(0,0,0,${0.08 + rand() * 0.2})`;
+    ctx.fillRect(rand() * size, rand() * size, 1.4, 1.4);
+  }
+  glitter = new Pattern({ source: el, repeat: 'repeat' });
+  return glitter;
+}
+
+const GLOSS = () =>
+  new Gradient({
+    type: 'linear',
+    gradientUnits: 'percentage',
+    coords: { x1: 0, y1: 0, x2: 0.9, y2: 1 },
+    colorStops: [
+      { offset: 0, color: 'rgba(255,255,255,0.3)' },
+      { offset: 0.42, color: 'rgba(255,255,255,0.03)' },
+      { offset: 0.58, color: 'rgba(0,0,0,0)' },
+      { offset: 1, color: 'rgba(0,0,0,0.22)' },
+    ],
+  });
+
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
     const img = new Image();
@@ -56,6 +95,10 @@ export class Scene {
   private nightBack = new Rect({ ...HELPER, excludeFromExport: false, left: 0, top: 0, width: CANVAS_W, height: CANVAS_H, originX: 'left', originY: 'top', fill: '#05070c', opacity: 0.62 });
   private nightFront = new Rect({ ...HELPER, excludeFromExport: false, left: 0, top: 0, width: CANVAS_W, height: CANVAS_H, originX: 'left', originY: 'top', fill: '#05070c', opacity: 0.4 });
   private board = new Rect({ ...HELPER, excludeFromExport: false, originX: 'center', originY: 'center' });
+  /** Gloss or glitter laid over a solid board. */
+  private boardFx = new Rect({ ...HELPER, originX: 'center', originY: 'center', strokeWidth: 0 });
+  /** Stand-off fixings at the corners of an acrylic backing. */
+  private standoffs = [0, 1, 2, 3].map(() => new Circle({ ...HELPER, originX: 'center', originY: 'center', fill: '#c9ced6', stroke: '#5d6470', strokeWidth: 1.5 }));
   private area = new Rect({ ...HELPER, originX: 'center', originY: 'center', fill: '', stroke: 'rgba(255,255,255,0.55)', strokeWidth: 2, strokeDashArray: [10, 8] });
   private areaShade = new Rect({ ...HELPER, originX: 'center', originY: 'center', fill: '', stroke: 'rgba(0,0,0,0.45)', strokeWidth: 2, strokeDashArray: [10, 8], strokeDashOffset: 9 });
   private guideV = new Rect({ ...HELPER, originX: 'center', originY: 'top', top: 0, width: 2, height: CANVAS_H, fill: '#00d0ff', visible: false });
@@ -72,7 +115,7 @@ export class Scene {
       renderOnAddRemove: false,
       stopContextMenu: true,
     });
-    this.canvas.add(this.nightBack, this.board, this.areaShade, this.area, this.nightFront, this.guideV, this.guideH);
+    this.canvas.add(this.nightBack, this.board, this.boardFx, ...this.standoffs, this.areaShade, this.area, this.nightFront, this.guideV, this.guideH);
     this.bindEvents();
   }
 
@@ -171,7 +214,7 @@ export class Scene {
     }
 
     this.updateBoard(design, rect, ordered);
-    [this.nightBack, this.board, this.areaShade, this.area, ...ordered, this.nightFront, this.guideV, this.guideH].forEach((obj, i) =>
+    [this.nightBack, this.board, this.boardFx, ...this.standoffs, this.areaShade, this.area, ...ordered, this.nightFront, this.guideV, this.guideH].forEach((obj, i) =>
       this.canvas.moveObjectTo(obj, i),
     );
     this.updateFlicker(design);
@@ -196,6 +239,9 @@ export class Scene {
       textAlign: layer.align,
       charSpacing: layer.charSpacing,
       effect,
+      depth: layer.depth,
+      depthAngle: VIEW_ANGLE[design.view],
+      sideColor: layer.side,
       fill: layer.color,
       glowColor: layer.glow,
       lit: design.lit,
@@ -293,6 +339,33 @@ export class Scene {
       shadow: board.style === 'solid' ? new Shadow({ color: 'rgba(0,0,0,0.45)', blur: 18, offsetX: 0, offsetY: 10 }) : null,
     });
     this.board.setCoords();
+
+    const solid = board.style === 'solid';
+    this.boardFx.set({
+      visible: board.style === 'clear' || (solid && board.finish !== 'matte'),
+      left: box.cx,
+      top: box.cy,
+      width: box.width - borderWidth * 2,
+      height: box.height - borderWidth * 2,
+      rx: Math.max(0, radius - borderWidth / 2),
+      ry: Math.max(0, radius - borderWidth / 2),
+      fill: solid && board.finish === 'glitter' ? glitterPattern() : GLOSS(),
+      opacity: board.style === 'clear' ? 0.35 : board.finish === 'glitter' ? 0.75 : 1,
+    });
+    this.boardFx.setCoords();
+
+    // An acrylic backing panel is held off the wall by four stand-off fixings.
+    const fixings = board.style === 'clear' && board.shape !== 'cut' && board.shape !== 'pill';
+    const inset = Math.max(16, Math.min(box.width, box.height) * 0.09);
+    this.standoffs.forEach((dot, i) => {
+      dot.set({
+        visible: fixings,
+        radius: Math.max(5, Math.min(box.width, box.height) * 0.022),
+        left: box.cx + (i % 2 === 0 ? -1 : 1) * (box.width / 2 - inset),
+        top: box.cy + (i < 2 ? -1 : 1) * (box.height / 2 - inset),
+      });
+      dot.setCoords();
+    });
 
     // With no board, a dashed outline shows the sign area the size refers to.
     const showArea = board.style === 'none' || board.shape === 'cut';
@@ -404,7 +477,7 @@ export class Scene {
 
   /** SVG of the sign only (no wall photo, no night shading), for designers. */
   toSVG(): string {
-    return this.withCleanCanvas([this.nightBack, this.nightFront], () => {
+    return this.withCleanCanvas([this.nightBack, this.nightFront, this.boardFx], () => {
       const background = this.canvas.backgroundImage;
       const color = this.canvas.backgroundColor;
       const vpt = this.canvas.viewportTransform;

@@ -24,15 +24,15 @@ const city = site.address.city;
 
 <BaseLayout
   title={`Signboards, LED & Neon Signs in ${city}`}
-  description={`Signboard workshop in ${city}, Punjab: 3D acrylic letters, LED and neon signs, ACP boards and nameplates. Get a quote on WhatsApp.`}
+  description={`${site.name}: signboard workshop in ${city}, Punjab. 3D letters, LED and neon signs, ACP boards and nameplates. Quotes on WhatsApp.`}
   schema={[faqPage(faqs)]}
 >
-  <Hero project={featured[0]} {waMessage} />
+  <Hero {waMessage} />
 
   {
     types.length > 0 && (
       <section class="wrap section">
-        <p class="eyebrow text-muted">What we make</p>
+        <p class="eyebrow text-blue">What we make</p>
         <h2 class="h2 mt-2">Signage options</h2>
         <p class="mt-3 max-w-2xl leading-relaxed text-muted">
           Every type of sign the workshop makes. Open one for materials, lighting choices and common questions.
@@ -65,7 +65,7 @@ const city = site.address.city;
   {
     featured.length > 0 && (
       <section class="wrap section">
-        <p class="eyebrow text-muted">Portfolio</p>
+        <p class="eyebrow text-blue">Portfolio</p>
         <h2 class="h2 mt-2">Recent work</h2>
         <div class="mt-8">
           <ProjectGrid projects={featured} />
@@ -82,7 +82,7 @@ const city = site.address.city;
   <CustomizerTeaser />
 
   <section class="wrap section">
-    <p class="eyebrow text-muted">Process</p>
+    <p class="eyebrow text-blue">Process</p>
     <h2 class="h2 mt-2">How it works</h2>
     <div class="mt-8">
       <HowItWorks />
@@ -112,7 +112,9 @@ const city = site.address.city;
     <div class="wrap section">
       <h2 class="h2">Service areas</h2>
       <p class="mt-3 max-w-2xl leading-relaxed text-muted">
-        The workshop is in {city}, {site.address.region}, and takes orders from these cities:
+        The workshop is in {city}, {site.address.region}. Most of our work is in these cities{
+          site.nationwide ? ', and we take orders from all over Pakistan.' : '.'
+        }
       </p>
       <ul class="mt-6 flex flex-wrap gap-2">
         {

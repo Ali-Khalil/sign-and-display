@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import Logo from './Logo.astro';
 import WhatsAppButton from './WhatsAppButton.astro';
 import { NAV } from '../../config/nav';
 import { site } from '../../config/site';
@@ -15,7 +16,7 @@ const isCurrent = (href: string) => path.startsWith(href);
 
 <header class="relative z-30 bg-ink text-white">
   <div class="wrap flex min-h-16 items-center justify-between gap-4">
-    <a href="/" class="font-display text-lg font-extrabold tracking-tight">{site.name}</a>
+    <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
 
     <nav aria-label="Main" class="hidden lg:block">
       <ul class="flex items-center gap-6 text-[0.95rem]">

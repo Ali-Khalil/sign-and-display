@@ -31,6 +31,10 @@ export interface ShapedTextProps {
   glowColor: string;
   /** Extrusion depth as a fraction of the font size. */
   depth: number;
+  /** Direction the letter sides run on screen, in degrees (90 = straight down). */
+  depthAngle: number;
+  /** Colour of the letter sides ("returns"). Empty = chosen from the face colour. */
+  sideColor: string;
   /** Lights on/off for the lit effects. */
   lit: boolean;
   /** 0–1 strength of the glow (daylight and flicker lower it). */
@@ -53,6 +57,8 @@ const OWN_KEYS: (keyof ShapedTextProps)[] = [
   'effect',
   'glowColor',
   'depth',
+  'depthAngle',
+  'sideColor',
   'lit',
   'glowLevel',
   'outlineColor',
@@ -67,10 +73,31 @@ function getMeasureCtx(): Ctx {
   return measureCtx;
 }
 
+type RGBA = [number, number, number, number];
+const rgba = (color: string): RGBA => new Color(color).getSource() as RGBA;
+const css = ([r, g, b, a]: RGBA) => `rgba(${Math.round(r)},${Math.round(g)},${Math.round(b)},${a})`;
+const clamp = (v: number, min: number, max: number) => Math.max(min, Math.min(max, v));
+
+/** Blend two colours: t = 0 gives `a`, t = 1 gives `b`. */
+function mix(a: string, b: string, t: number): string {
+  const x = rgba(a);
+  const y = rgba(b);
+  return css([x[0] + (y[0] - x[0]) * t, x[1] + (y[1] - x[1]) * t, x[2] + (y[2] - x[2]) * t, x[3] + (y[3] - x[3]) * t]);
+}
+
 function shade(color: string, factor: number): string {
-  const [r, g, b, a] = new Color(color).getSource();
-  const f = (v: number) => Math.round(Math.max(0, Math.min(255, v * factor)));
-  return `rgba(${f(r)},${f(g)},${f(b)},${a})`;
+  const [r, g, b, a] = rgba(color);
+  return css([clamp(r * factor, 0, 255), clamp(g * factor, 0, 255), clamp(b * factor, 0, 255), a]);
+}
+
+function luminance(color: string): number {
+  const [r, g, b] = rgba(color);
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+/** Side colour when none is chosen: steel grey for pale faces, a deeper tone of the face otherwise. */
+function autoSide(face: string): string {
+  return luminance(face) > 0.72 ? '#93a1b1' : shade(face, 0.62);
 }
 
 const escapeXml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -89,6 +116,8 @@ export class ShapedText extends FabricObject {
   declare effect: SignEffect;
   declare glowColor: string;
   declare depth: number;
+  declare depthAngle: number;
+  declare sideColor: string;
   declare lit: boolean;
   declare glowLevel: number;
   declare outlineColor: string;
@@ -108,7 +137,9 @@ export class ShapedText extends FabricObject {
     charSpacing: 0,
     effect: 'flat',
     glowColor: '#ff2d95',
-    depth: 0.12,
+    depth: 0.16,
+    depthAngle: 55,
+    sideColor: '',
     lit: true,
     glowLevel: 1,
     outlineColor: '#000000',
@@ -229,10 +260,81 @@ export class ShapedText extends FabricObject {
     ctx.restore();
   }
 
-  private extrude(ctx: Ctx, face: string): void {
-    const steps = Math.max(1, Math.round(this.fontSize * this.depth));
-    ctx.fillStyle = shade(face, 0.45);
-    for (let i = steps; i >= 1; i--) this.drawLines(ctx, i * 0.6, i * 0.8);
+  /** Unit vector and length (object units) of the letter depth. */
+  private depthVector(): { ux: number; uy: number; length: number } {
+    const rad = (this.depthAngle * Math.PI) / 180;
+    return { ux: Math.cos(rad), uy: Math.sin(rad), length: this.fontSize * this.depth };
+  }
+
+  private get sideBase(): string {
+    const face = typeof this.fill === 'string' ? this.fill : '#ffffff';
+    return this.sideColor || autoSide(face);
+  }
+
+  /** Soft shadow the letters cast on the wall behind them. */
+  private castShadow(ctx: Ctx, strength: number): void {
+    const { ux, uy, length } = this.depthVector();
+    ctx.save();
+    ctx.globalAlpha *= strength;
+    ctx.shadowColor = 'rgba(0,0,0,0.75)';
+    ctx.shadowBlur = this.fontSize * 0.09 * this.blurScale();
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    this.drawLines(ctx, ux * length * 1.2 + this.fontSize * 0.02, uy * length * 1.2 + this.fontSize * 0.05);
+    ctx.restore();
+  }
+
+  /**
+   * The sides of a 3D letter: the outline is repeated along the depth
+   * direction, shaded from a lit edge near the face to a dark back edge.
+   * `spill` tints the part nearest the face with light from a lit face.
+   */
+  private drawSides(ctx: Ctx, spill = ''): void {
+    const { ux, uy, length } = this.depthVector();
+    if (length < 0.5) return;
+    // About one copy per device pixel keeps the sides smooth without waste.
+    const steps = clamp(Math.ceil((length * this.blurScale()) / 0.75), 2, 96);
+    const base = this.sideBase;
+    const near = mix(base, '#ffffff', 0.18);
+    const far = shade(base, 0.34);
+    for (let i = steps; i >= 1; i--) {
+      const t = i / steps;
+      let colour = mix(near, far, Math.pow(t, 0.85));
+      if (spill && t < 0.35) colour = mix(spill, colour, 0.35 + t * 1.85);
+      ctx.fillStyle = colour;
+      this.drawLines(ctx, ux * length * t, uy * length * t);
+    }
+  }
+
+  /**
+   * The front of the letter: a trim edge, a lit bevel and a gentle sheen.
+   * Everything stroked is drawn BEFORE the face is filled, so only the part
+   * outside the letter shows. (Many fonts have overlapping outlines, and a
+   * stroke drawn on top would reveal them as lines inside the letters.)
+   */
+  private drawFace(ctx: Ctx, face: string, emissive: boolean): void {
+    // Trim cap: the thin rim that holds the face on a channel letter.
+    ctx.strokeStyle = mix(this.sideBase, emissive ? '#000000' : '#ffffff', emissive ? 0.1 : 0.35);
+    ctx.lineWidth = Math.max(1.5, this.fontSize * 0.035);
+    this.drawLines(ctx, 0, 0, 'stroke');
+
+    // Bevel: a pale copy nudged away from the depth direction catches the light.
+    const { ux, uy } = this.depthVector();
+    const nudge = Math.max(0.6, this.fontSize * 0.012);
+    ctx.fillStyle = emissive ? '#ffffff' : mix(face, '#ffffff', 0.65);
+    this.drawLines(ctx, -ux * nudge, -uy * nudge);
+
+    const half = this.height / 2;
+    const gradient = ctx.createLinearGradient(0, -half, 0, half);
+    if (emissive) {
+      gradient.addColorStop(0, mix(face, '#ffffff', 0.5));
+      gradient.addColorStop(1, mix(face, '#ffffff', 0.28));
+    } else {
+      gradient.addColorStop(0, mix(face, '#ffffff', 0.2));
+      gradient.addColorStop(0.5, face);
+      gradient.addColorStop(1, shade(face, 0.84));
+    }
+    ctx.fillStyle = gradient;
+    this.drawLines(ctx, 0, 0);
   }
 
   private outline(ctx: Ctx): void {
@@ -252,26 +354,31 @@ export class ShapedText extends FabricObject {
       case 'extrude':
       case 'front-lit': {
         const lit = this.effect === 'front-lit' && this.lit;
-        this.extrude(ctx, face);
-        if (lit) this.glow(ctx, this.glowColor, 35, 0.9, this.glowColor);
+        // A lit sign at night throws light, not a hard shadow.
+        this.castShadow(ctx, lit ? 0.35 : 0.9);
+        if (lit) this.glow(ctx, this.glowColor, 70, 0.55, this.glowColor);
+        this.drawSides(ctx, lit ? this.glowColor : '');
+        if (lit) this.glow(ctx, this.glowColor, 26, 0.9, this.glowColor);
         this.outline(ctx);
-        ctx.fillStyle = face;
-        this.drawLines(ctx, 0, 0);
-        // Light top highlight on the face edge.
-        ctx.strokeStyle = 'rgba(255,255,255,0.35)';
-        ctx.lineWidth = Math.max(0.5, this.fontSize * 0.012);
-        this.drawLines(ctx, -0.4, -0.4, 'stroke');
+        this.drawFace(ctx, lit ? mix(face, this.glowColor, 0.25) : face, lit);
         break;
       }
       case 'halo': {
         if (this.lit) {
-          // Light spills out from BEHIND a solid face.
-          this.glow(ctx, this.glowColor, 60, 0.9, this.glowColor);
-          this.glow(ctx, this.glowColor, 25, 1, this.glowColor);
+          // Light spills out from BEHIND a solid letter and washes the wall.
+          const { ux, uy, length } = this.depthVector();
+          ctx.save();
+          ctx.translate(ux * length, uy * length);
+          this.glow(ctx, this.glowColor, 90, 0.75, this.glowColor);
+          this.glow(ctx, this.glowColor, 40, 1, this.glowColor);
+          this.glow(ctx, '#ffffff', 12, 0.8, this.glowColor);
+          ctx.restore();
+        } else {
+          this.castShadow(ctx, 0.9);
         }
+        this.drawSides(ctx);
         this.outline(ctx);
-        ctx.fillStyle = face;
-        this.drawLines(ctx, 0, 0);
+        this.drawFace(ctx, face, false);
         break;
       }
       case 'neon': {
@@ -331,9 +438,10 @@ export class ShapedText extends FabricObject {
         .join('');
 
     const out: string[] = [];
-    if (this.effect === 'extrude' || this.effect === 'front-lit') {
-      const depth = Math.max(1, Math.round(this.fontSize * this.depth));
-      out.push(lines(depth * 0.6, depth * 0.8, `fill="${shade(face, 0.45)}"`));
+    if (this.effect === 'extrude' || this.effect === 'front-lit' || this.effect === 'halo') {
+      const { ux, uy, length } = this.depthVector();
+      out.push(lines(ux * length, uy * length, `fill="${shade(this.sideBase, 0.34)}"`));
+      out.push(lines((ux * length) / 2, (uy * length) / 2, `fill="${shade(this.sideBase, 0.7)}"`));
     }
     if (this.effect === 'neon') {
       out.push(lines(0, 0, `fill="#ffffff" stroke="${this.glowColor}" stroke-width="${Math.max(1, this.fontSize * 0.04)}" stroke-linejoin="round"`));
