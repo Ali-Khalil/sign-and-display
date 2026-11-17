@@ -62,7 +62,16 @@ Answers that are deliberately general and worth making specific:
 - [ ] Type-page headings still end "in Jhang". Decide whether to keep that now
       that orders are taken nationwide.
 
-## 5. Photos
+## 5. Welcome kits (`src/content/services/welcome-kits.md`)
+
+- [ ] The items listed (box, mug, water bottle, notepad, pencils) are the ones
+      you offer; add or remove items as needed
+- [ ] Add answers you can give once decided: minimum order quantity,
+      whether each item can carry an employee's name, typical turnaround,
+      and how the logo is applied (printing, engraving, etc.)
+- [ ] Replace the drawn example kit picture with photos of real kits
+
+## 6. Photos
 
 - [ ] Portfolio: every project is a sample design and stays unpublished.
       Add real jobs (day and night photos) under `src/content/portfolio/`.
@@ -70,11 +79,11 @@ Answers that are deliberately general and worth making specific:
       Replace them with real photos when you have them.
 - [ ] Mark the best projects `featured: true` to show them in the home carousel.
 
-## 6. Prices (skipped for now)
+## 7. Prices (skipped for now)
 
 - [ ] Fill in `src/config/pricing.ts` when ready. "Starting from" prices and
       the estimate in the sign designer appear by themselves once it is filled.
 
-## 7. Final check
+## 8. Final check
 
 - [ ] `pnpm check:launch` passes (it fails while any placeholder is left)

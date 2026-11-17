@@ -1,4 +1,5 @@
 ---
+import { Picture } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/sections/Hero.astro';
 import TypesGrid from '../components/sections/TypesGrid.astro';
@@ -9,12 +10,14 @@ import HowItWorks from '../components/sections/HowItWorks.astro';
 import FAQ from '../components/ui/FAQ.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import Icon from '../components/ui/Icon.astro';
+import KitIcon from '../components/ui/KitIcon.astro';
 import { site } from '../config/site';
-import { getFaqs, getProjects, getTypes } from '../lib/content';
+import { getFaqs, getProjects, getServices, getTypes } from '../lib/content';
 import { faqPage } from '../lib/schema';
 import { waMessageGeneral } from '../lib/whatsapp';
 
 const types = await getTypes();
+const services = await getServices();
 const projects = await getProjects();
 const featured = projects.filter((p) => p.data.featured).slice(0, 9);
 const faqs = (await getFaqs()).filter((f) => f.data.home).slice(0, 6).map((f) => f.data);
@@ -47,6 +50,51 @@ const city = site.address.city;
         </p>
       </section>
     )
+  }
+
+  {
+    services.map((service) => (
+      <section class="bg-paper-soft">
+        <div class="wrap section grid items-center gap-8 md:grid-cols-[1.1fr_1fr]">
+          <div>
+            <p class="eyebrow text-blue">Also from {site.name}</p>
+            <h2 class="h2 mt-2">{service.data.title}</h2>
+            <p class="mt-3 max-w-xl leading-relaxed text-muted">{service.data.shortDescription}</p>
+            <a
+              href={`/${service.id}/`}
+              class="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-ink px-6 font-semibold text-ink hover:bg-ink hover:text-white"
+            >
+              About {service.data.navLabel.toLowerCase()} <Icon name="arrow" class="size-4 rtl:rotate-180" />
+            </a>
+          </div>
+          {service.data.heroImage ? (
+            <Picture
+              src={service.data.heroImage}
+              alt={service.data.heroAlt ?? ''}
+              formats={['avif', 'webp']}
+              widths={[400, 640, 960]}
+              sizes="(min-width: 768px) 45vw, 100vw"
+              loading="lazy"
+              class="aspect-[16/10] w-full rounded-xl object-cover"
+            />
+          ) : (
+            <ul class="grid grid-cols-3 gap-3" aria-label={`Items in ${service.data.title.toLowerCase()}`}>
+              {service.data.items
+                .filter((item) => item.name !== 'Something else')
+                .slice(0, 6)
+                .map((item) => (
+                  <li class="flex flex-col items-center gap-2 rounded-xl bg-white p-4 text-center text-sm font-semibold">
+                    <span class="text-blue">
+                      <KitIcon name={item.name} class="size-9" />
+                    </span>
+                    {item.name}
+                  </li>
+                ))}
+            </ul>
+          )}
+        </div>
+      </section>
+    ))
   }
 
   <section class="bg-ink text-white">

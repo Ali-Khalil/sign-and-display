@@ -1,6 +1,6 @@
 import type { APIRoute } from 'astro';
 import { isPlaceholder, site } from '../config/site';
-import { getGuides, getTypes } from '../lib/content';
+import { getGuides, getServices, getTypes } from '../lib/content';
 import { hoursText } from '../lib/hours';
 
 /** Short markdown summary of the business for AI answer engines. */
@@ -8,6 +8,7 @@ export const GET: APIRoute = async ({ site: base }) => {
   const url = (path: string) => new URL(path, base).href;
   const types = await getTypes();
   const guides = await getGuides();
+  const services = await getServices();
   const { city, region } = site.address;
 
   const contact = [
@@ -32,6 +33,7 @@ export const GET: APIRoute = async ({ site: base }) => {
     ...(types.length
       ? types.map((t) => `- [${t.data.title}](${url(`/signage/${t.id}/`)}): ${t.data.shortDescription}`)
       : [`- [All signage types](${url('/signage/')})`]),
+    ...(services.length ? ['', '## Other services', ...services.map((s) => `- [${s.data.title}](${url(`/${s.id}/`)}): ${s.data.shortDescription}`)] : []),
     '',
     '## Key pages',
     `- [All signage types](${url('/signage/')})`,

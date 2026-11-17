@@ -99,6 +99,43 @@ const faqs = defineCollection({
   }),
 });
 
+/**
+ * Services that are not signs (e.g. branded welcome kits). Each entry gets
+ * its own page at /<file-name>/, so the file name must not clash with an
+ * existing page such as "about" or "contact".
+ */
+const services = defineCollection({
+  loader: glob({ pattern: '*.md', base: './src/content/services' }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      /** Short name for menus and cards. */
+      navLabel: z.string(),
+      order: z.number().default(100),
+      shortDescription: z.string().max(160),
+      /** Answer-first paragraph, 40–60 words. */
+      summary: z.string(),
+      heroImage: image().optional(),
+      heroAlt: z.string().optional(),
+      /** The things that can be included, each with a short note. */
+      items: z.array(z.object({ name: z.string(), text: z.string() })).default([]),
+      bestFor: z.array(z.string()).default([]),
+      /** Steps from enquiry to delivery. */
+      steps: z.array(z.object({ title: z.string(), text: z.string() })).default([]),
+      /** Blanks in the pre-filled WhatsApp message, e.g. "Number of kits". */
+      enquiryFields: z.array(z.string()).default([]),
+      faqs: z.array(faq).default([]),
+      seo: z
+        .object({
+          title: z.string().max(60).optional(),
+          description: z.string().max(155).optional(),
+        })
+        .default({}),
+      updated: z.coerce.date(),
+      draft: z.boolean().default(false),
+    }),
+});
+
 const pages = defineCollection({
   loader: glob({ pattern: '*.md', base: './src/content/pages' }),
   schema: z.object({
@@ -109,4 +146,4 @@ const pages = defineCollection({
   }),
 });
 
-export const collections = { signageTypes, portfolio, guides, faqs, pages };
+export const collections = { signageTypes, portfolio, guides, faqs, pages, services };

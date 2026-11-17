@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
 import { site } from '../config/site';
-import { getGuides, getProjects, getTypes } from './content';
+import { getGuides, getProjects, getServices, getTypes } from './content';
 
 const W = 1200;
 const H = 630;
@@ -72,6 +72,7 @@ export function ogEntries(): Promise<Map<string, string>> {
       ['signboards-in-jhang', `Signboards in ${site.address.city}`],
     ]);
     for (const type of await getTypes()) map.set(`signage/${type.id}`, type.data.title);
+    for (const service of await getServices()) map.set(service.id, service.data.title);
     for (const guide of await getGuides()) map.set(`guides/${guide.id}`, guide.data.title);
     for (const project of await getProjects()) map.set(`portfolio/${project.id}`, project.data.title);
     return map;

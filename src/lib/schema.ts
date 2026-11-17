@@ -5,7 +5,7 @@
  */
 import { hasGeo, isPlaceholder, site } from '../config/site';
 import { getRate } from '../config/pricing';
-import type { Guide, Project, SignageType } from './content';
+import type { Guide, Project, Service, SignageType } from './content';
 
 type Node = Record<string, unknown>;
 
@@ -141,6 +141,19 @@ export function service(type: SignageType, pageUrl: string, base: URL | string):
     };
   }
   return node;
+}
+
+/** Service node for a non-sign service page. No price is given. */
+export function otherService(service: Service, pageUrl: string, base: URL | string): Node {
+  return {
+    '@type': 'Service',
+    name: service.data.title,
+    serviceType: service.data.title,
+    description: service.data.shortDescription,
+    url: pageUrl,
+    provider: { '@id': businessId(base) },
+    areaServed: areaServed(),
+  };
 }
 
 export function creativeWork(project: Project, pageUrl: string, imageUrls: string[], base: URL | string): Node {

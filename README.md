@@ -56,6 +56,7 @@ Content lives in `src/content/` as Markdown files. The file name is the URL:
 | Folder | Becomes |
 |---|---|
 | `signage-types/` | `/signage/[type]/` pages, the home grid and the comparison table |
+| `services/` | Pages for services that are not signs, at `/<file-name>/` (now: `welcome-kits`) |
 | `portfolio/` | `/portfolio/` and project pages |
 | `faqs/` | General questions on `/faq/` and the home page (`home: true`) |
 | `guides/` | `/guides/` articles |

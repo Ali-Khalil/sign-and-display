@@ -27,6 +27,12 @@ export function waMessageForType(typeName: string, pageUrl: string): string {
   return `${GREETING} I'm interested in ${typeName}.\nText/Name: \nSize (approx): \nCity: \n(From: ${pageUrl})`;
 }
 
+/** Enquiry for a service, with the blanks listed on its page. */
+export function waMessageForService(serviceName: string, fields: string[], pageUrl: string): string {
+  const blanks = [...fields, 'City'].map((field) => `${field}: `).join('\n');
+  return `${GREETING} I'm interested in ${serviceName}.\n${blanks}\n(From: ${pageUrl})`;
+}
+
 export function waMessageForProject(projectTitle: string, pageUrl: string): string {
   return `${GREETING} I saw "${projectTitle}" in your portfolio and want something similar.\nText/Name: \nSize (approx): \nCity: \n(From: ${pageUrl})`;
 }

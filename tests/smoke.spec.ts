@@ -5,6 +5,7 @@ const PAGES = [
   '/signage/',
   '/signage/3d-acrylic-letters/',
   '/signage/neon-signs/',
+  '/welcome-kits/',
   '/portfolio/',
   '/portfolio/sample-shopfront-3d-letters/',
   '/guides/',
@@ -164,4 +165,18 @@ test('hero carousel steps through the logo and recent work', async ({ page }) =>
   await expect(carousel.locator('[data-track] > div').nth(1).locator('a')).toBeInViewport();
   await page.getByRole('button', { name: 'Previous slide' }).click();
   await expect(carousel.locator('[data-dot="0"]')).toHaveAttribute('aria-current', 'true');
+});
+
+test('welcome kits page asks for the kit details on WhatsApp', async ({ page }) => {
+  await page.goto('/welcome-kits/');
+  await expect(page.locator('h1')).toHaveText('Branded Welcome Kits');
+  await expect(page.getByRole('heading', { name: 'What goes in the box?', exact: true })).toBeVisible();
+  const href = await page.locator('main a[data-wa-location="service-hero"]').getAttribute('href');
+  const text = new URL(href!).searchParams.get('text')!;
+  expect(text).toContain("I'm interested in branded welcome kits.");
+  expect(text).toContain('Number of kits: ');
+  expect(text).toContain('City: ');
+  expect(text).toContain('/welcome-kits/)');
+  await page.goto('/');
+  await expect(page.getByRole('link', { name: /About welcome kits/ })).toBeVisible();
 });

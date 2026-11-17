@@ -4,12 +4,13 @@ import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
 import CTABand from '../components/ui/CTABand.astro';
 import FAQ from '../components/ui/FAQ.astro';
 import { site } from '../config/site';
-import { getFaqs, getTypes } from '../lib/content';
+import { getFaqs, getServices, getTypes } from '../lib/content';
 import { breadcrumbList, faqPage, type QA } from '../lib/schema';
 import { waMessageGeneral } from '../lib/whatsapp';
 
 const general = await getFaqs();
 const types = await getTypes();
+const services = await getServices();
 
 // General questions grouped by topic, then each signage type's own questions.
 const groups: { title: string; href?: string; items: QA[] }[] = [];
@@ -20,6 +21,9 @@ for (const faq of general) {
 }
 for (const type of types) {
   if (type.data.faqs.length) groups.push({ title: type.data.title, href: `/signage/${type.id}/`, items: type.data.faqs });
+}
+for (const service of services) {
+  if (service.data.faqs.length) groups.push({ title: service.data.title, href: `/${service.id}/`, items: service.data.faqs });
 }
 const all = groups.flatMap((g) => g.items);
 const slug = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');

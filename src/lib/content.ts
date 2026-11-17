@@ -12,6 +12,7 @@ export type SignageType = CollectionEntry<'signageTypes'>;
 export type Project = CollectionEntry<'portfolio'>;
 export type Guide = CollectionEntry<'guides'>;
 export type Faq = CollectionEntry<'faqs'>;
+export type Service = CollectionEntry<'services'>;
 
 export async function getTypes(): Promise<SignageType[]> {
   const all = await getCollection('signageTypes', visible);
@@ -33,6 +34,11 @@ export async function getFaqs(): Promise<Faq[]> {
   return all.sort((a, b) => a.data.order - b.data.order);
 }
 
+export async function getServices(): Promise<Service[]> {
+  const all = await getCollection('services', visible);
+  return all.sort((a, b) => a.data.order - b.data.order);
+}
+
 export async function getPage(id: string): Promise<CollectionEntry<'pages'> | undefined> {
   const all = await getCollection('pages', visible);
   return all.find((p) => p.id === id);
@@ -47,6 +53,7 @@ export async function hasSampleContent(): Promise<boolean> {
     getCollection('guides'),
     getCollection('faqs'),
     getCollection('pages'),
+    getCollection('services'),
   ]);
   return lists.some((list) => list.some((e) => e.data.draft));
 }
