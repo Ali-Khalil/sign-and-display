@@ -8,7 +8,7 @@ const PAGES = [
   '/portfolio/',
   '/portfolio/sample-shopfront-3d-letters/',
   '/guides/',
-  '/guides/sample-front-lit-vs-backlit-vs-halo-lit/',
+  '/guides/front-lit-vs-backlit-vs-halo-lit/',
   '/faq/',
   '/about/',
   '/contact/',

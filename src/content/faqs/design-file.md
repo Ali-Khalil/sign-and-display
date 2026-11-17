@@ -1,10 +1,7 @@
 ---
-# SAMPLE CONTENT. Every fact below is a placeholder for layout review.
-# The owner must check and rewrite it, then set draft: false.
-draft: true
 q: "What if I do not have a logo or design?"
-a: "Sample answer. The owner will explain the design help that is available and what it costs."
+a: "That is fine. Send the name and any ideas, colours or reference photos on WhatsApp, and a design is prepared for you to approve."
 topic: Design
-order: 4
+order: 11
 home: true
 ---

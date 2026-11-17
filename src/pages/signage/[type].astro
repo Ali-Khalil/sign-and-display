@@ -157,7 +157,7 @@ const hasSizes = d.typicalSizes.length > 0 || startingFrom !== null;
   <section class="bg-paper-soft">
     <div class="wrap section">
       <h2 class="h2">How does ordering work?</h2>
-      <dl class="mt-5 flex flex-wrap gap-x-10 gap-y-3">
+      <dl class:list={['mt-5 flex flex-wrap gap-x-10 gap-y-3', !d.turnaround && d.installationIncluded === undefined && 'hidden']}>
         {
           d.turnaround && (
             <div>
