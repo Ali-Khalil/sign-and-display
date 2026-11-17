@@ -37,9 +37,8 @@ faqs:
   - q: "Can a reception sign be lit?"
     a: "Yes. Halo lighting is a popular choice for reception walls because the glow is soft at close range. Front-lit letters and neon are also possible."
   - q: "Do you make reception signs for offices outside Jhang?"
-    a: "Yes. Most work is in Jhang, Faisalabad, Chiniot, Sargodha and Toba Tek Singh, and orders are taken from all over Pakistan. How fitting or delivery works for your location is confirmed on WhatsApp."
+    a: "Yes. Most work is, Faisalabad, Chiniot, Sargodha and Toba Tek Singh, and orders are taken from all over Pakistan. How fitting or delivery works for your location is confirmed on WhatsApp."
 seo:
-  title: "Reception & Logo Wall Signs in Jhang"
-  description: "Raised logo and name signs for reception walls, clinics and showrooms in Jhang. Ask for a quote on WhatsApp."
+  description: "Raised logo and name signs for reception walls, clinics and showrooms across Pakistan. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

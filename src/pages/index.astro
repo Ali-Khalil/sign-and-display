@@ -20,6 +20,7 @@ const types = await getTypes();
 const services = await getServices();
 const projects = await getProjects();
 const featured = projects.filter((p) => p.data.featured).slice(0, 9);
+const allExamples = featured.length > 0 && featured.every((p) => p.data.example);
 const faqs = (await getFaqs()).filter((f) => f.data.home).slice(0, 6).map((f) => f.data);
 const waMessage = waMessageGeneral(new URL('/', Astro.site).href);
 const city = site.address.city;
@@ -27,7 +28,7 @@ const city = site.address.city;
 
 <BaseLayout
   title="3D Signboards, LED & Neon Signs in Pakistan"
-  description={`${site.name} makes 3D letters, LED and neon signs, ACP boards and nameplates in ${city}, Punjab, for customers across Pakistan. Quotes on WhatsApp.`}
+  description={`${site.name} makes 3D letters, LED and neon signs, ACP boards, nameplates and branded welcome kits for customers across Pakistan. Quotes on WhatsApp.`}
   schema={[faqPage(faqs)]}
 >
   <Hero projects={featured} {waMessage} />
@@ -114,7 +115,12 @@ const city = site.address.city;
     featured.length > 0 && (
       <section class="wrap section">
         <p class="eyebrow text-blue">Portfolio</p>
-        <h2 class="h2 mt-2">Recent work</h2>
+        <h2 class="h2 mt-2">{allExamples ? 'Example designs' : 'Recent work'}</h2>
+        {allExamples && (
+          <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+            Made with our sign designer to show the kinds of signs we make. Photos of finished jobs will be added here.
+          </p>
+        )}
         <div class="mt-8">
           <ProjectGrid projects={featured} />
         </div>
@@ -160,9 +166,7 @@ const city = site.address.city;
     <div class="wrap section">
       <h2 class="h2">Service areas</h2>
       <p class="mt-3 max-w-2xl leading-relaxed text-muted">
-        The workshop is in {city}, {site.address.region}. Most of our work is in these cities{
-          site.nationwide ? ', and we take orders from all over Pakistan.' : '.'
-        }
+        Most of our work is in these cities{site.nationwide ? ', and we take orders from all over Pakistan.' : '.'}
       </p>
       <ul class="mt-6 flex flex-wrap gap-2">
         {

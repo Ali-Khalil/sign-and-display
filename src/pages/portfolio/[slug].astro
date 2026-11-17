@@ -36,7 +36,7 @@ const facts = [
   { label: 'Size', value: d.size },
   { label: 'Materials', value: d.materials.join(', ') },
   { label: 'Lighting', value: d.lighting },
-  { label: 'Completed', value: formatDate(d.date).replace(/^\d+ /, '') },
+  { label: 'Completed', value: d.example ? undefined : formatDate(d.date).replace(/^\d+ /, '') },
 ].filter((f) => f.value);
 ---
 
@@ -74,6 +74,11 @@ const facts = [
       </ul>
 
       <aside>
+        {
+          d.example && (
+            <p class="mb-4 inline-flex rounded-full bg-blue-soft px-3 py-1 text-sm font-semibold text-blue">Example design</p>
+          )
+        }
         <p class="text-lg leading-relaxed">{d.summary}</p>
         <dl class="mt-6 divide-y divide-line border-y border-line">
           {

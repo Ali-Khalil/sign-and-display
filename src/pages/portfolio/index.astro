@@ -10,6 +10,7 @@ import { breadcrumbList } from '../../lib/schema';
 import { waMessageGeneral } from '../../lib/whatsapp';
 
 const projects = await getProjects();
+const allExamples = projects.length > 0 && projects.every((p) => p.data.example);
 const used = new Set(projects.flatMap((p) => p.data.types));
 const types = (await getTypes()).filter((t) => used.has(t.id)).map((t) => ({ slug: t.id, title: t.data.title }));
 const crumbs = [
@@ -20,8 +21,8 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
 ---
 
 <BaseLayout
-  title={`Signboard Portfolio: Work in ${site.address.city} & Nearby`}
-  description={`Photos of signboards, LED signs, neon signs and nameplates made by the workshop in ${site.address.city}, Punjab.`}
+  title="Signboard Portfolio: Recent Work"
+  description={`Signboards, LED signs, neon signs and nameplates by ${site.name}. Filter by type and open a project for its details.`}
   schema={[breadcrumbList(crumbs, Astro.site!)]}
   {waMessage}
 >
@@ -31,8 +32,11 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
       <Breadcrumbs items={crumbs} dark />
       <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Signboard portfolio</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
-        Signs made by the workshop in {site.address.city}. Filter by type, and open a project for its size, materials
-        and lighting.
+        {
+          allExamples
+            ? 'Example designs made with our sign designer, showing the kinds of signs we make. Photos of finished jobs will be added here.'
+            : `Signs made by ${site.name}. Filter by type, and open a project for its size, materials and lighting.`
+        }
       </p>
     </div>
   </section>

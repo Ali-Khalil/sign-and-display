@@ -22,15 +22,15 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
 ---
 
 <BaseLayout
-  title={`Contact the Signboard Workshop in ${city}`}
-  description={`WhatsApp, phone, address and opening hours for the signboard workshop in ${city}, Punjab. Send your sign details for a quote.`}
+  title={`Contact ${site.name}`}
+  description={`WhatsApp, phone, address and opening hours for ${site.name}. Send your sign details for a design and a quote.`}
   schema={[breadcrumbList(crumbs, Astro.site!)]}
   {waMessage}
 >
   <section class="bg-hero text-white">
     <div class="wrap py-10 md:py-14">
       <Breadcrumbs items={crumbs} dark />
-      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Contact us in {city}</h1>
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Contact {site.name}</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
         WhatsApp is the quickest way to get a design and a quote. Send the text for your sign, the approximate size and
         your city.

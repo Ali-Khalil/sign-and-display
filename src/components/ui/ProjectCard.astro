@@ -32,7 +32,9 @@ const cover = project.data.images[0]!;
       </a>
     </H>
     <p class:list={['mt-1 text-sm', dark ? 'text-muted-dark' : 'text-muted']}>
-      {project.data.city}{project.data.lighting && project.data.lighting !== 'None' ? ` · ${project.data.lighting}` : ''}
+      {[project.data.example ? 'Example design' : project.data.city, project.data.lighting && project.data.lighting !== 'None' ? project.data.lighting : '']
+        .filter(Boolean)
+        .join(' · ')}
     </p>
   </div>
 </article>

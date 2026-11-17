@@ -41,7 +41,6 @@ faqs:
   - q: "Can an old board be replaced on the existing frame?"
     a: "Sometimes. If the existing frame is straight, sound and the right size, a new face can often be fitted to it. This is checked from photos or on site before quoting."
 seo:
-  title: "ACP & Aluminium Sign Boards in Jhang"
-  description: "ACP shopfront boards with aluminium borders in Jhang, with printed or raised lettering. Ask for a quote on WhatsApp."
+  description: "ACP shopfront boards with aluminium borders, with printed or raised lettering. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

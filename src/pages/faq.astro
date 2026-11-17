@@ -37,7 +37,7 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
 
 <BaseLayout
   title={`Signboard FAQ: Ordering, Materials & Lighting`}
-  description={`Answers to common questions about ordering signboards, LED and neon signs from the workshop in ${site.address.city}.`}
+  description={`Answers to common questions about ordering signboards, LED and neon signs from ${site.name}.`}
   schema={[breadcrumbList(crumbs, Astro.site!), faqPage(all)]}
   {waMessage}
 >

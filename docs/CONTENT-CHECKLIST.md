@@ -57,10 +57,8 @@ Answers that are deliberately general and worth making specific:
       None of that is on the page yet because it was not supplied.
 - [ ] General FAQs (`src/content/faqs/`): nine are published. Add ones about
       payment and timing once decided.
-- [ ] Jhang page: three local questions are still sample drafts
-      (`jhang-*.md`). Write real answers and set `draft: false`.
-- [ ] Type-page headings still end "in Jhang". Decide whether to keep that now
-      that orders are taken nationwide.
+- [ ] Jhang page: the three local questions (`jhang-*.md`) have general
+      answers. Add specifics (visits, fitting, measuring) once decided.
 
 ## 5. Welcome kits (`src/content/services/welcome-kits.md`)
 
@@ -73,8 +71,10 @@ Answers that are deliberately general and worth making specific:
 
 ## 6. Photos
 
-- [ ] Portfolio: every project is a sample design and stays unpublished.
-      Add real jobs (day and night photos) under `src/content/portfolio/`.
+- [ ] Portfolio: the seven projects are example designs made in the sign
+      designer, marked `example: true` and badged "Example design". Add real
+      jobs (day and night photos) under `src/content/portfolio/` and delete
+      the examples once there are enough.
 - [ ] Signage type pictures are "example designs" made in the sign designer.
       Replace them with real photos when you have them.
 - [ ] Mark the best projects `featured: true` to show them in the home carousel.

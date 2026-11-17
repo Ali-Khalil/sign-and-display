@@ -1,7 +1,6 @@
 // Renders example pictures with the site's own sign designer, on the real wall
-// photos: one per signage type (published, tagged "example design") and the
-// sample portfolio projects (drafts, tagged "not a real project"). None of
-// them are photos of real work.
+// photos: one per signage type and one per example portfolio project, each
+// tagged "example design". None of them are photos of real work.
 //   pnpm build:preview && node scripts/make-sample-images.mjs
 import { mkdirSync } from 'node:fs';
 import { chromium } from 'playwright';
@@ -71,14 +70,12 @@ function build() {
   };
 }
 
-// Sample portfolio projects carry a clear warning. Signage type pictures are published, so they
-// get a small, plain tag that says what they are.
+// Every picture is tagged as an example design.
 const label = (text, width) =>
   Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1250">
   <rect x="40" y="1140" width="${width}" height="70" rx="35" fill="#000" opacity=".72"/>
   <text x="80" y="1187" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="34" fill="#fff" letter-spacing="2">${text}</text>
 </svg>`);
-const SAMPLE_LABEL = label('SAMPLE DESIGN · NOT A REAL PROJECT', 800);
 const EXAMPLE_LABEL = label('EXAMPLE DESIGN', 400);
 
 const server = await startPreview(4397);
@@ -96,7 +93,7 @@ try {
     const url = await page.evaluate(() => window.__signDesigner.scene.toPNG(2000));
     await sharp(Buffer.from(url.split(',')[1], 'base64'))
       .extract({ left: 0, top: 75, width: 2000, height: 1250 })
-      .composite([{ input: name.startsWith('type-') ? EXAMPLE_LABEL : SAMPLE_LABEL }])
+      .composite([{ input: EXAMPLE_LABEL }])
       .jpeg({ quality: 82, mozjpeg: true })
       .toFile(`${OUT}/${name}.jpg`);
     console.log('wrote', name);

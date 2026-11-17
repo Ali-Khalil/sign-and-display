@@ -6,7 +6,7 @@ enquiries. Built with Astro, Tailwind CSS v4, Preact and Fabric.js.
 
 Status: **Phase 3**. The content site, the sign designer and the SEO content
 (type pages, FAQ, About, six guides, per-page social images) are built. The
-portfolio still holds sample designs only, and several business details are
+portfolio still holds example designs only, and several business details are
 placeholders: see [`docs/CONTENT-CHECKLIST.md`](docs/CONTENT-CHECKLIST.md).
 
 ## Commands
@@ -62,11 +62,13 @@ Content lives in `src/content/` as Markdown files. The file name is the URL:
 | `guides/` | `/guides/` articles |
 | `pages/about.md` | The story section of `/about/` |
 
-Entries marked `draft: true` are samples: the portfolio projects and the three
-Jhang questions. Drafts show in `pnpm dev` and `pnpm build:preview` (with a
-banner and `noindex`) and are left out of `pnpm build`. Everything else is
-published. To publish a draft: replace the sample facts with real ones,
-replace the sample image, and set `draft: false`.
+Everything in these folders is published. An entry can be hidden with
+`draft: true`: drafts show in `pnpm dev` and `pnpm build:preview` and are left
+out of `pnpm build`.
+
+The portfolio currently holds example designs made with the sign designer,
+marked `example: true`. They show an "Example design" badge and no city, size
+or date. Replace them with real jobs as photos come in.
 
 Rules of thumb:
 
@@ -79,7 +81,7 @@ Rules of thumb:
 
 The images in `src/assets/samples/` are rendered by the site's own sign
 designer (`node scripts/make-sample-images.mjs`, after `pnpm build:preview`)
-and labelled as sample designs. They are not photos of real work.
+and tagged "example design". They are not photos of real work.
 
 Photos by other people (currently the wall textures in the sign designer) are
 openly licensed. Each one is listed in `src/config/credits.ts`, which feeds the

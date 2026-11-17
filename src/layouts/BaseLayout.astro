@@ -58,13 +58,6 @@ const ga4 = site.features.ga4 && analytics.ga4MeasurementId !== '';
     >
       Skip to content
     </a>
-    {
-      sample && (
-        <p class="bg-brand px-4 py-1.5 text-center text-sm font-semibold text-brand-ink">
-          Preview build with sample content. Not for publication.
-        </p>
-      )
-    }
     <Header {waMessage} sticky={stickyHeader} />
     <main id="main" class="flex-1">
       <slot />

@@ -163,8 +163,10 @@ export function creativeWork(project: Project, pageUrl: string, imageUrls: strin
     name: project.data.title,
     description: project.data.summary,
     url: pageUrl,
-    dateCreated: project.data.date.toISOString().slice(0, 10),
-    locationCreated: { '@type': 'City', name: project.data.city },
+    ...(project.data.example
+      ? {}
+      : { dateCreated: project.data.date.toISOString().slice(0, 10) }),
+    ...(project.data.city ? { locationCreated: { '@type': 'City', name: project.data.city } } : {}),
     creator: { '@id': businessId(base) },
     image: project.data.images.map((img, i) => ({
       '@type': 'ImageObject',

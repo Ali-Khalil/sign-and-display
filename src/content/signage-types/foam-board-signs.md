@@ -39,7 +39,6 @@ faqs:
   - q: "Is foam board cheaper than acrylic?"
     a: "Generally yes. Foam board costs less than acrylic or ACP and is quicker to work, which makes it a good fit for indoor and short-term signs."
 seo:
-  title: "Foam Board & Indoor Signs in Jhang"
-  description: "Low-cost foam board signs and indoor displays in Jhang for shops, schools and events. Ask for a quote on WhatsApp."
+  description: "Low-cost foam board signs and indoor displays for shops, schools and events. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

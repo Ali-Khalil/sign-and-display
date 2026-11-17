@@ -42,7 +42,6 @@ faqs:
   - q: "What lights are used inside a light box?"
     a: "Modern light boxes are lit with LEDs, which run cooler and use less power than the fluorescent tubes used in older boxes."
 seo:
-  title: "Light Box Signs in Jhang"
-  description: "Single and double sided illuminated light box signs for shops, clinics and restaurants in Jhang. Ask for a quote on WhatsApp."
+  description: "Single and double sided illuminated light box signs for shops, clinics and restaurants across Pakistan. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

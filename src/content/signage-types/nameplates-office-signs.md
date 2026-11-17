@@ -41,7 +41,6 @@ faqs:
   - q: "How do I send the name and spelling?"
     a: "Send the exact text on WhatsApp. You get a design to approve before anything is made."
 seo:
-  title: "Nameplates & Office Signs in Jhang"
-  description: "House nameplates, door plates and office signs in Jhang, in English or Urdu. Ask for a quote on WhatsApp."
+  description: "House nameplates, door plates and office signs, in English or Urdu. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

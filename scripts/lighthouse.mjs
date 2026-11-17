@@ -7,7 +7,7 @@ import { startPreview } from './lib/preview.mjs';
 
 const PAGES = process.argv.slice(2).length
   ? process.argv.slice(2)
-  : ['/', '/signage/', '/signage/3d-acrylic-letters/', '/portfolio/', '/portfolio/sample-shopfront-3d-letters/', '/faq/', '/contact/', '/design-your-sign/'];
+  : ['/', '/signage/', '/signage/3d-acrylic-letters/', '/portfolio/', '/portfolio/example-shopfront-3d-letters/', '/faq/', '/contact/', '/design-your-sign/'];
 const TARGETS = { performance: 95, accessibility: 95, 'best-practices': 95, seo: 100 };
 // The customizer is allowed a lower performance score.
 const RELAXED = { '/design-your-sign/': { performance: 80 } };

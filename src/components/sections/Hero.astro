@@ -29,12 +29,11 @@ const sizes = '(min-width: 1024px) 46vw, 100vw';
       }
       <p class="eyebrow text-brand">{isPlaceholder(site.tagline) ? 'Signboard workshop' : site.tagline}</p>
       <h1 class="mt-3 text-4xl leading-[1.05] font-black tracking-tight md:text-6xl lg:text-5xl xl:text-6xl">
-        3D Signboards, LED <span class="text-brand">&amp;</span> Neon Signs
+        3D Signboards, LED <span class="text-brand">&amp;</span> <span class="neon-word">Neon</span> Signs
       </h1>
       <p class="mt-4 max-w-xl text-lg text-white/85">
-        Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes. Made in
-        our workshop in <a href="/signboards-in-jhang/" class="underline underline-offset-2">{site.address.city}</a>{
-          site.nationwide ? ' for customers all over Pakistan.' : '.'
+        Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes{
+          site.nationwide ? ', made for customers all over Pakistan.' : '.'
         }
       </p>
       <div class="mt-7 flex flex-wrap gap-3">
@@ -83,7 +82,7 @@ const sizes = '(min-width: 1024px) 46vw, 100vw';
                     class="aspect-[16/10] w-full object-cover"
                   />
                   <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-4 pt-10 pb-3 text-[0.95rem] font-semibold">
-                    {project.data.title} · {project.data.city}
+                    {project.data.city ? `${project.data.title} · ${project.data.city}` : project.data.title}
                   </span>
                 </a>
               </div>
@@ -122,6 +121,36 @@ const sizes = '(min-width: 1024px) 46vw, 100vw';
     </div>
   </div>
 </section>
+
+<style>
+  /* "Neon" in the heading is drawn like a lit neon tube: a bright outline with a pink glow. */
+  .neon-word {
+    color: transparent;
+    -webkit-text-stroke: 0.045em #fff2f9;
+    filter: drop-shadow(0 0 1px #ffd1ea) drop-shadow(0 0 5px #ff4fae) drop-shadow(0 0 14px #ff2d95)
+      drop-shadow(0 0 28px rgb(255 45 149 / 0.75));
+  }
+  /* Browsers without outlined text get solid glowing letters instead. */
+  @supports not (-webkit-text-stroke: 1px white) {
+    .neon-word {
+      color: #fff4fa;
+      filter: none;
+      text-shadow:
+        0 0 8px #ff4fae,
+        0 0 24px #ff2d95;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .neon-word {
+      animation: neon-on 1.6s ease-out 0.3s both;
+    }
+  }
+  /* A quick flicker as the tube "switches on", then it stays lit. */
+  @keyframes neon-on {
+    0%, 8%, 14% { opacity: 0.3; }
+    10%, 18%, 100% { opacity: 1; }
+  }
+</style>
 
 <script>
   // Hero carousel. Without JavaScript the slides still swipe/scroll sideways.

@@ -12,7 +12,6 @@ import FAQ from '../../components/ui/FAQ.astro';
 import Icon from '../../components/ui/Icon.astro';
 import WhatsAppButton from '../../components/ui/WhatsAppButton.astro';
 import { getRate } from '../../config/pricing';
-import { site } from '../../config/site';
 import { formatDate, getProjects, getTypes, type SignageType } from '../../lib/content';
 import { breadcrumbList, faqPage, service } from '../../lib/schema';
 import { waMessageForType } from '../../lib/whatsapp';
@@ -27,7 +26,6 @@ interface Props {
 }
 const { type } = Astro.props;
 const d = type.data;
-const city = site.address.city;
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 const waMessage = waMessageForType(d.title, pageUrl);
@@ -46,7 +44,7 @@ const hasSizes = d.typicalSizes.length > 0 || startingFrom !== null;
 ---
 
 <BaseLayout
-  title={d.seo.title ?? `${d.title} in ${city}`}
+  title={d.seo.title ?? d.title}
   description={d.seo.description ?? d.shortDescription}
   schema={[service(type, pageUrl, Astro.site!), breadcrumbList(crumbs, Astro.site!), faqPage(d.faqs)]}
   {waMessage}
@@ -56,7 +54,7 @@ const hasSizes = d.typicalSizes.length > 0 || startingFrom !== null;
     <div class="wrap grid items-center gap-8 py-10 md:grid-cols-2 md:py-14">
       <div>
         <Breadcrumbs items={crumbs} dark />
-        <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">{d.title} in {city}</h1>
+        <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">{d.title}</h1>
         <p class="mt-4 text-lg leading-relaxed text-white/85">{d.summary}</p>
         <div class="mt-6 flex flex-wrap gap-3">
           <WhatsAppButton message={waMessage} location="type-hero" type={type.id} />

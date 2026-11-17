@@ -41,7 +41,6 @@ faqs:
   - q: "How is a neon sign hung?"
     a: "Acrylic-backed neon signs are usually fixed to the wall with stand-off screws through holes in the backing, or hung from the top edge. The fixing method is agreed with the design."
 seo:
-  title: "Custom Neon Signs in Jhang (LED Neon Flex)"
-  description: "Custom LED neon signs for cafés, shops, events and rooms in Jhang. Choose your text and colour, then ask for a quote on WhatsApp."
+  description: "Custom LED neon signs for cafés, shops, events and rooms across Pakistan. Choose your text and colour, then ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

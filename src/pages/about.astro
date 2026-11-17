@@ -12,7 +12,6 @@ import { waMessageGeneral } from '../lib/whatsapp';
 const page = await getPage('about');
 const Content = page ? (await render(page)).Content : null;
 const types = await getTypes();
-const city = site.address.city;
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'About', href: '/about/' },
@@ -21,17 +20,17 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
 ---
 
 <BaseLayout
-  title={`About the Signboard Workshop in ${city}`}
-  description={`About the signboard workshop in ${city}, Punjab: what it makes, how orders work and which cities it serves.`}
+  title={`About ${site.name}`}
+  description={`About ${site.name}: the signboards and branded kits we make, how orders work and where we work.`}
   schema={[breadcrumbList(crumbs, Astro.site!)]}
   {waMessage}
 >
   <section class="bg-hero text-white">
     <div class="wrap py-10 md:py-14">
       <Breadcrumbs items={crumbs} dark />
-      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">About the workshop in {city}</h1>
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">About {site.name}</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
-        A signboard workshop in {city}, {site.address.region}, making 2D and 3D signboards, LED-illuminated signs, neon
+        {site.name} makes 2D and 3D signboards, LED-illuminated signs, neon
         signs and nameplates, mainly for customers in {site.serviceAreas.join(', ')}{site.nationwide ? ', with orders taken from all over Pakistan' : ''}.
       </p>
     </div>

@@ -41,7 +41,6 @@ faqs:
   - q: "Do halo-lit signs work on any wall?"
     a: "Halo lighting looks best on a plain, matt, light-coloured wall, with the letters fixed a little way off the surface so the light can spread. Glossy tiles reflect the individual LEDs, and very dark walls absorb much of the glow."
 seo:
-  title: "LED Backlit & Halo-Lit Signs in Jhang"
-  description: "Front-lit, backlit and halo-lit LED letters and logos for shops and offices in Jhang. Ask for a quote on WhatsApp."
+  description: "Front-lit, backlit and halo-lit LED letters and logos for shops and offices across Pakistan. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

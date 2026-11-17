@@ -41,7 +41,6 @@ faqs:
   - q: "Can lights be added to the letters later?"
     a: "It is better to decide at the start. Lit letters are built hollow, with room for LEDs and wiring, while non-lit letters are usually solid or shallow, so adding light later often means remaking them."
 seo:
-  title: "3D Acrylic Sign Boards in Jhang"
-  description: "Raised 3D acrylic letters and logos for shops and offices in Jhang. Non-lit, front-lit or halo-lit. Ask for a quote on WhatsApp."
+  description: "Raised 3D acrylic letters and logos for shops and offices across Pakistan. Non-lit, front-lit or halo-lit. Ask for a quote on WhatsApp."
 updated: 2026-11-17
 ---

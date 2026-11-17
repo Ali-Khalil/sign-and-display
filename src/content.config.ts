@@ -58,7 +58,8 @@ const portfolio = defineCollection({
       title: z.string(),
       /** Only with the client's permission. */
       client: z.string().optional(),
-      city: z.string(),
+      /** Leave out for example designs. */
+      city: z.string().optional(),
       date: z.coerce.date(),
       /** Signage type slugs. */
       types: z.array(z.string()).default([]),
@@ -68,6 +69,8 @@ const portfolio = defineCollection({
       /** First image is the cover. */
       images: z.array(z.object({ src: image(), alt: z.string() })).min(1),
       featured: z.boolean().default(false),
+      /** An example made with the sign designer, not a photo of a finished job. */
+      example: z.boolean().default(false),
       summary: z.string(),
       draft: z.boolean().default(false),
     }),

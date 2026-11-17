@@ -4,13 +4,11 @@ import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import TypesGrid from '../../components/sections/TypesGrid.astro';
 import CTABand from '../../components/ui/CTABand.astro';
 import WhatsAppButton from '../../components/ui/WhatsAppButton.astro';
-import { site } from '../../config/site';
 import { getTypes, LIGHTING_LABELS } from '../../lib/content';
 import { breadcrumbList } from '../../lib/schema';
 import { waMessageGeneral } from '../../lib/whatsapp';
 
 const types = await getTypes();
-const city = site.address.city;
 const crumbs = [
   { name: 'Home', href: '/' },
   { name: 'Signage', href: '/signage/' },
@@ -22,15 +20,15 @@ const showCost = types.some((t) => t.data.relativeCost);
 ---
 
 <BaseLayout
-  title={`Signboard Types in ${city}: 3D, LED, Neon & More`}
-  description={`Compare the signboards made in ${city}: 3D acrylic letters, LED and neon signs, ACP boards, light boxes and nameplates.`}
+  title="Signboard Types: 3D, LED, Neon & More"
+  description="Compare every type of signboard: 3D acrylic letters, LED and neon signs, ACP boards, light boxes, nameplates and indoor signs."
   schema={[breadcrumbList(crumbs, Astro.site!)]}
   {waMessage}
 >
   <section class="bg-hero text-white">
     <div class="wrap py-10 md:py-14">
       <Breadcrumbs items={crumbs} dark />
-      <h1 class="mt-4 max-w-3xl text-3xl leading-tight font-extrabold md:text-5xl">Signboard types made in {city}</h1>
+      <h1 class="mt-4 max-w-3xl text-3xl leading-tight font-extrabold md:text-5xl">Types of signboards we make</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
         The workshop makes 2D and 3D signboards, LED-lit letters, neon signs and nameplates. Choose a type below to see
         what it is, where it works best and the questions customers ask most, or compare them all in the table.
@@ -56,35 +54,65 @@ const showCost = types.some((t) => t.data.relativeCost);
         <section class="bg-paper-soft">
           <div class="wrap section">
             <h2 class="h2">Which type of sign should I choose?</h2>
-            <p class="mt-3 max-w-2xl leading-relaxed text-muted">A side-by-side comparison of every type.</p>
-            <div class="table-scroll mt-6 rounded-xl border border-line bg-white">
-              <table class="table min-w-[44rem]">
-                <thead>
-                  <tr>
-                    <th scope="col">Type</th>
-                    <th scope="col">Best for</th>
-                    <th scope="col">Lighting</th>
-                    <th scope="col">Indoor / outdoor</th>
-                    {showCost && <th scope="col">Relative cost</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {types.map((t) => (
-                    <tr>
-                      <th scope="row" class="font-semibold">
-                        <a href={`/signage/${t.id}/`} class="underline underline-offset-2">
+            <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+              Every type side by side: what it suits, how it can be lit, and whether it works indoors or outdoors.
+            </p>
+            <ul class="mt-8 grid gap-4">
+              {types.map((t) => (
+                <li class="group relative rounded-xl border border-line bg-white p-5 shadow-sm transition-shadow hover:shadow-md md:p-6">
+                  <div class="grid gap-4 md:grid-cols-[minmax(0,15rem)_minmax(0,1fr)] md:gap-8">
+                    <div>
+                      <h3 class="text-lg leading-snug font-bold">
+                        <a href={`/signage/${t.id}/`} class="after:absolute after:inset-0 group-hover:underline">
                           {t.data.title}
                         </a>
-                      </th>
-                      <td>{t.data.bestFor.join(', ')}</td>
-                      <td>{t.data.lightingOptions.map((l) => LIGHTING_LABELS[l]).join(', ')}</td>
-                      <td>{ENV[t.data.environment]}</td>
-                      {showCost && <td>{COST[t.data.relativeCost ?? 0]}</td>}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                      </h3>
+                      <p class="mt-1 text-sm leading-relaxed text-muted">{t.data.shortDescription}</p>
+                    </div>
+                    <dl class:list={['grid gap-x-6 gap-y-4 sm:grid-cols-2', showCost ? 'lg:grid-cols-[1.4fr_1fr_1fr_0.8fr]' : 'lg:grid-cols-[1.4fr_1fr_1fr]']}>
+                      <div>
+                        <dt class="eyebrow text-blue">Best for</dt>
+                        <dd class="mt-1">
+                          <ul class="grid gap-1 text-[0.95rem] leading-snug">
+                            {t.data.bestFor.map((item) => (
+                              <li class="flex gap-2">
+                                <span class="mt-2 size-1.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
+                                {item}
+                              </li>
+                            ))}
+                          </ul>
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="eyebrow text-blue">Lighting</dt>
+                        <dd class="mt-1 flex flex-wrap gap-1.5">
+                          {t.data.lightingOptions.map((l) => (
+                            <span class="rounded-full bg-blue-soft px-2.5 py-0.5 text-sm font-medium text-blue">{LIGHTING_LABELS[l]}</span>
+                          ))}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt class="eyebrow text-blue">Where</dt>
+                        <dd class="mt-1 text-[0.95rem]">{ENV[t.data.environment]}</dd>
+                      </div>
+                      {showCost && (
+                        <div>
+                          <dt class="eyebrow text-blue">Cost</dt>
+                          <dd class="mt-1 flex items-center gap-2 text-[0.95rem]">
+                            <span class="flex gap-1" aria-hidden="true">
+                              {[1, 2, 3].map((n) => (
+                                <span class:list={['block h-2 w-5 rounded-full', n <= (t.data.relativeCost ?? 0) ? 'bg-brand' : 'bg-line']} />
+                              ))}
+                            </span>
+                            {COST[t.data.relativeCost ?? 0]}
+                          </dd>
+                        </div>
+                      )}
+                    </dl>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
       </>
