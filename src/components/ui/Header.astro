@@ -21,7 +21,7 @@ const isCurrent = (href: string) => path.startsWith(href);
     <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
 
     <nav aria-label="Main" class="hidden xl:block">
-      <ul class="flex items-center gap-6 text-[0.95rem]">
+      <ul class="flex items-center gap-5 font-logo text-[0.72rem] tracking-wide">
         {
           NAV.map((item) => (
             <li>
@@ -57,7 +57,7 @@ const isCurrent = (href: string) => path.startsWith(href);
                   <a
                     href={item.href}
                     aria-current={isCurrent(item.href) ? 'page' : undefined}
-                    class="flex min-h-12 items-center text-base aria-[current=page]:text-brand"
+                    class="flex min-h-12 items-center font-logo text-sm tracking-wide aria-[current=page]:text-brand"
                   >
                     {item.label}
                   </a>
