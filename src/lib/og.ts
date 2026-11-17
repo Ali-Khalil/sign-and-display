@@ -5,7 +5,7 @@
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import sharp from 'sharp';
-import { site } from '../config/site';
+import { isPlaceholder, site } from '../config/site';
 import { getGuides, getProjects, getServices, getTypes } from './content';
 
 const W = 1200;
@@ -41,7 +41,12 @@ export async function renderOgImage(title: string): Promise<Buffer> {
   const [eyebrow, heading, footer, logo] = await Promise.all([
     text(`<span foreground="#fca103" letter_spacing="3000">${escape(site.name.toUpperCase())}</span>`, 'Michroma 20', FONT_LABEL, 620),
     text(`<span foreground="#ffffff">${escape(title)}</span>`, `Montserrat SignDisplay ${size}`, FONT_TITLE, 640),
-    text(`<span foreground="#dbe4f3">3D Signboards · LED · Neon · ${escape(site.address.city)}, Pakistan</span>`, 'Michroma 16', FONT_LABEL, 700),
+    text(
+      `<span foreground="#dbe4f3">${escape(isPlaceholder(site.tagline) ? `3D Signboards · LED · Neon · ${site.address.city}, Pakistan` : `${site.tagline} · 3D Signboards · LED · Neon`)}</span>`,
+      'Michroma 16',
+      FONT_LABEL,
+      700,
+    ),
     sharp(await readFile(LOGO)).resize({ width: 450 }).toBuffer(),
   ]);
   const headingTop = Math.max(150, Math.round((H - heading.height) / 2) - 10);

@@ -16,7 +16,7 @@ Run `pnpm placeholders` to list what is missing.
 - [ ] Map coordinates (`geo`) and Google Business Profile link
 - [ ] Opening hours (now `Mo-Sa 10:00-20:00`, unconfirmed)
 - [ ] Social media links
-- [ ] Urdu business name and tagline (optional)
+- [ ] Urdu business name (optional)
 - [ ] "Why us" points (the home-page section stays hidden until some are added)
 - [ ] Domain name (`url`)
 

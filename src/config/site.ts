@@ -35,7 +35,7 @@ export interface SiteConfig {
 export const site: SiteConfig = {
   name: 'Sign & Display',
   nameUrdu: '{{BUSINESS_NAME_URDU}}',
-  tagline: '{{TAGLINE}}',
+  tagline: 'Make Your Brand Seen',
   url: 'https://{{DOMAIN}}',
   whatsapp: '92XXXXXXXXXX',
   phoneDisplay: '0300-XXXXXXX',

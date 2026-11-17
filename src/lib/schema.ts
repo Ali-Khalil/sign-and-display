@@ -80,6 +80,7 @@ export function localBusiness(base: URL | string): Node {
     areaServed: areaServed(),
   };
   if (!isPlaceholder(site.nameUrdu)) node.alternateName = site.nameUrdu;
+  if (!isPlaceholder(site.tagline)) node.slogan = site.tagline;
   if (!isPlaceholder(site.whatsapp)) node.telephone = `+${site.whatsapp}`;
   if (!isPlaceholder(site.email)) node.email = site.email;
   if (hasGeo) node.geo = { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng };
