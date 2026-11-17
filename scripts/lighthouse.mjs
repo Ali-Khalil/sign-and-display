@@ -20,12 +20,17 @@ try {
   const audit = (path) => lighthouse(`${server.url}${path}`, { port: chrome.port, output: 'json', logLevel: 'error' });
   await audit(PAGES[0]); // warm-up: the first run on a cold browser scores low
   for (const path of PAGES) {
-    // Performance scores are noisy on shared machines, so a miss gets two more tries.
+    // Timing results are noisy on shared machines (one slow CI reading put a 0.76s
+    // page at 2.25s), so a miss on performance, LCP or CLS gets two more tries.
     let lhr;
     for (let attempt = 1; attempt <= 3; attempt++) {
       ({ lhr } = await audit(path));
       const min = RELAXED[path]?.performance ?? TARGETS.performance;
-      if (Math.round((lhr.categories.performance.score ?? 0) * 100) >= min) break;
+      const timingOk =
+        Math.round((lhr.categories.performance.score ?? 0) * 100) >= min &&
+        lhr.audits['largest-contentful-paint'].numericValue <= 2000 &&
+        lhr.audits['cumulative-layout-shift'].numericValue <= 0.05;
+      if (timingOk) break;
     }
     const score = (id) => Math.round((lhr.categories[id]?.score ?? 0) * 100);
     const scores = Object.fromEntries(Object.keys(TARGETS).map((id) => [id, score(id)]));
