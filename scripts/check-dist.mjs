@@ -2,7 +2,7 @@
 // leftover placeholders.
 //   node scripts/check-dist.mjs            report placeholders as warnings
 //   node scripts/check-dist.mjs --strict   fail on placeholders or sample content (pre-launch gate)
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { parse } from 'node-html-parser';
 
@@ -109,6 +109,9 @@ for (const file of files) {
   for (const prop of ['og:title', 'og:description', 'og:image', 'og:url']) {
     if (!root.querySelector(`meta[property="${prop}"]`)) errors.push(`${route}: missing ${prop}`);
   }
+  // The social image must really exist in the build.
+  const ogImage = root.querySelector('meta[property="og:image"]')?.getAttribute('content') ?? '';
+  if (ogImage && !existsSync(join(DIST, new URL(ogImage).pathname))) errors.push(`${route}: og:image file is missing (${new URL(ogImage).pathname})`);
   if (!is404) {
     if (titles.has(title)) errors.push(`${route}: duplicate title with ${titles.get(title)}`);
     titles.set(title, route);

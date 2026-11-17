@@ -8,6 +8,7 @@ import WhatsAppFab from '../components/ui/WhatsAppFab.astro';
 import { analytics } from '../config/analytics';
 import { site } from '../config/site';
 import { hasSampleContent } from '../lib/content';
+import { ogImageFor } from '../lib/og';
 import { waMessageGeneral } from '../lib/whatsapp';
 
 interface Props {
@@ -27,7 +28,9 @@ interface Props {
   lang?: 'en' | 'ur';
 }
 
-const { title, description, image, ogType, noindex = false, schema, waType, hideFab = false, stickyHeader = true, lang = 'en' } = Astro.props;
+const { title, description, ogType, noindex = false, schema, waType, hideFab = false, stickyHeader = true, lang = 'en' } = Astro.props;
+// A page can name its own social image; otherwise it gets the one drawn for its path, or the logo.
+const image = Astro.props.image ?? (await ogImageFor(Astro.url.pathname));
 
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
 const waMessage = Astro.props.waMessage ?? waMessageGeneral(pageUrl);

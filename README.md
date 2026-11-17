@@ -4,10 +4,10 @@ Static website for Sign & Display, a signboard workshop in Jhang, Punjab: signag
 portfolio, a browser-based sign customizer with Urdu support, and WhatsApp
 enquiries. Built with Astro, Tailwind CSS v4, Preact and Fabric.js.
 
-Status: **Phase 2**. The content site (Phase 1) and the sign designer at
-`/design-your-sign/` (Phase 2) are built; everything still runs on sample
-content. The Urdu rendering spike from Phase 0 is in
-[`docs/spike/REPORT.md`](docs/spike/REPORT.md).
+Status: **Phase 3**. The content site, the sign designer and the SEO content
+(type pages, FAQ, About, six guides, per-page social images) are built. The
+portfolio still holds sample designs only, and several business details are
+placeholders: see [`docs/CONTENT-CHECKLIST.md`](docs/CONTENT-CHECKLIST.md).
 
 ## Commands
 
@@ -35,6 +35,7 @@ once, or point `PLAYWRIGHT_CHROMIUM_PATH` and `CHROME_PATH` at an existing one.
 | Business name, phone, WhatsApp, address, hours, "why us" points, feature flags | `src/config/site.ts` |
 | "Starting from" prices (leave `null` to hide) | `src/config/pricing.ts` |
 | Analytics tokens | `src/config/analytics.ts` |
+| Social-share images | Drawn at build time by `src/lib/og.ts`, one per page |
 | Menu links | `src/config/nav.ts` |
 | Brand colours and site fonts | `src/styles/global.css` (`@theme`) and `fonts` in `astro.config.mjs` |
 | Logo image, hero picture | `src/assets/brand/` (the wordmark in the header is `src/components/ui/Logo.astro`). After replacing `logo-sign.webp`, run `node scripts/make-logo-cutout.mjs` to remake the transparent version used in the hero |
@@ -60,10 +61,11 @@ Content lives in `src/content/` as Markdown files. The file name is the URL:
 | `guides/` | `/guides/` articles |
 | `pages/about.md` | The story section of `/about/` |
 
-**Everything there now is sample content**, marked `draft: true`. Drafts show
-in `pnpm dev` and `pnpm build:preview` (with a yellow banner and `noindex`)
-and are left out of `pnpm build`. To publish an entry: replace the sample
-facts with real ones, replace the sample image, and set `draft: false`.
+Entries marked `draft: true` are samples: the portfolio projects and the three
+Jhang questions. Drafts show in `pnpm dev` and `pnpm build:preview` (with a
+banner and `noindex`) and are left out of `pnpm build`. Everything else is
+published. To publish a draft: replace the sample facts with real ones,
+replace the sample image, and set `draft: false`.
 
 Rules of thumb:
 
