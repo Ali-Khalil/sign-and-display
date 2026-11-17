@@ -176,6 +176,18 @@ for (const file of files) {
   }
 }
 
+// The sitemap must be at /sitemap.xml and list every checked page except the 404 and noindex ones.
+if (!existsSync(join(DIST, 'sitemap.xml'))) errors.push('dist/sitemap.xml is missing');
+else {
+  const listed = readFileSync(join(DIST, 'sitemap.xml'), 'utf8');
+  for (const file of files) {
+    const route = routeOf(file);
+    const html = readFileSync(file, 'utf8');
+    if (route === '/404' || html.includes('content="noindex')) continue;
+    if (!listed.includes(`${route}</loc>`)) errors.push(`${route}: not listed in sitemap.xml`);
+  }
+}
+
 for (const [token, count] of placeholderHits) {
   (strict ? errors : warnings).push(`placeholder ${token} appears ${count} times: fill it in src/config/site.ts`);
 }
