@@ -32,6 +32,8 @@ async function open(page: Page, mode?: string) {
   await page.evaluate(() => localStorage.clear());
   await page.goto(url);
   await page.locator('[data-sign-designer]').waitFor();
+  // The designer publishes its state just after it first renders.
+  await page.waitForFunction(() => 'getDesign' in ((window as unknown as { __signDesigner?: object }).__signDesigner ?? {}));
   // Keep WhatsApp links from leaving the page; record analytics events.
   await page.evaluate(() => {
     const w = window as unknown as { __events: unknown[] };
