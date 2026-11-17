@@ -41,7 +41,7 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
 
   <div class="wrap section grid gap-12 lg:grid-cols-2">
     <section>
-      <h2 class="h2">Workshop details</h2>
+      <h2 class="h2">Our details</h2>
       <ul class="mt-6 space-y-5">
         <li class="flex gap-3">
           <Icon name="phone" class="mt-1 size-5 shrink-0" />
@@ -170,7 +170,7 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
   map?.querySelector('button')?.addEventListener('click', () => {
     const frame = document.createElement('iframe');
     frame.src = map.dataset.src ?? '';
-    frame.title = 'Map showing the workshop location';
+    frame.title = 'Map showing our location';
     frame.loading = 'lazy';
     frame.className = 'absolute inset-0 size-full border-0';
     map.replaceChildren(frame);

@@ -96,7 +96,7 @@ export default function ExportPanel(p: Props) {
             />
           </label>
         </div>
-        <p class="text-sm text-muted">A design file can be reopened here later, or sent to the workshop to open your exact design.</p>
+        <p class="text-sm text-muted">A design file can be reopened here later, or sent to us so we can open your exact design.</p>
       </Section>
     </div>
   );

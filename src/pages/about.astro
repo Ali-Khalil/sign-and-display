@@ -30,8 +30,8 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
       <Breadcrumbs items={crumbs} dark />
       <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">About {site.name}</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
-        {site.name} makes 2D and 3D signboards, LED-illuminated signs, neon
-        signs and nameplates, mainly for customers in {site.serviceAreas.join(', ')}{site.nationwide ? ', with orders taken from all over Pakistan' : ''}.
+        We make 2D and 3D signboards, LED-illuminated signs, neon signs, nameplates and branded welcome kits,
+        mainly for customers in {site.serviceAreas.join(', ')}{site.nationwide ? ', with orders taken from all over Pakistan' : ''}.
       </p>
     </div>
   </section>
@@ -49,7 +49,7 @@ const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href)
   {
     types.length > 0 && (
       <section class="wrap section border-t border-line">
-        <h2 class="h2">What the workshop makes</h2>
+        <h2 class="h2">What we make</h2>
         <ul class="mt-6 grid gap-x-8 gap-y-2 sm:grid-cols-2">
           {types.map((t) => (
             <li>

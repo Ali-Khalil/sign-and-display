@@ -37,7 +37,7 @@ faqs:
   - q: "Can a nameplate have a light?"
     a: "Yes. A nameplate can be made with raised letters and soft halo lighting behind them, or as a small light box. A lit nameplate needs a power point nearby."
   - q: "Do you send nameplates to other cities?"
-    a: "Yes. Orders are taken from all over Pakistan, and delivery to your city is arranged when you order on WhatsApp."
+    a: "Yes. We take orders from all over Pakistan, and delivery to your city is arranged when you order on WhatsApp."
   - q: "How do I send the name and spelling?"
     a: "Send the exact text on WhatsApp. You get a design to approve before anything is made."
 seo:

@@ -50,7 +50,7 @@ faqs:
   - q: Can we see the kit before it is made?
     a: Yes. You receive a design mock-up showing your logo on each item, and production starts only after you approve it.
   - q: Do you deliver welcome kits outside Jhang?
-    a: Yes. Orders are taken from all over Pakistan, and delivery to your city is arranged when you order on WhatsApp.
+    a: Yes. We take orders from all over Pakistan, and delivery to your city is arranged when you order on WhatsApp.
   - q: Naye mulazimeen ke liye welcome kit kaise order karein?
     a: Apni company ka logo, kits ki tadaad aur jo cheezen chahiye (box, mug, bottle, notepad, pencil) WhatsApp par bhej dein. Pehle design aur qeemat manzoori ke liye bheji jati hai, phir kaam shuru hota hai.
 seo:

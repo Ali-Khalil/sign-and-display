@@ -20,10 +20,10 @@ export const GET: APIRoute = async ({ site: base }) => {
   ].filter(Boolean);
 
   const lines = [
-    `# ${isPlaceholder(site.name) ? `Signboard workshop in ${city}` : site.name}`,
+    `# ${isPlaceholder(site.name) ? `Signboard company in ${city}` : site.name}`,
     '',
     ...(isPlaceholder(site.tagline) ? [] : [`Tagline: ${site.tagline}`, '']),
-    `> Signboard workshop in ${city}, ${region}, Pakistan. Makes 2D and 3D signboards, LED-illuminated signs, neon signs and nameplates. Orders and quotes are handled on WhatsApp; there is no online checkout.`,
+    `> Signboard and signage company based in ${city}, ${region}, Pakistan. Makes 2D and 3D signboards, LED-illuminated signs, neon signs and nameplates. Orders and quotes are handled on WhatsApp; there is no online checkout.`,
     '',
     `Main service areas: ${site.serviceAreas.join(', ')}.${site.nationwide ? ' Orders are also taken from anywhere in Pakistan.' : ''}`,
     '',

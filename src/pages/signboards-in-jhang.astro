@@ -1,6 +1,6 @@
 ---
 // The home-city page. It is built from facts the site already holds (the
-// workshop's address and hours, the signage types, projects done in the
+// business's address and hours, the signage types, projects done in the
 // city), so it stays unique without any filler text.
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
@@ -34,7 +34,7 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
 
 <BaseLayout
   title={`Signboards in ${city}: 3D, LED & Neon Signs`}
-  description={`${site.name} is a signboard workshop in ${city}, ${region}: 3D letters, LED and neon signs, ACP boards and nameplates. Address, hours and WhatsApp.`}
+  description={`${site.name} makes 3D letters, LED and neon signs, ACP boards and nameplates in ${city}, ${region}. Address, opening hours and WhatsApp.`}
   schema={[breadcrumbList(crumbs, Astro.site!), faqPage(faqs)]}
   {waMessage}
 >
@@ -43,7 +43,7 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
       <Breadcrumbs items={crumbs} dark />
       <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Signboards in {city}</h1>
       <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
-        {site.name} is a signboard workshop in {city}, {region}. It makes 3D letter signs, LED-lit and neon signs, ACP
+        {site.name} is based in {city}, {region}. We make 3D letter signs, LED-lit and neon signs, ACP
         shopfront boards, light boxes and nameplates for shops, offices, clinics and homes in {city}. Send the name for
         your sign and its rough size on WhatsApp to get a design and a quote.
       </p>
@@ -52,7 +52,7 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
   </section>
 
   <section class="wrap section">
-    <h2 class="h2">Where is the workshop in {city}?</h2>
+    <h2 class="h2">Where are we in {city}?</h2>
     <ul class="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
       <li class="flex gap-3">
         <Icon name="pin" class="mt-1 size-5 shrink-0" />
@@ -130,7 +130,7 @@ const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.c
   <section class="wrap section border-t border-line">
     <h2 class="h2">Not in {city}?</h2>
     <p class="mt-3 max-w-2xl leading-relaxed text-muted">
-      {site.name} also works in {others.join(', ')}{site.nationwide ? ', and takes orders from all over Pakistan' : ''}. The
+      We also work in {others.join(', ')}{site.nationwide ? ', and take orders from all over Pakistan' : ''}. The
       process is the same: send your details on WhatsApp and approve the design before anything is made.
     </p>
   </section>
