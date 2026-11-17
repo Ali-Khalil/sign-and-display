@@ -36,7 +36,7 @@ export const site: SiteConfig = {
   name: 'Sign & Display',
   nameUrdu: '{{BUSINESS_NAME_URDU}}',
   tagline: 'Make Your Brand Seen',
-  url: 'https://{{DOMAIN}}',
+  url: 'https://signanddisplay.pk',
   whatsapp: '92XXXXXXXXXX',
   phoneDisplay: '0300-XXXXXXX',
   email: '{{EMAIL}}',

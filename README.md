@@ -133,14 +133,13 @@ outline around the lettering.
   `allowAiCrawlers: false` in `src/config/site.ts` to block them.
 - `/llms.txt` is a plain-text summary of the business for AI assistants.
 
-All three use the `url` in `src/config/site.ts`, so set the real domain there
-before launch.
+All three use the `url` in `src/config/site.ts` (https://signanddisplay.pk).
 
 ## Deploy
 
 Any static host works. Build command `pnpm build`, output directory `dist`,
-Node 22. Until the real domain is in `site.ts`, set the `SITE_URL` environment
-variable to the site's address so canonical URLs and the sitemap are right.
+Node 22. Canonical URLs, the sitemap and social images use
+https://signanddisplay.pk from `src/config/site.ts`.
 
 ## Photo guide for the owner
 
