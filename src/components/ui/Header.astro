@@ -78,6 +78,12 @@ const isCurrent = (href: string) => path.startsWith(href);
   /* Michroma has a single weight, so the menu letters are thickened with a thin outline in their own colour. */
   .nav-links {
     -webkit-text-stroke: 0.028em currentColor;
+    letter-spacing: 1px;
+  }
+  @media (min-width: 1280px) {
+    .nav-links {
+      letter-spacing: 1.5px;
+    }
   }
   .nav-links a {
     -webkit-text-stroke: inherit;
