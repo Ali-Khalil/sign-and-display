@@ -70,11 +70,12 @@ function build() {
   };
 }
 
-// Every picture is tagged as an example design.
+// Every picture is tagged as an example design. The tag sits 200px in, so it
+// survives the 4:3 crop the portfolio cards use.
 const label = (text, width) =>
   Buffer.from(`<svg xmlns="http://www.w3.org/2000/svg" width="2000" height="1250">
-  <rect x="40" y="1140" width="${width}" height="70" rx="35" fill="#000" opacity=".72"/>
-  <text x="80" y="1187" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="34" fill="#fff" letter-spacing="2">${text}</text>
+  <rect x="200" y="1140" width="${width}" height="70" rx="35" fill="#000" opacity=".72"/>
+  <text x="240" y="1187" font-family="Inter, Arial, sans-serif" font-weight="700" font-size="34" fill="#fff" letter-spacing="2">${text}</text>
 </svg>`);
 const EXAMPLE_LABEL = label('EXAMPLE DESIGN', 400);
 
