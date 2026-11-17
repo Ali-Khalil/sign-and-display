@@ -21,14 +21,14 @@ const isCurrent = (href: string) => path.startsWith(href);
     <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
 
     <nav aria-label="Main" class="hidden xl:block">
-      <ul class="flex items-center gap-5 font-logo text-[0.72rem] tracking-wide">
+      <ul class="nav-links flex items-center gap-5 font-logo text-[0.82rem]">
         {
           NAV.map((item) => (
             <li>
               <a
                 href={item.href}
                 aria-current={isCurrent(item.href) ? 'page' : undefined}
-                class="py-2 whitespace-nowrap text-white/85 hover:text-white aria-[current=page]:text-brand"
+                class="py-2 whitespace-nowrap text-white hover:text-brand aria-[current=page]:text-brand"
               >
                 {item.label}
               </a>
@@ -57,7 +57,7 @@ const isCurrent = (href: string) => path.startsWith(href);
                   <a
                     href={item.href}
                     aria-current={isCurrent(item.href) ? 'page' : undefined}
-                    class="flex min-h-12 items-center font-logo text-sm tracking-wide aria-[current=page]:text-brand"
+                    class="nav-links flex min-h-12 items-center font-logo text-base aria-[current=page]:text-brand"
                   >
                     {item.label}
                   </a>
@@ -73,3 +73,13 @@ const isCurrent = (href: string) => path.startsWith(href);
     </div>
   </div>
 </header>
+
+<style>
+  /* Michroma has a single weight, so the menu letters are thickened with a thin outline in their own colour. */
+  .nav-links {
+    -webkit-text-stroke: 0.028em currentColor;
+  }
+  .nav-links a {
+    -webkit-text-stroke: inherit;
+  }
+</style>
