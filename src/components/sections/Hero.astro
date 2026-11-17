@@ -1,0 +1,217 @@
+---
+import { Picture } from 'astro:assets';
+import Button from '../ui/Button.astro';
+import WhatsAppButton from '../ui/WhatsAppButton.astro';
+import logoSign from '../../assets/brand/logo-sign-cutout.webp';
+import { isPlaceholder, site } from '../../config/site';
+import type { Project } from '../../lib/content';
+
+interface Props {
+  /** Recent projects shown as slides after the logo. */
+  projects?: Project[];
+  waMessage: string;
+}
+const { projects = [], waMessage } = Astro.props;
+const slides = projects.slice(0, 6);
+const total = slides.length + 1;
+const sizes = '(min-width: 1024px) 46vw, 100vw';
+---
+
+<section class="bg-hero text-white">
+  <div class="wrap grid items-center gap-10 py-10 md:py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.85fr)] lg:gap-x-16 xl:gap-x-24">
+    <div>
+      {
+        !isPlaceholder(site.nameUrdu) && (
+          <p lang="ur" dir="rtl" class="text-start text-2xl text-brand">
+            {site.nameUrdu}
+          </p>
+        )
+      }
+      <p class="eyebrow text-brand">{isPlaceholder(site.tagline) ? 'Signboards & displays' : site.tagline}</p>
+      <h1 class="mt-3 text-4xl leading-[1.05] font-black tracking-tight md:text-6xl lg:text-5xl xl:text-6xl">
+        3D Signboards, LED <span class="text-brand">&amp;</span> <span class="neon-word">Neon</span> Signs
+      </h1>
+      <p class="mt-4 max-w-xl text-lg text-white/85">
+        Custom 2D and 3D signboards, LED-lit letters, neon signs and nameplates for shops, offices and homes{
+          site.nationwide ? ', made for customers all over Pakistan.' : '.'
+        }
+      </p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <WhatsAppButton message={waMessage} location="hero" />
+        <Button href="/design-your-sign/" variant="outline-dark" size="lg">Design Your Sign</Button>
+      </div>
+    </div>
+
+    <div
+      class="min-w-0"
+      data-carousel
+      role="region"
+      aria-roledescription="carousel"
+      aria-label={total > 1 ? `${site.name} and recent work` : site.name}
+    >
+      <div
+        data-track
+        tabindex={total > 1 ? 0 : undefined}
+        class="flex snap-x snap-mandatory overflow-x-auto scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        <div class="w-full shrink-0 snap-center" role="group" aria-roledescription="slide" aria-label={`1 of ${total}`}>
+          <Picture
+            src={logoSign}
+            alt={`The ${site.name} logo as an illuminated 3D sign`}
+            formats={['avif', 'webp']}
+            widths={[360, 560, 760, 1094]}
+            sizes={sizes}
+            loading="eager"
+            fetchpriority="high"
+            class="aspect-[16/10] w-full object-contain"
+          />
+        </div>
+        {
+          slides.map((project, i) => {
+            const cover = project.data.images[0]!;
+            return (
+              <div class="w-full shrink-0 snap-center" role="group" aria-roledescription="slide" aria-label={`${i + 2} of ${total}`}>
+                <a href={`/portfolio/${project.id}/`} class="relative block overflow-hidden rounded-2xl">
+                  <Picture
+                    src={cover.src}
+                    alt={cover.alt}
+                    formats={['avif', 'webp']}
+                    widths={[360, 560, 760, 1134]}
+                    sizes={sizes}
+                    loading="lazy"
+                    class="aspect-[16/10] w-full object-cover"
+                  />
+                  <span class="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/80 to-transparent px-4 pt-10 pb-3 text-[0.95rem] font-semibold">
+                    {project.data.city ? `${project.data.title} · ${project.data.city}` : project.data.title}
+                  </span>
+                </a>
+              </div>
+            );
+          })
+        }
+      </div>
+
+      {
+        total > 1 && (
+          <div class="mt-3 flex items-center justify-between gap-3" data-controls hidden>
+            <div class="hidden items-center gap-1 sm:flex">
+              {Array.from({ length: total }, (_, i) => (
+                <button type="button" data-dot={i} aria-label={`Show slide ${i + 1} of ${total}`} class="group flex size-8 items-center justify-center">
+                  <span class="block size-2.5 rounded-full bg-white/40 group-aria-[current=true]:w-6 group-aria-[current=true]:bg-brand" />
+                </button>
+              ))}
+            </div>
+            <p class="text-sm font-semibold text-white/85 sm:hidden" aria-hidden="true">
+              <span data-count>1</span> / {total}
+            </p>
+            <div class="flex items-center gap-2">
+              <button type="button" data-pause aria-pressed="false" class="min-h-11 rounded-full border border-white/40 px-4 text-sm font-semibold">
+                Pause
+              </button>
+              <button type="button" data-prev aria-label="Previous slide" class="flex size-11 items-center justify-center rounded-full border border-white/40 text-xl">
+                ‹
+              </button>
+              <button type="button" data-next aria-label="Next slide" class="flex size-11 items-center justify-center rounded-full border border-white/40 text-xl">
+                ›
+              </button>
+            </div>
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* "Neon" in the heading is drawn like a lit neon tube: a bright outline with a pink glow. */
+  .neon-word {
+    color: transparent;
+    -webkit-text-stroke: 0.045em #fff2f9;
+    filter: drop-shadow(0 0 1px #ffd1ea) drop-shadow(0 0 5px #ff4fae) drop-shadow(0 0 14px #ff2d95)
+      drop-shadow(0 0 28px rgb(255 45 149 / 0.75));
+  }
+  /* Browsers without outlined text get solid glowing letters instead. */
+  @supports not (-webkit-text-stroke: 1px white) {
+    .neon-word {
+      color: #fff4fa;
+      filter: none;
+      text-shadow:
+        0 0 8px #ff4fae,
+        0 0 24px #ff2d95;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .neon-word {
+      animation: neon-on 1.6s ease-out 0.3s both;
+    }
+  }
+  /* A quick flicker as the tube "switches on", then it stays lit. */
+  @keyframes neon-on {
+    0%, 8%, 14% { opacity: 0.3; }
+    10%, 18%, 100% { opacity: 1; }
+  }
+</style>
+
+<script>
+  // Hero carousel. Without JavaScript the slides still swipe/scroll sideways.
+  const root = document.querySelector<HTMLElement>('[data-carousel]');
+  const track = root?.querySelector<HTMLElement>('[data-track]');
+  const controls = root?.querySelector<HTMLElement>('[data-controls]');
+  if (root && track && controls) {
+    const count = track.children.length;
+    const dots = [...controls.querySelectorAll<HTMLElement>('[data-dot]')];
+    const pauseButton = controls.querySelector<HTMLElement>('[data-pause]')!;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let index = 0;
+    let paused = reduced;
+    let hovering = false;
+    let visible = true;
+
+    const counter = controls.querySelector<HTMLElement>('[data-count]');
+    const mark = () => {
+      dots.forEach((dot, i) => dot.setAttribute('aria-current', String(i === index)));
+      if (counter) counter.textContent = String(index + 1);
+    };
+    const go = (next: number) => {
+      index = (next + count) % count;
+      track.scrollTo({ left: index * track.clientWidth, behavior: reduced ? 'auto' : 'smooth' });
+      mark();
+    };
+
+    controls.hidden = false;
+    mark();
+    controls.querySelector('[data-prev]')!.addEventListener('click', () => go(index - 1));
+    controls.querySelector('[data-next]')!.addEventListener('click', () => go(index + 1));
+    dots.forEach((dot, i) => dot.addEventListener('click', () => go(i)));
+
+    // Keep the dots right when the visitor swipes.
+    track.addEventListener('scroll', () => {
+      const current = Math.round(track.scrollLeft / track.clientWidth);
+      if (current !== index) {
+        index = current;
+        mark();
+      }
+    });
+    track.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowRight') go(index + 1);
+      if (event.key === 'ArrowLeft') go(index - 1);
+    });
+
+    // Slides advance on their own, but never while someone is using them.
+    const setPaused = (value: boolean) => {
+      paused = value;
+      pauseButton.setAttribute('aria-pressed', String(value));
+      pauseButton.textContent = value ? 'Play' : 'Pause';
+    };
+    setPaused(paused);
+    pauseButton.addEventListener('click', () => setPaused(!paused));
+    root.addEventListener('pointerenter', () => (hovering = true));
+    root.addEventListener('pointerleave', () => (hovering = false));
+    root.addEventListener('focusin', () => (hovering = true));
+    root.addEventListener('focusout', () => (hovering = false));
+    new IntersectionObserver(([entry]) => (visible = entry?.isIntersecting ?? true)).observe(root);
+    window.setInterval(() => {
+      if (!paused && !hovering && visible && !document.hidden) go(index + 1);
+    }, 5000);
+  }
+</script>

@@ -1,0 +1,207 @@
+---
+import { Picture } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/sections/Hero.astro';
+import TypesGrid from '../components/sections/TypesGrid.astro';
+import LightingExplainer from '../components/sections/LightingExplainer.astro';
+import ProjectGrid from '../components/sections/ProjectGrid.astro';
+import CustomizerTeaser from '../components/sections/CustomizerTeaser.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import FAQ from '../components/ui/FAQ.astro';
+import CTABand from '../components/ui/CTABand.astro';
+import Icon from '../components/ui/Icon.astro';
+import KitIcon from '../components/ui/KitIcon.astro';
+import { site } from '../config/site';
+import { getFaqs, getProjects, getServices, getTypes } from '../lib/content';
+import { faqPage } from '../lib/schema';
+import { waMessageGeneral } from '../lib/whatsapp';
+
+const types = await getTypes();
+const services = await getServices();
+const projects = await getProjects();
+const featured = projects.filter((p) => p.data.featured).slice(0, 9);
+const allExamples = featured.length > 0 && featured.every((p) => p.data.example);
+const faqs = (await getFaqs()).filter((f) => f.data.home).slice(0, 6).map((f) => f.data);
+const waMessage = waMessageGeneral(new URL('/', Astro.site).href);
+const city = site.address.city;
+---
+
+<BaseLayout
+  title="3D Signboards, LED & Neon Signs in Pakistan"
+  description={`${site.name} makes 3D letters, LED and neon signs, ACP boards, nameplates and branded welcome kits for customers across Pakistan. Quotes on WhatsApp.`}
+  schema={[faqPage(faqs)]}
+>
+  <Hero projects={featured} {waMessage} />
+
+  {
+    types.length > 0 && (
+      <section class="wrap section">
+        <p class="eyebrow text-blue">What we make</p>
+        <h2 class="h2 mt-2">Signage options</h2>
+        <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+          Every type of sign we make. Open one for materials, lighting choices and common questions.
+        </p>
+        <div class="mt-8">
+          <TypesGrid {types} />
+        </div>
+        <p class="mt-6">
+          <a href="/signage/" class="inline-flex min-h-11 items-center gap-2 font-semibold underline underline-offset-4">
+            Compare all signage types <Icon name="arrow" class="size-4 rtl:rotate-180" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  {
+    services.map((service) => (
+      <section class="bg-paper-soft">
+        <div class="wrap section grid items-center gap-8 md:grid-cols-[1.1fr_1fr]">
+          <div>
+            <p class="eyebrow text-blue">Also from {site.name}</p>
+            <h2 class="h2 mt-2">{service.data.title}</h2>
+            <p class="mt-3 max-w-xl leading-relaxed text-muted">{service.data.shortDescription}</p>
+            <a
+              href={`/${service.id}/`}
+              class="mt-6 inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-ink px-6 font-semibold text-ink hover:bg-ink hover:text-white"
+            >
+              About {service.data.navLabel.toLowerCase()} <Icon name="arrow" class="size-4 rtl:rotate-180" />
+            </a>
+          </div>
+          {service.data.heroImage ? (
+            <Picture
+              src={service.data.heroImage}
+              alt={service.data.heroAlt ?? ''}
+              formats={['avif', 'webp']}
+              widths={[400, 640, 960]}
+              sizes="(min-width: 768px) 45vw, 100vw"
+              loading="lazy"
+              class="aspect-[16/10] w-full rounded-xl object-cover"
+            />
+          ) : (
+            <ul class="grid grid-cols-3 gap-3" aria-label={`Items in ${service.data.title.toLowerCase()}`}>
+              {service.data.items
+                .filter((item) => item.name !== 'Something else')
+                .slice(0, 6)
+                .map((item) => (
+                  <li class="flex flex-col items-center gap-2 rounded-xl bg-white p-4 text-center text-sm font-semibold">
+                    <span class="text-blue">
+                      <KitIcon name={item.name} class="size-9" />
+                    </span>
+                    {item.name}
+                  </li>
+                ))}
+            </ul>
+          )}
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="bg-ink text-white">
+    <div class="wrap section">
+      <p class="eyebrow text-brand">Lighting</p>
+      <h2 class="h2 mt-2">Non-lit, front-lit, backlit, halo-lit or neon?</h2>
+      <p class="mt-3 max-w-2xl leading-relaxed text-muted-dark">
+        The same letters look very different depending on where the light comes from.
+      </p>
+      <div class="mt-8">
+        <LightingExplainer />
+      </div>
+    </div>
+  </section>
+
+  {
+    featured.length > 0 && (
+      <section class="wrap section">
+        <p class="eyebrow text-blue">Portfolio</p>
+        <h2 class="h2 mt-2">{allExamples ? 'Example designs' : 'Recent work'}</h2>
+        {allExamples && (
+          <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+            Made with our sign designer to show the kinds of signs we make. Photos of finished jobs will be added here.
+          </p>
+        )}
+        <div class="mt-8">
+          <ProjectGrid projects={featured} />
+        </div>
+        <p class="mt-6">
+          <a href="/portfolio/" class="inline-flex min-h-11 items-center gap-2 font-semibold underline underline-offset-4">
+            See the full portfolio <Icon name="arrow" class="size-4 rtl:rotate-180" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  <CustomizerTeaser />
+
+  <section class="wrap section">
+    <p class="eyebrow text-blue">Process</p>
+    <h2 class="h2 mt-2">How it works</h2>
+    <div class="mt-8">
+      <HowItWorks />
+    </div>
+  </section>
+
+  {
+    site.whyUs.length > 0 && (
+      <section class="bg-paper-soft">
+        <div class="wrap section">
+          <h2 class="h2">Why choose us</h2>
+          <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {site.whyUs.map((point) => (
+              <li class="rounded-xl border border-line bg-white p-5">
+                <Icon name="check" class="size-6 text-ink" />
+                <h3 class="mt-3 text-lg font-bold">{point.title}</h3>
+                <p class="mt-2 text-[0.95rem] leading-relaxed text-muted">{point.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="border-y border-line">
+    <div class="wrap section">
+      <h2 class="h2">Service areas</h2>
+      <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+        Most of our work is in these cities{site.nationwide ? ', and we take orders from all over Pakistan.' : '.'}
+      </p>
+      <ul class="mt-6 flex flex-wrap gap-2">
+        {
+          site.serviceAreas.map((area) => (
+            <li class="flex items-center gap-1.5 rounded-full border border-line px-4 py-2 font-medium">
+              <Icon name="pin" class="size-4 text-muted" />
+              {area === city ? (
+                <a href="/signboards-in-jhang/" class="underline underline-offset-2">
+                  {area}
+                </a>
+              ) : (
+                area
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  {
+    faqs.length > 0 && (
+      <section class="wrap section">
+        <h2 class="h2">Common questions</h2>
+        <div class="mt-6">
+          <FAQ items={faqs} />
+        </div>
+        <p class="mt-6">
+          <a href="/faq/" class="inline-flex min-h-11 items-center gap-2 font-semibold underline underline-offset-4">
+            All questions and answers <Icon name="arrow" class="size-4 rtl:rotate-180" />
+          </a>
+        </p>
+      </section>
+    )
+  }
+
+  <CTABand message={waMessage} />
+</BaseLayout>

@@ -1,0 +1,91 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import WhatsAppButton from './WhatsAppButton.astro';
+import { NAV } from '../../config/nav';
+import { site } from '../../config/site';
+
+interface Props {
+  waMessage: string;
+  /** Keep the header at the top of the screen while the page scrolls. */
+  sticky?: boolean;
+}
+const { waMessage, sticky = true } = Astro.props;
+
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => path.startsWith(href);
+---
+
+<header class:list={['z-30 border-b border-white/10 bg-navy text-white shadow-md shadow-black/25', sticky ? 'sticky top-0' : 'relative']}>
+  <div class="wrap flex min-h-16 items-center justify-between gap-4">
+    <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
+
+    <nav aria-label="Main" class="hidden lg:block">
+      <ul class="nav-links flex items-center gap-5 font-logo text-[0.82rem]">
+        {
+          NAV.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                aria-current={isCurrent(item.href) ? 'page' : undefined}
+                class="py-2 whitespace-nowrap text-white hover:text-brand aria-[current=page]:text-brand"
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <div class="hidden sm:block">
+        <WhatsAppButton message={waMessage} location="header" label="WhatsApp" size="md" />
+      </div>
+      <details class="group lg:hidden">
+        <summary
+          class="flex size-11 list-none items-center justify-center rounded-full border border-white/25 [&::-webkit-details-marker]:hidden"
+          aria-label="Menu"
+        >
+          <Icon name="menu" class="size-6" />
+        </summary>
+        <nav aria-label="Mobile" class="absolute inset-x-0 top-full max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-white/15 bg-navy pb-4 shadow-xl">
+          <ul class="wrap">
+            {
+              NAV.map((item) => (
+                <li class="border-b border-white/15">
+                  <a
+                    href={item.href}
+                    aria-current={isCurrent(item.href) ? 'page' : undefined}
+                    class="nav-links flex min-h-12 items-center font-logo text-base aria-[current=page]:text-brand"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+          <div class="wrap mt-4">
+            <WhatsAppButton message={waMessage} location="mobile-menu" class="w-full" />
+          </div>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Michroma has a single weight, so the menu letters are thickened with a thin outline in their own colour. */
+  .nav-links {
+    -webkit-text-stroke: 0.028em currentColor;
+    letter-spacing: 1px;
+  }
+  @media (min-width: 1280px) {
+    .nav-links {
+      letter-spacing: 1.5px;
+    }
+  }
+  .nav-links a {
+    -webkit-text-stroke: inherit;
+  }
+</style>

@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import CTABand from '../components/ui/CTABand.astro';
+import FAQ from '../components/ui/FAQ.astro';
+import { site } from '../config/site';
+import { getFaqs, getServices, getTypes } from '../lib/content';
+import { breadcrumbList, faqPage, type QA } from '../lib/schema';
+import { waMessageGeneral } from '../lib/whatsapp';
+
+const general = await getFaqs();
+const types = await getTypes();
+const services = await getServices();
+
+// General questions grouped by topic, then each signage type's own questions.
+const groups: { title: string; href?: string; items: QA[] }[] = [];
+for (const faq of general) {
+  const group = groups.find((g) => g.title === faq.data.topic);
+  if (group) group.items.push(faq.data);
+  else groups.push({ title: faq.data.topic, items: [faq.data] });
+}
+for (const type of types) {
+  if (type.data.faqs.length) groups.push({ title: type.data.title, href: `/signage/${type.id}/`, items: type.data.faqs });
+}
+for (const service of services) {
+  if (service.data.faqs.length) groups.push({ title: service.data.title, href: `/${service.id}/`, items: service.data.faqs });
+}
+const all = groups.flatMap((g) => g.items);
+const slug = (text: string) => text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'FAQ', href: '/faq/' },
+];
+const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+---
+
+<BaseLayout
+  title={`Signboard FAQ: Ordering, Materials & Lighting`}
+  description={`Answers to common questions about ordering signboards, LED and neon signs from ${site.name}.`}
+  schema={[breadcrumbList(crumbs, Astro.site!), faqPage(all)]}
+  {waMessage}
+>
+  <section class="bg-hero text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Frequently asked questions</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        Answers about ordering, design, materials, lighting and installation. If your question is not here, ask on
+        WhatsApp.
+      </p>
+    </div>
+  </section>
+
+  <div class="wrap section">
+    {
+      groups.length === 0 ? (
+        <p class="max-w-xl text-muted">Questions and answers are being added. Ask anything on WhatsApp.</p>
+      ) : (
+        <>
+          <nav aria-label="FAQ topics">
+            <ul class="flex flex-wrap gap-2">
+              {groups.map((g) => (
+                <li>
+                  <a href={`#${slug(g.title)}`} class="flex min-h-11 items-center rounded-full border border-line px-4 text-[0.95rem] font-medium">
+                    {g.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+          {groups.map((g) => (
+            <section id={slug(g.title)} class="mt-12 scroll-mt-6">
+              <h2 class="h2">{g.title}</h2>
+              <div class="mt-5">
+                <FAQ items={g.items} />
+              </div>
+              {g.href && (
+                <p class="mt-4">
+                  <a href={g.href} class="font-semibold underline underline-offset-2">
+                    More about {g.title}
+                  </a>
+                </p>
+              )}
+            </section>
+          ))}
+        </>
+      )
+    }
+  </div>
+
+  <CTABand heading="Still have a question?" text="Ask us on WhatsApp and we will answer." message={waMessage} noDesign />
+</BaseLayout>

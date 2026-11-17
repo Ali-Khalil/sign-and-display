@@ -1,0 +1,98 @@
+---
+import Icon from './Icon.astro';
+import Logo from './Logo.astro';
+import { NAV, SECONDARY_NAV } from '../../config/nav';
+import { hasGeo, isPlaceholder, site } from '../../config/site';
+import { telLink, waLink } from '../../lib/whatsapp';
+import { hoursText } from '../../lib/hours';
+
+interface Props {
+  waMessage: string;
+}
+const { waMessage } = Astro.props;
+
+const socials = Object.entries(site.social).filter(([, url]) => url !== '');
+const mapUrl =
+  site.googleBusinessProfileUrl ||
+  (hasGeo ? `https://www.google.com/maps?q=${site.geo.lat},${site.geo.lng}` : '');
+const { street, city, region, postalCode } = site.address;
+---
+
+<footer class="bg-navy pb-24 text-white">
+  <div class="wrap grid gap-10 py-12 md:grid-cols-3">
+    <div>
+      <p><Logo size="lg" /></p>
+      {
+        !isPlaceholder(site.nameUrdu) && (
+          <p lang="ur" dir="rtl" class="text-start text-lg text-brand">
+            {site.nameUrdu}
+          </p>
+        )
+      }
+      {!isPlaceholder(site.tagline) && <p class="eyebrow mt-3 text-brand">{site.tagline}</p>}
+      <address class="mt-3 space-y-2 text-[0.95rem] text-muted-dark not-italic">
+        <p class="flex gap-2">
+          <Icon name="pin" class="mt-0.5 size-5 shrink-0" />
+          <span>{street}, {city}, {region} {postalCode}, Pakistan</span>
+        </p>
+        <p class="flex gap-2">
+          <Icon name="phone" class="mt-0.5 size-5 shrink-0" />
+          <a href={telLink} class="hover:text-white">{site.phoneDisplay}</a>
+        </p>
+        <p class="flex gap-2">
+          <Icon name="whatsapp" class="mt-0.5 size-5 shrink-0" />
+          <a href={waLink(waMessage)} target="_blank" rel="noopener" data-wa-location="footer" class="hover:text-white">
+            WhatsApp {site.phoneDisplay}
+          </a>
+        </p>
+        <p class="flex gap-2">
+          <Icon name="clock" class="mt-0.5 size-5 shrink-0" />
+          <span>{hoursText().join(' · ')}</span>
+        </p>
+        {
+          mapUrl && (
+            <p>
+              <a href={mapUrl} target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-white">
+                Open in Google Maps
+              </a>
+            </p>
+          )
+        }
+      </address>
+    </div>
+
+    <nav aria-label="Footer">
+      <p class="eyebrow text-brand">Explore</p>
+      <ul class="mt-3 grid grid-cols-2 gap-x-4 text-[0.95rem] text-muted-dark">
+        {
+          [...NAV, ...SECONDARY_NAV, { href: '/signboards-in-jhang/', label: `Signboards in ${city}` }, { href: '/credits/', label: 'Photo credits' }].map((item) => (
+            <li>
+              <a href={item.href} class="flex min-h-10 items-center hover:text-white">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div>
+      <p class="eyebrow text-brand">Service areas</p>
+      <p class="mt-3 text-[0.95rem] leading-relaxed text-muted-dark">{site.serviceAreas.join(' · ')}</p>
+      {site.nationwide && <p class="mt-2 text-[0.95rem] text-muted-dark">Orders taken from all over Pakistan.</p>}
+      {
+        socials.length > 0 && (
+          <ul class="mt-5 flex flex-wrap gap-x-4 text-[0.95rem]">
+            {socials.map(([name, url]) => (
+              <li>
+                <a href={url} target="_blank" rel="noopener me" class="flex min-h-10 items-center capitalize underline underline-offset-2">
+                  {name}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+    </div>
+  </div>
+</footer>

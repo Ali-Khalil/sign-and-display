@@ -1,0 +1,203 @@
+[
+  {
+    "family": "Noto Nastaliq Urdu",
+    "strings": [
+      {
+        "text": "مدینہ ٹریڈرز",
+        "browserWidth": 95,
+        "browserInkHeight": 37.1,
+        "nativeWidth": 84.9,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.894,
+        "nativeOverflowTop": 6.6,
+        "nativeOverflowBottom": 1.1,
+        "shapedWidth": 99,
+        "shapedHeight": 38
+      },
+      {
+        "text": "الحمد للہ جنرل اسٹور",
+        "browserWidth": 175.9,
+        "browserInkHeight": 52.1,
+        "nativeWidth": 161.4,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.918,
+        "nativeOverflowTop": 19.9,
+        "nativeOverflowBottom": 2.8,
+        "shapedWidth": 180,
+        "shapedHeight": 53
+      },
+      {
+        "text": "بسم اللہ الرحمن الرحیم",
+        "browserWidth": 206.9,
+        "browserInkHeight": 48.9,
+        "nativeWidth": 203.5,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.984,
+        "nativeOverflowTop": 12.7,
+        "nativeOverflowBottom": 6.8,
+        "shapedWidth": 207,
+        "shapedHeight": 49
+      },
+      {
+        "text": "مدینہ ٹریڈرز 0300-1234567",
+        "browserWidth": 269.2,
+        "browserInkHeight": 37.1,
+        "nativeWidth": 259.1,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.963,
+        "nativeOverflowTop": 6.6,
+        "nativeOverflowBottom": 1.1,
+        "shapedWidth": 270,
+        "shapedHeight": 38
+      },
+      {
+        "text": "Al-Madina Traders مدینہ ٹریڈرز",
+        "browserWidth": 331.4,
+        "browserInkHeight": 37.1,
+        "nativeWidth": 321.4,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.97,
+        "nativeOverflowTop": 6.6,
+        "nativeOverflowBottom": 1.1,
+        "shapedWidth": 336,
+        "shapedHeight": 38
+      }
+    ],
+    "nativeCacheClipRatio": 0.01055,
+    "shapedJsonRoundTrip": true
+  },
+  {
+    "family": "Gulzar",
+    "strings": [
+      {
+        "text": "مدینہ ٹریڈرز",
+        "browserWidth": 82.5,
+        "browserInkHeight": 36.8,
+        "nativeWidth": 84.3,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 1.023,
+        "nativeOverflowTop": 5.1,
+        "nativeOverflowBottom": 2.3,
+        "shapedWidth": 83,
+        "shapedHeight": 37
+      },
+      {
+        "text": "الحمد للہ جنرل اسٹور",
+        "browserWidth": 156.9,
+        "browserInkHeight": 37.5,
+        "nativeWidth": 139.9,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.891,
+        "nativeOverflowTop": 7.3,
+        "nativeOverflowBottom": 0.8,
+        "shapedWidth": 157,
+        "shapedHeight": 38
+      },
+      {
+        "text": "بسم اللہ الرحمن الرحیم",
+        "browserWidth": 150.8,
+        "browserInkHeight": 44.7,
+        "nativeWidth": 166.8,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 1.106,
+        "nativeOverflowTop": 8.5,
+        "nativeOverflowBottom": 6.8,
+        "shapedWidth": 151,
+        "shapedHeight": 45
+      },
+      {
+        "text": "مدینہ ٹریڈرز 0300-1234567",
+        "browserWidth": 244.3,
+        "browserInkHeight": 36.8,
+        "nativeWidth": 246.1,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 1.008,
+        "nativeOverflowTop": 5.1,
+        "nativeOverflowBottom": 2.3,
+        "shapedWidth": 245,
+        "shapedHeight": 37
+      },
+      {
+        "text": "Al-Madina Traders مدینہ ٹریڈرز",
+        "browserWidth": 293.9,
+        "browserInkHeight": 36.8,
+        "nativeWidth": 295.8,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 1.006,
+        "nativeOverflowTop": 5.1,
+        "nativeOverflowBottom": 2.3,
+        "shapedWidth": 294,
+        "shapedHeight": 37
+      }
+    ],
+    "nativeCacheClipRatio": 0.01192,
+    "shapedJsonRoundTrip": true
+  },
+  {
+    "family": "Lalezar",
+    "strings": [
+      {
+        "text": "مدینہ ٹریڈرز",
+        "browserWidth": 111.7,
+        "browserInkHeight": 28,
+        "nativeWidth": 108.4,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.971,
+        "nativeOverflowTop": 0.8,
+        "nativeOverflowBottom": 0,
+        "shapedWidth": 116,
+        "shapedHeight": 28
+      },
+      {
+        "text": "الحمد للہ جنرل اسٹور",
+        "browserWidth": 192.3,
+        "browserInkHeight": 23,
+        "nativeWidth": 192.7,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 1.002,
+        "nativeOverflowTop": 0,
+        "nativeOverflowBottom": 0,
+        "shapedWidth": 197,
+        "shapedHeight": 23
+      },
+      {
+        "text": "بسم اللہ الرحمن الرحیم",
+        "browserWidth": 209.2,
+        "browserInkHeight": 23,
+        "nativeWidth": 211.2,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 1.01,
+        "nativeOverflowTop": 0,
+        "nativeOverflowBottom": 0,
+        "shapedWidth": 210,
+        "shapedHeight": 23
+      },
+      {
+        "text": "مدینہ ٹریڈرز 0300-1234567",
+        "browserWidth": 269.5,
+        "browserInkHeight": 28,
+        "nativeWidth": 266.2,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.988,
+        "nativeOverflowTop": 0.8,
+        "nativeOverflowBottom": 0,
+        "shapedWidth": 270,
+        "shapedHeight": 28
+      },
+      {
+        "text": "Al-Madina Traders مدینہ ٹریڈرز",
+        "browserWidth": 316.2,
+        "browserInkHeight": 28,
+        "nativeWidth": 313,
+        "nativeHeight": 29.4,
+        "nativeWidthRatio": 0.99,
+        "nativeOverflowTop": 0.8,
+        "nativeOverflowBottom": 0,
+        "shapedWidth": 321,
+        "shapedHeight": 28
+      }
+    ],
+    "nativeCacheClipRatio": 0.00945,
+    "shapedJsonRoundTrip": true
+  }
+]

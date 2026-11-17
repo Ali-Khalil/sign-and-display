@@ -1,0 +1,46 @@
+---
+/**
+ * Head tags for every page: title, description, canonical, Open Graph,
+ * Twitter and JSON-LD. Placeholders the owner has not filled are never put
+ * into titles.
+ */
+import { isPlaceholder, site } from '../../config/site';
+import { graph, localBusiness, webSite } from '../../lib/schema';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  schema?: (Record<string, unknown> | null | undefined)[];
+}
+
+const { title, description, image = '/og-default.jpg', ogType = 'website', noindex = false, schema = [] } = Astro.props;
+
+const base = Astro.site!;
+const canonical = new URL(Astro.url.pathname, base).href;
+const withBrand = `${title} | ${site.name}`;
+const fullTitle = !isPlaceholder(site.name) && withBrand.length <= 60 ? withBrand : title;
+const imageUrl = new URL(image, base).href;
+const jsonLd = graph([localBusiness(base), webSite(base), ...schema]);
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+{noindex && <meta name="robots" content="noindex, nofollow" />}
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:locale" content="en_PK" />
+{!isPlaceholder(site.name) && <meta property="og:site_name" content={site.name} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />
+<script type="application/ld+json" is:inline set:html={jsonLd} />

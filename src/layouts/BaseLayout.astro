@@ -1,0 +1,100 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import SEO from '../components/seo/SEO.astro';
+import Header from '../components/ui/Header.astro';
+import Footer from '../components/ui/Footer.astro';
+import WhatsAppFab from '../components/ui/WhatsAppFab.astro';
+import { analytics } from '../config/analytics';
+import { site } from '../config/site';
+import { hasSampleContent } from '../lib/content';
+import { ogImageFor } from '../lib/og';
+import { waMessageGeneral } from '../lib/whatsapp';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  schema?: (Record<string, unknown> | null | undefined)[];
+  /** Pre-filled WhatsApp message for the header, footer and floating button. */
+  waMessage?: string;
+  waType?: string;
+  /** The customizer docks WhatsApp in its own toolbar. */
+  hideFab?: boolean;
+  /** Set to false where the page needs the whole screen height (the sign designer). */
+  stickyHeader?: boolean;
+  lang?: 'en' | 'ur';
+}
+
+const { title, description, ogType, noindex = false, schema, waType, hideFab = false, stickyHeader = true, lang = 'en' } = Astro.props;
+// A page can name its own social image; otherwise it gets the one drawn for its path, or the logo.
+const image = Astro.props.image ?? (await ogImageFor(Astro.url.pathname));
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const waMessage = Astro.props.waMessage ?? waMessageGeneral(pageUrl);
+const sample = await hasSampleContent();
+const ga4 = site.features.ga4 && analytics.ga4MeasurementId !== '';
+---
+
+<!doctype html>
+<html lang={lang} dir={lang === 'ur' ? 'rtl' : 'ltr'}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#041530" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <Font cssVariable="--font-montserrat" preload />
+    <Font cssVariable="--font-michroma" preload />
+    <SEO {title} {description} {image} {ogType} noindex={noindex || sample} {schema} />
+    <slot name="head" />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:absolute focus:start-2 focus:top-2 focus:z-50 focus:rounded focus:bg-white focus:px-4 focus:py-2 focus:text-ink"
+    >
+      Skip to content
+    </a>
+    <Header {waMessage} sticky={stickyHeader} />
+    <main id="main" class="flex-1">
+      <slot />
+    </main>
+    <Footer {waMessage} />
+    {!hideFab && <WhatsAppFab message={waMessage} type={waType} />}
+
+    <script is:inline>
+      // whatsapp_click analytics for every WhatsApp link on the page.
+      document.addEventListener('click', function (e) {
+        var a = e.target && e.target.closest && e.target.closest('a[data-wa-location]');
+        if (!a) return;
+        var params = { location: a.dataset.waLocation, type: a.dataset.waType || '' };
+        window.dispatchEvent(new CustomEvent('site:track', { detail: { event: 'whatsapp_click', params: params } }));
+        if (window.gtag) window.gtag('event', 'whatsapp_click', params);
+      });
+    </script>
+    {
+      analytics.cloudflareToken !== '' && (
+        <script
+          is:inline
+          defer
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon={JSON.stringify({ token: analytics.cloudflareToken })}
+        />
+      )
+    }
+    {
+      ga4 && (
+        <>
+          <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analytics.ga4MeasurementId}`} />
+          <script is:inline define:vars={{ id: analytics.ga4MeasurementId }}>
+            window.dataLayer = window.dataLayer || []; window.gtag = function () { dataLayer.push(arguments); };
+            gtag('js', new Date()); gtag('config', id);
+          </script>
+        </>
+      )
+    }
+  </body>
+</html>

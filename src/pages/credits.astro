@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import { photoCredits } from '../config/credits';
+import { breadcrumbList } from '../lib/schema';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Photo credits', href: '/credits/' },
+];
+---
+
+<BaseLayout
+  title="Photo credits"
+  description="Credits and licences for the openly licensed photos used on this website, such as the wall textures in the sign designer."
+  schema={[breadcrumbList(crumbs, Astro.site!)]}
+>
+  <div class="wrap section">
+    <Breadcrumbs items={crumbs} />
+    <h1 class="mt-4 text-3xl font-extrabold md:text-4xl">Photo credits</h1>
+    <p class="mt-3 max-w-2xl leading-relaxed text-muted">
+      Some pictures on this site are openly licensed photos by other people. They are used with thanks, under the
+      licences shown.
+    </p>
+    <div class="table-scroll mt-8 rounded-xl border border-line">
+      <table class="table min-w-[40rem]">
+        <thead>
+          <tr>
+            <th scope="col">Used for</th>
+            <th scope="col">Photo</th>
+            <th scope="col">Licence</th>
+            <th scope="col">Changes</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            photoCredits.map((c) => (
+              <tr>
+                <td>{c.use}</td>
+                <td>
+                  <a href={c.source} rel="noopener nofollow" class="underline underline-offset-2">
+                    “{c.title}”
+                  </a>{' '}
+                  by {c.author}
+                </td>
+                <td>
+                  <a href={c.licenceUrl} rel="noopener license" class="underline underline-offset-2">
+                    {c.licence}
+                  </a>
+                </td>
+                <td>{c.changes}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</BaseLayout>

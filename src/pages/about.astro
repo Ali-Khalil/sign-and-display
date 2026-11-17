@@ -1,0 +1,76 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import HowItWorks from '../components/sections/HowItWorks.astro';
+import CTABand from '../components/ui/CTABand.astro';
+import { site } from '../config/site';
+import { getPage, getTypes } from '../lib/content';
+import { breadcrumbList } from '../lib/schema';
+import { waMessageGeneral } from '../lib/whatsapp';
+
+const page = await getPage('about');
+const Content = page ? (await render(page)).Content : null;
+const types = await getTypes();
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'About', href: '/about/' },
+];
+const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+---
+
+<BaseLayout
+  title={`About ${site.name}`}
+  description={`About ${site.name}: the signboards and branded kits we make, how orders work and where we work.`}
+  schema={[breadcrumbList(crumbs, Astro.site!)]}
+  {waMessage}
+>
+  <section class="bg-hero text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">About {site.name}</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        We make 2D and 3D signboards, LED-illuminated signs, neon signs, nameplates and branded welcome kits,
+        mainly for customers in {site.serviceAreas.join(', ')}{site.nationwide ? ', with orders taken from all over Pakistan' : ''}.
+      </p>
+    </div>
+  </section>
+
+  {
+    Content && (
+      <section class="wrap section">
+        <div class="prose">
+          <Content />
+        </div>
+      </section>
+    )
+  }
+
+  {
+    types.length > 0 && (
+      <section class="wrap section border-t border-line">
+        <h2 class="h2">What we make</h2>
+        <ul class="mt-6 grid gap-x-8 gap-y-2 sm:grid-cols-2">
+          {types.map((t) => (
+            <li>
+              <a href={`/signage/${t.id}/`} class="flex min-h-11 items-center font-semibold underline underline-offset-2">
+                {t.data.title}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+
+  <section class="bg-paper-soft">
+    <div class="wrap section">
+      <h2 class="h2">How an order works</h2>
+      <div class="mt-8">
+        <HowItWorks />
+      </div>
+    </div>
+  </section>
+
+  <CTABand message={waMessage} />
+</BaseLayout>

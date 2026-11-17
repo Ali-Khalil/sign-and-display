@@ -1,0 +1,43 @@
+---
+/**
+ * The Sign & Display wordmark, drawn in text so it stays sharp at any size:
+ * heavy white "SIGN" with a 3D edge to its left, an amber "&", and "DISPLAY"
+ * in blue on a white plate, as in the logo.
+ */
+import { site } from '../../config/site';
+
+interface Props {
+  size?: 'md' | 'lg';
+}
+const { size = 'md' } = Astro.props;
+const big = size === 'lg';
+---
+
+<span class="inline-flex items-center gap-2 leading-none" role="img" aria-label={site.name}>
+  <span aria-hidden="true" class:list={['logo-sign font-display font-black tracking-tight text-white', big ? 'text-3xl' : 'text-[1.4rem]']}>
+    SIGN<span class="logo-amp ms-1.5 text-brand">&amp;</span>
+  </span>
+  <span aria-hidden="true" class:list={['logo-display rounded-[3px] bg-white font-logo text-blue shadow-sm shadow-black/30', big ? 'px-2 py-1.5 text-base' : 'px-1.5 py-1 text-[0.78rem]']}>
+    DISPLAY
+  </span>
+</span>
+
+<style>
+  /* The letter sides show to the left and below, like the 3D sign in the logo. */
+  .logo-sign {
+    text-shadow:
+      -1px 1px 0 #a9b9ca,
+      -2px 2px 0 #7388a2,
+      -3px 4px 5px rgb(0 0 0 / 0.35);
+  }
+  /* The wordmark font has one weight, so the letters are thickened with a stroke in their own colour. */
+  .logo-display {
+    -webkit-text-stroke: 0.065em currentColor;
+    letter-spacing: 0.02em;
+  }
+  .logo-amp {
+    text-shadow:
+      -1px 1px 0 #c97b00,
+      -2px 3px 4px rgb(0 0 0 / 0.35);
+  }
+</style>

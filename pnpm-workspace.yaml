@@ -1,0 +1,14 @@
+# Only install package versions that have been public for at least a day.
+# This matches the default safety policy of newer pnpm versions, so the
+# lockfile installs cleanly everywhere.
+minimumReleaseAge: 1440
+
+# @napi-rs/wasm-runtime asks for a wasm-util release that is less than a day
+# old. It is only used by the WebAssembly fallback of the bundler, so the
+# previous release is pinned until the new one has aged. Safe to remove later.
+overrides:
+  '@tybys/wasm-util': 0.10.4
+  # Fabric lists the native "canvas" package as optional, for use in Node.
+  # The designer runs only in the browser, so it is left out entirely. That
+  # also avoids its install script, which newer pnpm versions refuse to run.
+  canvas: '-'

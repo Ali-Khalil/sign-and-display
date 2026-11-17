@@ -1,0 +1,85 @@
+---
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import TypesGrid from '../../components/sections/TypesGrid.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import FAQ from '../../components/ui/FAQ.astro';
+import { formatDate, getGuides, getTypes, type Guide } from '../../lib/content';
+import { article, breadcrumbList, faqPage } from '../../lib/schema';
+import { waMessageGeneral } from '../../lib/whatsapp';
+
+export async function getStaticPaths() {
+  const guides = await getGuides();
+  return guides.map((guide) => ({ params: { slug: guide.id }, props: { guide } }));
+}
+
+interface Props {
+  guide: Guide;
+}
+const { guide } = Astro.props;
+const d = guide.data;
+const { Content } = await render(guide);
+
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Guides', href: '/guides/' },
+  { name: d.title, href: `/guides/${guide.id}/` },
+];
+const related = (await getTypes()).filter((t) => d.relatedTypes.includes(t.id));
+const waMessage = waMessageGeneral(pageUrl);
+---
+
+<BaseLayout
+  title={d.title.length > 60 ? d.title.slice(0, 57) + '…' : d.title}
+  description={d.description}
+  ogType="article"
+  schema={[article(guide, pageUrl, Astro.site!), breadcrumbList(crumbs, Astro.site!), faqPage(d.faqs)]}
+  {waMessage}
+>
+  <article>
+    <header class="bg-hero text-white">
+      <div class="wrap py-10 md:py-14">
+        <Breadcrumbs items={crumbs} dark />
+        <h1 class="mt-4 max-w-3xl text-3xl leading-tight font-extrabold md:text-5xl">{d.title}</h1>
+        <p class="mt-4 text-sm text-muted-dark">
+          {d.author && <span>By {d.author} · </span>}
+          Last updated <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated)}</time>
+        </p>
+      </div>
+    </header>
+
+    <div class="wrap section">
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    {
+      d.faqs.length > 0 && (
+        <section class="wrap section border-t border-line">
+          <h2 class="h2">Common questions</h2>
+          <div class="mt-6">
+            <FAQ items={d.faqs} />
+          </div>
+        </section>
+      )
+    }
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="bg-paper-soft">
+        <div class="wrap section">
+          <h2 class="h2">Related signage types</h2>
+          <div class="mt-8">
+            <TypesGrid types={related} />
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <CTABand message={waMessage} />
+</BaseLayout>

@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
+import ProjectGrid from '../../components/sections/ProjectGrid.astro';
+import CTABand from '../../components/ui/CTABand.astro';
+import PortfolioFilter from '../../islands/PortfolioFilter.tsx';
+import { site } from '../../config/site';
+import { getProjects, getTypes } from '../../lib/content';
+import { breadcrumbList } from '../../lib/schema';
+import { waMessageGeneral } from '../../lib/whatsapp';
+
+const projects = await getProjects();
+const allExamples = projects.length > 0 && projects.every((p) => p.data.example);
+const used = new Set(projects.flatMap((p) => p.data.types));
+const types = (await getTypes()).filter((t) => used.has(t.id)).map((t) => ({ slug: t.id, title: t.data.title }));
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Portfolio', href: '/portfolio/' },
+];
+const waMessage = waMessageGeneral(new URL(Astro.url.pathname, Astro.site).href);
+---
+
+<BaseLayout
+  title="Signboard Portfolio: Recent Work"
+  description={`Signboards, LED signs, neon signs and nameplates by ${site.name}. Filter by type and open a project for its details.`}
+  schema={[breadcrumbList(crumbs, Astro.site!)]}
+  {waMessage}
+>
+  <noscript slot="head"><style>#portfolio-filter { display: none; }</style></noscript>
+  <section class="bg-hero text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Signboard portfolio</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        {
+          allExamples
+            ? 'Example designs made with our sign designer, showing the kinds of signs we make. Photos of finished jobs will be added here.'
+            : `Signs made by ${site.name}. Filter by type, and open a project for its size, materials and lighting.`
+        }
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap section">
+    {
+      projects.length === 0 ? (
+        <p class="max-w-xl text-muted">Project photos are being added. Ask on WhatsApp to see recent work.</p>
+      ) : (
+        <>
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            {types.length > 1 && <PortfolioFilter {types} client:idle />}
+            <p id="portfolio-count" class="text-sm text-muted" aria-live="polite">
+              {projects.length} project{projects.length === 1 ? '' : 's'}
+            </p>
+          </div>
+          <div class="mt-6">
+            <ProjectGrid {projects} headingLevel="h2" />
+          </div>
+        </>
+      )
+    }
+  </section>
+
+  <CTABand heading="Want a sign like one of these?" message={waMessage} />
+</BaseLayout>

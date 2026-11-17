@@ -1,0 +1,178 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Breadcrumbs from '../components/seo/Breadcrumbs.astro';
+import Icon from '../components/ui/Icon.astro';
+import WhatsAppButton from '../components/ui/WhatsAppButton.astro';
+import { hasGeo, site } from '../config/site';
+import { getTypes } from '../lib/content';
+import { hoursText } from '../lib/hours';
+import { breadcrumbList } from '../lib/schema';
+import { telLink, waMessageGeneral } from '../lib/whatsapp';
+
+const crumbs = [
+  { name: 'Home', href: '/' },
+  { name: 'Contact', href: '/contact/' },
+];
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href;
+const waMessage = waMessageGeneral(pageUrl);
+const types = await getTypes();
+const { street, city, region, postalCode } = site.address;
+const mapEmbed = hasGeo ? `https://www.google.com/maps?q=${site.geo.lat},${site.geo.lng}&z=16&output=embed` : '';
+const mapLink = site.googleBusinessProfileUrl || (hasGeo ? `https://www.google.com/maps?q=${site.geo.lat},${site.geo.lng}` : '');
+---
+
+<BaseLayout
+  title={`Contact ${site.name}`}
+  description={`WhatsApp, phone, address and opening hours for ${site.name}. Send your sign details for a design and a quote.`}
+  schema={[breadcrumbList(crumbs, Astro.site!)]}
+  {waMessage}
+>
+  <section class="bg-hero text-white">
+    <div class="wrap py-10 md:py-14">
+      <Breadcrumbs items={crumbs} dark />
+      <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">Contact {site.name}</h1>
+      <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">
+        WhatsApp is the quickest way to get a design and a quote. Send the text for your sign, the approximate size and
+        your city.
+      </p>
+      <WhatsAppButton message={waMessage} location="contact-hero" class="mt-6" />
+    </div>
+  </section>
+
+  <div class="wrap section grid gap-12 lg:grid-cols-2">
+    <section>
+      <h2 class="h2">Our details</h2>
+      <ul class="mt-6 space-y-5">
+        <li class="flex gap-3">
+          <Icon name="phone" class="mt-1 size-5 shrink-0" />
+          <div>
+            <p class="text-sm text-muted">Call</p>
+            <a href={telLink} class="flex min-h-11 items-center text-lg font-semibold underline underline-offset-2">{site.phoneDisplay}</a>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <Icon name="mail" class="mt-1 size-5 shrink-0" />
+          <div>
+            <p class="text-sm text-muted">Email</p>
+            <a href={`mailto:${site.email}`} class="flex min-h-11 items-center text-lg font-semibold break-all underline underline-offset-2">{site.email}</a>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <Icon name="pin" class="mt-1 size-5 shrink-0" />
+          <div>
+            <p class="text-sm text-muted">Address</p>
+            <address class="text-lg font-semibold not-italic">{street}, {city}, {region} {postalCode}, Pakistan</address>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <Icon name="clock" class="mt-1 size-5 shrink-0" />
+          <div>
+            <p class="text-sm text-muted">Opening hours</p>
+            {hoursText().map((line) => <p class="text-lg font-semibold">{line}</p>)}
+          </div>
+        </li>
+      </ul>
+
+      {
+        mapEmbed && (
+          <div class="mt-8">
+            <div
+              id="map"
+              data-src={mapEmbed}
+              class="relative flex aspect-video items-center justify-center overflow-hidden rounded-xl border border-line bg-paper-soft"
+            >
+              <button type="button" class="flex min-h-11 items-center gap-2 rounded-full bg-ink px-5 font-semibold text-white">
+                <Icon name="pin" class="size-5" /> Show map
+              </button>
+            </div>
+            {mapLink && (
+              <p class="mt-3">
+                <a href={mapLink} target="_blank" rel="noopener" class="font-semibold underline underline-offset-2">
+                  Open in Google Maps
+                </a>
+              </p>
+            )}
+          </div>
+        )
+      }
+    </section>
+
+    <section>
+      <h2 class="h2">Send your sign details</h2>
+      <p class="mt-3 text-muted">Fill this in and it opens WhatsApp with your message ready to send.</p>
+      <noscript><p class="mt-4 font-semibold">This form needs JavaScript. Please use the WhatsApp button above.</p></noscript>
+      <form id="enquiry" data-whatsapp={site.whatsapp} data-page={pageUrl} class="mt-6 grid gap-4" hidden>
+        <label class="grid min-w-0 gap-1.5">
+          <span class="font-semibold">Your name</span>
+          <input name="name" autocomplete="name" class="min-h-12 w-full min-w-0 rounded-lg border border-line px-3" />
+        </label>
+        <label class="grid min-w-0 gap-1.5">
+          <span class="font-semibold">Type of sign</span>
+          <select name="type" class="min-h-12 w-full min-w-0 rounded-lg border border-line bg-white px-3">
+            <option value="">Not sure yet</option>
+            {types.map((t) => <option>{t.data.title}</option>)}
+          </select>
+        </label>
+        <label class="grid min-w-0 gap-1.5">
+          <span class="font-semibold">Text or name on the sign</span>
+          <textarea name="text" rows="2" dir="auto" class="w-full min-w-0 rounded-lg border border-line px-3 py-2"></textarea>
+        </label>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <label class="grid min-w-0 gap-1.5">
+            <span class="font-semibold">Approximate size</span>
+            <input name="size" placeholder="e.g. 8 ft x 3 ft" class="min-h-12 w-full min-w-0 rounded-lg border border-line px-3" />
+          </label>
+          <label class="grid min-w-0 gap-1.5">
+            <span class="font-semibold">City</span>
+            <input name="city" autocomplete="address-level2" class="min-h-12 w-full min-w-0 rounded-lg border border-line px-3" />
+          </label>
+        </div>
+        <button
+          type="submit"
+          class="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-whatsapp px-6 font-semibold text-whatsapp-ink"
+        >
+          <Icon name="whatsapp" class="size-5" /> Open WhatsApp with this message
+        </button>
+      </form>
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // Enquiry form: builds a WhatsApp message in the browser. Nothing is sent to a server.
+  const form = document.getElementById('enquiry') as HTMLFormElement | null;
+  if (form) {
+    form.hidden = false;
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const value = (key: string) => String(data.get(key) ?? '').trim();
+      const message = [
+        'Assalam o Alaikum, I need a signboard.',
+        value('name') && `Name: ${value('name')}`,
+        `Type of sign: ${value('type')}`,
+        `Text/Name: ${value('text')}`,
+        `Size (approx): ${value('size')}`,
+        `City: ${value('city')}`,
+        `(From: ${form.dataset.page})`,
+      ]
+        .filter(Boolean)
+        .join('\n');
+      const detail = { event: 'whatsapp_click', params: { location: 'contact-form', type: value('type') } };
+      window.dispatchEvent(new CustomEvent('site:track', { detail }));
+      window.gtag?.('event', detail.event, detail.params);
+      window.open(`https://wa.me/${form.dataset.whatsapp}?text=${encodeURIComponent(message)}`, '_blank', 'noopener');
+    });
+  }
+
+  // Map: the iframe is only loaded when asked for.
+  const map = document.getElementById('map');
+  map?.querySelector('button')?.addEventListener('click', () => {
+    const frame = document.createElement('iframe');
+    frame.src = map.dataset.src ?? '';
+    frame.title = 'Map showing our location';
+    frame.loading = 'lazy';
+    frame.className = 'absolute inset-0 size-full border-0';
+    map.replaceChildren(frame);
+  });
+</script>

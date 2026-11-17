@@ -1,0 +1,14 @@
+---
+import TypeCard from '../ui/TypeCard.astro';
+import type { SignageType } from '../../lib/content';
+
+interface Props {
+  types: SignageType[];
+  headingLevel?: 'h2' | 'h3';
+}
+const { types, headingLevel = 'h3' } = Astro.props;
+---
+
+<ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+  {types.map((type) => <li class="flex"><TypeCard {type} {headingLevel} /></li>)}
+</ul>
