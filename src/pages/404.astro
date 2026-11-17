@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WhatsAppButton from '../components/ui/WhatsAppButton.astro';
-import { NAV } from '../config/nav';
+import { NAV, SECONDARY_NAV } from '../config/nav';
 import { waMessageGeneral } from '../lib/whatsapp';
 
 const waMessage = waMessageGeneral(new URL('/', Astro.site).href);
@@ -14,7 +14,7 @@ const waMessage = waMessageGeneral(new URL('/', Astro.site).href);
     <p class="mt-4 max-w-xl text-muted">The page you were looking for has moved or does not exist. Try one of these:</p>
     <ul class="mt-6 grid max-w-xl gap-x-8 sm:grid-cols-2">
       {
-        [{ href: '/', label: 'Home' }, ...NAV, { href: '/faq/', label: 'FAQ' }].map((item) => (
+        [{ href: '/', label: 'Home' }, ...NAV, ...SECONDARY_NAV].map((item) => (
           <li>
             <a href={item.href} class="flex min-h-11 items-center font-semibold underline underline-offset-2">{item.label}</a>
           </li>

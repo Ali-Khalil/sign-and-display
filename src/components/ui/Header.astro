@@ -20,7 +20,7 @@ const isCurrent = (href: string) => path.startsWith(href);
   <div class="wrap flex min-h-16 items-center justify-between gap-4">
     <a href="/" class="flex min-h-11 items-center" aria-label={`${site.name}: home`}><Logo /></a>
 
-    <nav aria-label="Main" class="hidden xl:block">
+    <nav aria-label="Main" class="hidden lg:block">
       <ul class="nav-links flex items-center gap-5 font-logo text-[0.82rem]">
         {
           NAV.map((item) => (
@@ -42,7 +42,7 @@ const isCurrent = (href: string) => path.startsWith(href);
       <div class="hidden sm:block">
         <WhatsAppButton message={waMessage} location="header" label="WhatsApp" size="md" />
       </div>
-      <details class="group xl:hidden">
+      <details class="group lg:hidden">
         <summary
           class="flex size-11 list-none items-center justify-center rounded-full border border-white/25 [&::-webkit-details-marker]:hidden"
           aria-label="Menu"
