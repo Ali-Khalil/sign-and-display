@@ -12,7 +12,7 @@ import FAQ from '../../components/ui/FAQ.astro';
 import Icon from '../../components/ui/Icon.astro';
 import WhatsAppButton from '../../components/ui/WhatsAppButton.astro';
 import { getRate } from '../../config/pricing';
-import { formatDate, getProjects, getTypes, type SignageType } from '../../lib/content';
+import { getProjects, getTypes, type SignageType } from '../../lib/content';
 import { breadcrumbList, faqPage, service } from '../../lib/schema';
 import { waMessageForType } from '../../lib/whatsapp';
 
@@ -62,7 +62,6 @@ const hasSizes = d.typicalSizes.length > 0 || startingFrom !== null;
             <Icon name="pencil" class="size-5" /> Design this sign
           </Button>
         </div>
-        <p class="mt-5 text-sm text-muted-dark">Last updated <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated)}</time></p>
       </div>
       <Picture
         src={d.heroImage}

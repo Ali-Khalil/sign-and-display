@@ -18,7 +18,7 @@ Run `pnpm placeholders` to list what is missing.
 - [ ] Social media links
 - [ ] Urdu business name (optional)
 - [ ] "Why us" points (the home-page section stays hidden until some are added)
-- [ ] Domain name (`url`)
+- [x] Domain name (`url`): signanddisplay.pk
 
 ## 2. Signage type pages (`src/content/signage-types/`)
 

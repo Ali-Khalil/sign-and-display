@@ -9,6 +9,6 @@ interface Props {
 const { types, headingLevel = 'h3' } = Astro.props;
 ---
 
-<ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+<ul class="grid gap-6 sm:grid-cols-2 lg:gap-8">
   {types.map((type) => <li class="flex"><TypeCard {type} {headingLevel} /></li>)}
 </ul>

@@ -184,13 +184,19 @@ const sizes = '(min-width: 1024px) 46vw, 100vw';
     controls.querySelector('[data-next]')!.addEventListener('click', () => go(index + 1));
     dots.forEach((dot, i) => dot.addEventListener('click', () => go(i)));
 
-    // Keep the dots right when the visitor swipes.
+    // Keep the dots right when the visitor swipes. Only the position the track
+    // comes to rest at counts: reading it mid-scroll would overwrite a slide
+    // that a button has just chosen.
+    let settle = 0;
     track.addEventListener('scroll', () => {
-      const current = Math.round(track.scrollLeft / track.clientWidth);
-      if (current !== index) {
-        index = current;
-        mark();
-      }
+      window.clearTimeout(settle);
+      settle = window.setTimeout(() => {
+        const current = Math.round(track.scrollLeft / track.clientWidth);
+        if (current !== index) {
+          index = current;
+          mark();
+        }
+      }, 150);
     });
     track.addEventListener('keydown', (event) => {
       if (event.key === 'ArrowRight') go(index + 1);

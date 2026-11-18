@@ -148,7 +148,11 @@ test('robots.txt, llms.txt and sitemap are served', async ({ request }) => {
   expect(robots).toContain('User-agent: GPTBot');
   const llms = await (await request.get('/llms.txt')).text();
   expect(llms).toContain('## Signage types');
-  const sitemap = await (await request.get('/sitemap-0.xml')).text();
+  expect(robots).toContain('/sitemap.xml');
+  const response = await request.get('/sitemap.xml');
+  expect(response.ok()).toBe(true);
+  const sitemap = await response.text();
+  expect(sitemap).toContain('<urlset');
   expect(sitemap).toContain('/signage/3d-acrylic-letters/');
   expect(sitemap).not.toContain('/spike/');
   expect(sitemap).toContain('/design-your-sign/');

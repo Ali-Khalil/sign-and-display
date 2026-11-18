@@ -7,6 +7,6 @@ export const GET: APIRoute = ({ site: base }) => {
   for (const bot of site.aiCrawlers) {
     lines.push(`User-agent: ${bot}`, site.allowAiCrawlers ? 'Allow: /' : 'Disallow: /', '');
   }
-  lines.push(`Sitemap: ${new URL('/sitemap-index.xml', base).href}`, '');
+  lines.push(`Sitemap: ${new URL('/sitemap.xml', base).href}`, '');
   return new Response(lines.join('\n'), { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };

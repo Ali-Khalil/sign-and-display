@@ -125,11 +125,21 @@ Known limits: the SVG export keeps text as text (fonts must be installed) and
 leaves out glow effects; "cut to shape" neon backing is drawn as a rounded
 outline around the lettering.
 
+## Search engines
+
+- `/sitemap.xml` lists every public page (submit this address in Google Search
+  Console and Bing Webmaster Tools). `/sitemap-index.xml` also exists.
+- `/robots.txt` points to the sitemap and allows AI crawlers; set
+  `allowAiCrawlers: false` in `src/config/site.ts` to block them.
+- `/llms.txt` is a plain-text summary of the business for AI assistants.
+
+All three use the `url` in `src/config/site.ts` (https://signanddisplay.pk).
+
 ## Deploy
 
 Any static host works. Build command `pnpm build`, output directory `dist`,
-Node 22. Until the real domain is in `site.ts`, set the `SITE_URL` environment
-variable to the site's address so canonical URLs and the sitemap are right.
+Node 22. Canonical URLs, the sitemap and social images use
+https://signanddisplay.pk from `src/config/site.ts`.
 
 ## Photo guide for the owner
 
