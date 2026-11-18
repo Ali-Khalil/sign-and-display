@@ -5,7 +5,7 @@ import Breadcrumbs from '../../components/seo/Breadcrumbs.astro';
 import TypesGrid from '../../components/sections/TypesGrid.astro';
 import CTABand from '../../components/ui/CTABand.astro';
 import FAQ from '../../components/ui/FAQ.astro';
-import { formatDate, getGuides, getTypes, type Guide } from '../../lib/content';
+import { getGuides, getTypes, type Guide } from '../../lib/content';
 import { article, breadcrumbList, faqPage } from '../../lib/schema';
 import { waMessageGeneral } from '../../lib/whatsapp';
 
@@ -43,10 +43,7 @@ const waMessage = waMessageGeneral(pageUrl);
       <div class="wrap py-10 md:py-14">
         <Breadcrumbs items={crumbs} dark />
         <h1 class="mt-4 max-w-3xl text-3xl leading-tight font-extrabold md:text-5xl">{d.title}</h1>
-        <p class="mt-4 text-sm text-muted-dark">
-          {d.author && <span>By {d.author} · </span>}
-          Last updated <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated)}</time>
-        </p>
+        {d.author && <p class="mt-4 text-sm text-muted-dark">By {d.author}</p>}
       </div>
     </header>
 

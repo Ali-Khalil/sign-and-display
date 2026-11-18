@@ -1,5 +1,6 @@
 ---
 import { Picture } from 'astro:assets';
+import Icon from './Icon.astro';
 import type { SignageType } from '../../lib/content';
 
 interface Props {
@@ -9,22 +10,30 @@ interface Props {
 const { type, headingLevel: H = 'h3' } = Astro.props;
 ---
 
-<article class="group relative flex flex-col overflow-hidden rounded-xl border border-line bg-white">
-  <Picture
-    src={type.data.heroImage}
-    alt={type.data.heroAlt}
-    formats={['avif', 'webp']}
-    widths={[360, 540, 720]}
-    sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-    loading="lazy"
-    class="aspect-[16/10] w-full object-cover"
-  />
-  <div class="flex flex-1 flex-col gap-2 p-4">
-    <H class="text-lg leading-snug font-bold">
-      <a href={`/signage/${type.id}/`} class="after:absolute after:inset-0 group-hover:underline">
+<article
+  class="type-card group relative flex w-full flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-blue/40 hover:shadow-xl hover:shadow-blue/10 focus-within:-translate-y-1 focus-within:border-blue/40 focus-within:shadow-xl motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+>
+  <div class="overflow-hidden">
+    <Picture
+      src={type.data.heroImage}
+      alt={type.data.heroAlt}
+      formats={['avif', 'webp']}
+      widths={[480, 720, 960, 1280]}
+      sizes="(min-width: 1152px) 560px, (min-width: 640px) 50vw, 100vw"
+      loading="lazy"
+      class="aspect-[16/10] w-full object-cover transition duration-500 group-hover:scale-105 group-focus-within:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+    />
+  </div>
+  <div class="flex flex-1 flex-col gap-2 p-5 md:p-6">
+    <H class="text-xl leading-snug font-bold">
+      <a href={`/signage/${type.id}/`} class="after:absolute after:inset-0 group-hover:text-blue">
         {type.data.title}
       </a>
     </H>
     <p class="text-[0.95rem] leading-relaxed text-muted">{type.data.shortDescription}</p>
+    <span class="mt-auto inline-flex items-center gap-1.5 pt-2 text-sm font-semibold text-blue" aria-hidden="true">
+      View details
+      <Icon name="arrow" class="size-4 transition-transform duration-300 group-hover:translate-x-1 rtl:rotate-180" />
+    </span>
   </div>
 </article>

@@ -8,7 +8,7 @@ import FAQ from '../components/ui/FAQ.astro';
 import Icon from '../components/ui/Icon.astro';
 import KitIcon from '../components/ui/KitIcon.astro';
 import WhatsAppButton from '../components/ui/WhatsAppButton.astro';
-import { formatDate, getServices, getTypes, type Service } from '../lib/content';
+import { getServices, getTypes, type Service } from '../lib/content';
 import { breadcrumbList, faqPage, otherService } from '../lib/schema';
 import { waMessageForService } from '../lib/whatsapp';
 
@@ -47,9 +47,6 @@ const reception = (await getTypes()).find((t) => t.id === 'reception-logo-signs'
         <h1 class="mt-4 text-3xl leading-tight font-extrabold md:text-5xl">{d.title}</h1>
         <p class="mt-4 max-w-2xl text-lg leading-relaxed text-white/85">{d.summary}</p>
         <WhatsAppButton message={waMessage} location="service-hero" type={service.id} class="mt-6" />
-        <p class="mt-5 text-sm text-white/70">
-          Last updated <time datetime={d.updated.toISOString().slice(0, 10)}>{formatDate(d.updated)}</time>
-        </p>
       </div>
       {
         d.heroImage && (
